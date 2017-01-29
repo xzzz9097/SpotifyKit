@@ -8,12 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		0C2CF3211E3E7FEF00E10765 /* Swiftify.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		27BC85E9B7D9034F91795E91 /* Pods_Swiftify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B14A03FAEFC7E82AED7C9E4 /* Pods_Swiftify.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0C2CF31C1E3E7FEF00E10765 /* Swiftify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Swiftify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Swiftify.h; sourceTree = "<group>"; };
 		0C2CF3201E3E7FEF00E10765 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0C6BB59D1E3E9DC7004E3FBD /* Swiftify.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Swiftify.playground; path = Swiftify/Swiftify.playground; sourceTree = "<group>"; };
+		5B14A03FAEFC7E82AED7C9E4 /* Pods_Swiftify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Swiftify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8AEE1D068F0E7A09FD24DA6C /* Pods-Swiftify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Swiftify.release.xcconfig"; path = "Pods/Target Support Files/Pods-Swiftify/Pods-Swiftify.release.xcconfig"; sourceTree = "<group>"; };
+		EA5294B2908D6AB0768E7DE8 /* Pods-Swiftify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Swiftify.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Swiftify/Pods-Swiftify.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -21,17 +26,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27BC85E9B7D9034F91795E91 /* Pods_Swiftify.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09A6750301E3652164788166 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				EA5294B2908D6AB0768E7DE8 /* Pods-Swiftify.debug.xcconfig */,
+				8AEE1D068F0E7A09FD24DA6C /* Pods-Swiftify.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		0C2CF3041E3E7F5700E10765 = {
 			isa = PBXGroup;
 			children = (
+				0C6BB59D1E3E9DC7004E3FBD /* Swiftify.playground */,
 				0C2CF31E1E3E7FEF00E10765 /* Swiftify */,
 				0C2CF31D1E3E7FEF00E10765 /* Products */,
+				09A6750301E3652164788166 /* Pods */,
+				8B5717CB1BDA573B2BFF62D9 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -52,6 +70,14 @@
 			path = Swiftify;
 			sourceTree = "<group>";
 		};
+		8B5717CB1BDA573B2BFF62D9 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				5B14A03FAEFC7E82AED7C9E4 /* Pods_Swiftify.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -70,10 +96,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0C2CF3241E3E7FEF00E10765 /* Build configuration list for PBXNativeTarget "Swiftify" */;
 			buildPhases = (
+				A1E969A4C7742F66E61C9F02 /* [CP] Check Pods Manifest.lock */,
 				0C2CF3171E3E7FEF00E10765 /* Sources */,
 				0C2CF3181E3E7FEF00E10765 /* Frameworks */,
 				0C2CF3191E3E7FEF00E10765 /* Headers */,
 				0C2CF31A1E3E7FEF00E10765 /* Resources */,
+				8A424FCFABC7004F7C395040 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -125,6 +153,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8A424FCFABC7004F7C395040 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Swiftify/Pods-Swiftify-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1E969A4C7742F66E61C9F02 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		0C2CF3171E3E7FEF00E10765 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -150,6 +211,7 @@
 		};
 		0C2CF3221E3E7FEF00E10765 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EA5294B2908D6AB0768E7DE8 /* Pods-Swiftify.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -215,6 +277,7 @@
 		};
 		0C2CF3231E3E7FEF00E10765 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8AEE1D068F0E7A09FD24DA6C /* Pods-Swiftify.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -289,6 +352,7 @@
 				0C2CF3231E3E7FEF00E10765 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
