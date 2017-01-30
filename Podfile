@@ -9,5 +9,6 @@ target 'Swiftify' do
 
   # Pods for Swiftify
   pod 'Alamofire', '~> 4.3'
+  pod 'SwiftyJSON'
 
 end

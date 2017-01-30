@@ -1,27 +1,22 @@
 //: Playground - noun: a place where people can play
 
 import Cocoa
-import Alamofire
 import PlaygroundSupport
+
+import Swiftify
 
 // Enable infinite execution
 // So that we can get asynchronously the response
 PlaygroundPage.current.needsIndefiniteExecution = true
 
-struct Response {
-    var request:  URLRequest?
-    var response: HTTPURLResponse?
-    var error:    Error?
-}
+let swiftify = SwiftifyHelper.shared
 
-var aResponse = Response(request: nil, response: nil, error: nil)
+// The search keyword
+let keyword = "holding you"
 
-Alamofire.request("https://httpbin.org/get").responseJSON { response in    
-    aResponse = Response(request: response.request,
-                         response: response.response,
-                         error: response.error)
-    
-    if let json = response.result.value {
-        print("JSON: \(json)")
+swiftify.find(track: keyword) { tracks in
+    for track in tracks {
+        print("Name: \(track.name), Artist: \(track.artist), Album: \(track.album)")
     }
 }
+

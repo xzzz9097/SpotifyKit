@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0C2CF3211E3E7FEF00E10765 /* Swiftify.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		0C6BB5A01E3F793E004E3FBD /* Swiftify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6BB59F1E3F793E004E3FBD /* Swiftify.swift */; };
 		27BC85E9B7D9034F91795E91 /* Pods_Swiftify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B14A03FAEFC7E82AED7C9E4 /* Pods_Swiftify.framework */; };
 /* End PBXBuildFile section */
 
@@ -16,6 +17,7 @@
 		0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Swiftify.h; sourceTree = "<group>"; };
 		0C2CF3201E3E7FEF00E10765 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0C6BB59D1E3E9DC7004E3FBD /* Swiftify.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; name = Swiftify.playground; path = Swiftify/Swiftify.playground; sourceTree = "<group>"; };
+		0C6BB59F1E3F793E004E3FBD /* Swiftify.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Swiftify.swift; sourceTree = "<group>"; };
 		5B14A03FAEFC7E82AED7C9E4 /* Pods_Swiftify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Swiftify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AEE1D068F0E7A09FD24DA6C /* Pods-Swiftify.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Swiftify.release.xcconfig"; path = "Pods/Target Support Files/Pods-Swiftify/Pods-Swiftify.release.xcconfig"; sourceTree = "<group>"; };
 		EA5294B2908D6AB0768E7DE8 /* Pods-Swiftify.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Swiftify.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Swiftify/Pods-Swiftify.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */,
+				0C6BB59F1E3F793E004E3FBD /* Swiftify.swift */,
 				0C2CF3201E3E7FEF00E10765 /* Info.plist */,
 			);
 			path = Swiftify;
@@ -122,6 +125,7 @@
 				TargetAttributes = {
 					0C2CF31B1E3E7FEF00E10765 = {
 						CreatedOnToolsVersion = 8.2.1;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -191,6 +195,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C6BB5A01E3F793E004E3FBD /* Swiftify.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
