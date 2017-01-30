@@ -11,7 +11,7 @@ import Cocoa
 import Alamofire
 import SwiftyJSON
 
-enum SpotifyQueryType: String {
+public enum SpotifyQueryType: String {
     case track  = "track"
     case album  = "album"
     case artist = "artist"
@@ -50,24 +50,31 @@ public class SwiftifyHelper {
      - parameter completionHandler: the block to run when results
         are found and passed as parameter to it
      */
-    public func find(track: String, completionHandler: @escaping ([SpotifyTrack]) -> Void) {
-        Alamofire.request(searchQuery(for: track)).responseJSON { response in
-            guard let result = response.result.value else { return }
+    public func find(_ type: SpotifyQueryType, keyword: String, completionHandler: @escaping ([Any]) -> Void) {
+        Alamofire.request(searchQuery(for: type, keyword)).responseJSON { response in
+            guard let response = response.result.value else { return }
             
-            var tracks: [SpotifyTrack] = []
+            var results: [Any] = []
          
-            let json = JSON(result)
+            let json = JSON(response)
             
-            for (_, item) : (String, JSON) in json["tracks"]["items"] {
-                tracks.append(SpotifyTrack(uri: item["uri"].stringValue,
-                                           name: item["name"].stringValue,
-                                           album: SpotifyAlbum(uri: item["album"]["uri"].stringValue,
-                                                               name: item["album"]["name"].stringValue),
-                                           artist: SpotifyArtist(uri: item["artists"][0]["uri"].stringValue,
-                                                                 name: item["artists"][0]["name"].stringValue)))
+            for (_, item) : (String, JSON) in json[type.rawValue + "s"]["items"] {
+                switch type {
+                case .track:
+                    results.append(SpotifyTrack(uri: item["uri"].stringValue,
+                                               name: item["name"].stringValue,
+                                               album: SpotifyAlbum(uri: item["album"]["uri"].stringValue,
+                                                                   name: item["album"]["name"].stringValue),
+                                               artist: SpotifyArtist(uri: item["artists"][0]["uri"].stringValue,
+                                                                     name: item["artists"][0]["name"].stringValue)))
+                case .album:
+                    results.append(SpotifyAlbum(uri: item["uri"].stringValue, name: item["name"].stringValue))
+                case .artist:
+                    results.append(SpotifyArtist(uri: item["uri"].stringValue, name: item["name"].stringValue))
+                }
             }
             
-            completionHandler(tracks)
+            completionHandler(results)
         }
     }
     
@@ -76,10 +83,10 @@ public class SwiftifyHelper {
     /**
      Builds a search query URL for a track on Spotify
      */
-    func searchQuery(for track: String) -> String {
-        let keyword = track.replacingOccurrences(of: " ", with: "+")
+    func searchQuery(for type: SpotifyQueryType, _ keyword: String) -> String {
+        let keyword = keyword.replacingOccurrences(of: " ", with: "+")
         
-        return "https://api.spotify.com/v1/search?q=\(keyword))&type=track"
+        return "https://api.spotify.com/v1/search?q=\(keyword))&type=\(type.rawValue)"
     }
     
 }

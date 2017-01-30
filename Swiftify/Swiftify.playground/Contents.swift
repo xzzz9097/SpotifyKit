@@ -14,7 +14,9 @@ let swiftify = SwiftifyHelper.shared
 // The search keyword
 let keyword = "holding you"
 
-swiftify.find(track: keyword) { tracks in
+swiftify.find(.track, keyword: keyword) { results in
+    guard let tracks = results as? [SpotifyTrack] else { return }
+    
     for track in tracks {
         print("URI: \(track.uri), " +
               "Name: \(track.name), " +
