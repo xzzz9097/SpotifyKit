@@ -16,7 +16,7 @@ let keyword = "holding you"
 
 swiftify.find(track: keyword) { tracks in
     for track in tracks {
-        print("Name: \(track.name), Artist: \(track.artist), Album: \(track.album)")
+        print("URI: \(track.uri), Name: \(track.name), Artist: \(track.artist), Album: \(track.album)")
     }
 }
 

@@ -12,9 +12,10 @@ import Alamofire
 import SwiftyJSON
 
 public struct SpotifyTrack {
+    public var uri:    String
     public var name:   String
-    public var artist: String
     public var album:  String
+    public var artist: String
 }
 
 public class SwiftifyHelper {
@@ -40,11 +41,12 @@ public class SwiftifyHelper {
             var tracks: [SpotifyTrack] = []
          
             let json = JSON(result)
-                        
+            
             for (_, item) : (String, JSON) in json["tracks"]["items"] {
-                tracks.append(SpotifyTrack(name: item["name"].stringValue,
-                                           artist: item["artists"][0]["name"].stringValue,
-                                           album: item["album"]["name"].stringValue))
+                tracks.append(SpotifyTrack(uri: item["uri"].stringValue,
+                                           name: item["name"].stringValue,
+                                           album: item["album"]["name"].stringValue,
+                                           artist: item["artists"][0]["name"].stringValue))
             }
             
             completionHandler(tracks)
