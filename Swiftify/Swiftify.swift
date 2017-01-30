@@ -69,7 +69,7 @@ public class SwiftifyHelper {
      - parameter completionHandler: the block to run when results
         are found and passed as parameter to it
      */
-    public func find(_ type: SpotifyQueryType, keyword: String, completionHandler: @escaping ([Any]) -> Void) {
+    public func find(_ type: SpotifyQueryType, _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
         Alamofire.request(searchQuery(for: type, keyword)).responseJSON { response in
             guard let response = response.result.value else { return }
             

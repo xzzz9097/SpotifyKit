@@ -14,7 +14,7 @@ let swiftify = SwiftifyHelper.shared
 // The search keyword
 var keyword = "holding you"
 
-swiftify.find(.track, keyword: keyword) { results in
+swiftify.find(.track, keyword) { results in
     guard let tracks = results as? [SpotifyTrack] else { return }
     
     for track in tracks {
@@ -27,7 +27,7 @@ swiftify.find(.track, keyword: keyword) { results in
 
 keyword = "vessels"
 
-swiftify.find(.album, keyword: keyword) { results in
+swiftify.find(.album, keyword) { results in
     guard let albums = results as? [SpotifyAlbum] else { return }
     
     for album in albums {
@@ -39,7 +39,7 @@ swiftify.find(.album, keyword: keyword) { results in
 
 keyword = "the lost electric"
 
-swiftify.find(.artist, keyword: keyword) { results in
+swiftify.find(.artist, keyword) { results in
     guard let artists = results as? [SpotifyArtist] else { return }
     
     for artist in artists {
