@@ -22,16 +22,35 @@ public struct SpotifyTrack {
     public var name:   String
     public var album:  SpotifyAlbum
     public var artist: SpotifyArtist
+    
+    init(from item: JSON) {
+        self.uri    = item["uri"].stringValue
+        self.name   = item["name"].stringValue
+        self.album  = SpotifyAlbum(from: item["album"])
+        self.artist = SpotifyArtist(from: item["artists"][0])
+    }
 }
 
 public struct SpotifyAlbum {
     public var uri:    String
     public var name:   String
+    public var artist: SpotifyArtist
+    
+    init(from item: JSON) {
+        self.uri    = item["uri"].stringValue
+        self.name   = item["name"].stringValue
+        self.artist = SpotifyArtist(from: item["artists"][0])
+    }
 }
 
 public struct SpotifyArtist {
     public var uri:    String
     public var name:   String
+    
+    init(from item: JSON) {
+        self.uri    = item["uri"].stringValue
+        self.name   = item["name"].stringValue
+    }
 }
 
 public class SwiftifyHelper {
@@ -61,16 +80,11 @@ public class SwiftifyHelper {
             for (_, item) : (String, JSON) in json[type.rawValue + "s"]["items"] {
                 switch type {
                 case .track:
-                    results.append(SpotifyTrack(uri: item["uri"].stringValue,
-                                               name: item["name"].stringValue,
-                                               album: SpotifyAlbum(uri: item["album"]["uri"].stringValue,
-                                                                   name: item["album"]["name"].stringValue),
-                                               artist: SpotifyArtist(uri: item["artists"][0]["uri"].stringValue,
-                                                                     name: item["artists"][0]["name"].stringValue)))
+                    results.append(SpotifyTrack(from: item))
                 case .album:
-                    results.append(SpotifyAlbum(uri: item["uri"].stringValue, name: item["name"].stringValue))
+                    results.append(SpotifyAlbum(from: item))
                 case .artist:
-                    results.append(SpotifyArtist(uri: item["uri"].stringValue, name: item["name"].stringValue))
+                    results.append(SpotifyArtist(from: item))
                 }
             }
             

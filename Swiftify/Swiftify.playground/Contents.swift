@@ -12,7 +12,7 @@ PlaygroundPage.current.needsIndefiniteExecution = true
 let swiftify = SwiftifyHelper.shared
 
 // The search keyword
-let keyword = "holding you"
+var keyword = "holding you"
 
 swiftify.find(.track, keyword: keyword) { results in
     guard let tracks = results as? [SpotifyTrack] else { return }
@@ -25,3 +25,25 @@ swiftify.find(.track, keyword: keyword) { results in
     }
 }
 
+keyword = "vessels"
+
+swiftify.find(.album, keyword: keyword) { results in
+    guard let albums = results as? [SpotifyAlbum] else { return }
+    
+    for album in albums {
+        print("URI: \(album.uri), " +
+              "Name: \(album.name), " +
+              "Artist: \(album.artist.name)")
+    }
+}
+
+keyword = "the lost electric"
+
+swiftify.find(.artist, keyword: keyword) { results in
+    guard let artists = results as? [SpotifyArtist] else { return }
+    
+    for artist in artists {
+        print("URI: \(artist.uri), " +
+              "Name: \(artist.name)")
+    }
+}
