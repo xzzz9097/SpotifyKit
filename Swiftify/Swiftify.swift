@@ -11,11 +11,27 @@ import Cocoa
 import Alamofire
 import SwiftyJSON
 
+enum SpotifyQueryType: String {
+    case track  = "track"
+    case album  = "album"
+    case artist = "artist"
+}
+
 public struct SpotifyTrack {
     public var uri:    String
     public var name:   String
-    public var album:  String
-    public var artist: String
+    public var album:  SpotifyAlbum
+    public var artist: SpotifyArtist
+}
+
+public struct SpotifyAlbum {
+    public var uri:    String
+    public var name:   String
+}
+
+public struct SpotifyArtist {
+    public var uri:    String
+    public var name:   String
 }
 
 public class SwiftifyHelper {
@@ -45,8 +61,10 @@ public class SwiftifyHelper {
             for (_, item) : (String, JSON) in json["tracks"]["items"] {
                 tracks.append(SpotifyTrack(uri: item["uri"].stringValue,
                                            name: item["name"].stringValue,
-                                           album: item["album"]["name"].stringValue,
-                                           artist: item["artists"][0]["name"].stringValue))
+                                           album: SpotifyAlbum(uri: item["album"]["uri"].stringValue,
+                                                               name: item["album"]["name"].stringValue),
+                                           artist: SpotifyArtist(uri: item["artists"][0]["uri"].stringValue,
+                                                                 name: item["artists"][0]["name"].stringValue)))
             }
             
             completionHandler(tracks)
