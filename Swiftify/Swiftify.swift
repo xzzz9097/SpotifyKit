@@ -19,7 +19,7 @@ enum SpotifyQuery: String {
     }
 }
 
-public enum SpotifyQueryType: String {
+public enum SpotifySearchType: String {
     case track  = "track"
     case album  = "album"
     case artist = "artist"
@@ -77,7 +77,7 @@ public class SwiftifyHelper {
      - parameter completionHandler: the block to run when results
         are found and passed as parameter to it
      */
-    public func find(_ type: SpotifyQueryType, _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
+    public func find(_ type: SpotifySearchType, _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
         Alamofire.request(SpotifyQuery.search.url, method: .get, parameters: searchParameters(for: type, keyword)).responseJSON { response in
             guard let response = response.result.value else { return }
             
@@ -105,7 +105,7 @@ public class SwiftifyHelper {
     /**
      Builds search query parameters for an element on Spotify
      */
-    func searchParameters(for type: SpotifyQueryType, _ keyword: String) -> Parameters {
+    func searchParameters(for type: SpotifySearchType, _ keyword: String) -> Parameters {
         return ["q": keyword, "type": type.rawValue]
     }
     
