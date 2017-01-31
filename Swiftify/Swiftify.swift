@@ -11,6 +11,14 @@ import Cocoa
 import Alamofire
 import SwiftyJSON
 
+enum SpotifyQuery: String {
+    case search = "https://api.spotify.com/v1/search"
+    
+    public var url: URLConvertible {
+        return self.rawValue as URLConvertible
+    }
+}
+
 public enum SpotifyQueryType: String {
     case track  = "track"
     case album  = "album"
@@ -70,7 +78,7 @@ public class SwiftifyHelper {
         are found and passed as parameter to it
      */
     public func find(_ type: SpotifyQueryType, _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
-        Alamofire.request(searchQuery(for: type, keyword)).responseJSON { response in
+        Alamofire.request(SpotifyQuery.search.url, method: .get, parameters: searchParameters(for: type, keyword)).responseJSON { response in
             guard let response = response.result.value else { return }
             
             var results: [Any] = []
@@ -95,12 +103,10 @@ public class SwiftifyHelper {
     // MARK: Helper functions
     
     /**
-     Builds a search query URL for a track on Spotify
+     Builds search query parameters for an element on Spotify
      */
-    func searchQuery(for type: SpotifyQueryType, _ keyword: String) -> String {
-        let keyword = keyword.replacingOccurrences(of: " ", with: "+")
-        
-        return "https://api.spotify.com/v1/search?q=\(keyword))&type=\(type.rawValue)"
+    func searchParameters(for type: SpotifyQueryType, _ keyword: String) -> Parameters {
+        return ["q": keyword, "type": type.rawValue]
     }
     
 }
