@@ -11,7 +11,20 @@ import Cocoa
 import Alamofire
 import SwiftyJSON
 
-enum SpotifyQuery: String {
+/**
+ Parameter names for Spotify HTTP requests
+ */
+fileprivate extension String {
+    static let name = "q"
+    static let type = "type"
+}
+
+// MARK: Queries data types
+
+/**
+ URLs for Spotify HTTP queries
+ */
+fileprivate enum SpotifyQuery: String {
     case search = "https://api.spotify.com/v1/search"
     
     public var url: URLConvertible {
@@ -19,11 +32,16 @@ enum SpotifyQuery: String {
     }
 }
 
+/**
+ Item type for Spotify search query
+ */
 public enum SpotifySearchType: String {
     case track  = "track"
     case album  = "album"
     case artist = "artist"
 }
+
+// MARK: Items data types
 
 public struct SpotifyTrack {
     public var uri:    String
@@ -106,7 +124,7 @@ public class SwiftifyHelper {
      Builds search query parameters for an element on Spotify
      */
     func searchParameters(for type: SpotifySearchType, _ keyword: String) -> Parameters {
-        return ["q": keyword, "type": type.rawValue]
+        return [.name: keyword, .type: type.rawValue]
     }
     
 }
