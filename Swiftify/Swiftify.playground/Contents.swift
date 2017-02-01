@@ -38,6 +38,11 @@ let authorizationCode = ""
 if authorizationCode != "" {
     // Save the token
     swiftify.saveToken(from: authorizationCode)
+    
+    // Save the track
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
+        swiftify.save(trackId: "3C3cr2JQwXIhqAHqOardVO")
+    }
 } else {
     // Authorization
     swiftify.authorize()

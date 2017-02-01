@@ -30,6 +30,11 @@ fileprivate extension String {
     static let grantType    = "grant_type"
     static let code         = "code"
     static let refreshToken = "refresh_token"
+    
+    // User's library
+    static let authorization = "Authorization"
+    static let bearer        = "Bearer "
+    static let ids           = "ids"
 }
 
 // MARK: Queries data types
@@ -38,9 +43,15 @@ fileprivate extension String {
  URLs for Spotify HTTP queries
  */
 fileprivate enum SpotifyQuery: String {
+    // Search
     case search    = "https://api.spotify.com/v1/search"
+    
+    // Authentication
     case authorize = "https://accounts.spotify.com/authorize"
     case token     = "https://accounts.spotify.com/api/token"
+    
+    // User's library
+    case tracks    = "https://api.spotify.com/v1/me/tracks"
     
     public var url: URLConvertible {
         return self.rawValue as URLConvertible
@@ -71,12 +82,14 @@ public enum SpotifySearchType: String {
 // MARK: Items data types
 
 public struct SpotifyTrack {
+    public var id:     String
     public var uri:    String
     public var name:   String
     public var album:  SpotifyAlbum
     public var artist: SpotifyArtist
     
     init(from item: JSON) {
+        self.id     = item["id"].stringValue
         self.uri    = item["uri"].stringValue
         self.name   = item["name"].stringValue
         self.album  = SpotifyAlbum(from: item["album"])
@@ -224,6 +237,27 @@ public class SwiftifyHelper {
         }
     }
     
+    // MARK: User library interaction
+    
+    /**
+     Saves a track to user's "Your Music" library
+     - parameter trackId: the id of the track to save
+     */
+    public func save(trackId: String) {
+        guard let token = token else { return }
+        
+        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: saveTrackParameters(with: trackId), encoding: URLEncoding(destination: .queryString), headers: saveTrackHeaders(with: token)).responseJSON { response in
+        }
+    }
+    
+    /**
+     Saves a track to user's "Your Music" library
+     - parameter track: the 'SpotifyTrack' object to save
+     */
+    public func save(track: SpotifyTrack) {
+        save(trackId: track.uri)
+    }
+    
     // MARK: Helper functions
     
     /**
@@ -241,7 +275,7 @@ public class SwiftifyHelper {
         return [.clientId: application.clientId,
                 .responseType: SpotifyAuthorizationResponseType.code.rawValue,
                 .redirectUri: application.redirectUri,
-                .scope: "user-read-private user-read-email"]
+                .scope: "user-read-private user-read-email user-library-modify"]
     }
     
     /**
@@ -263,6 +297,14 @@ public class SwiftifyHelper {
     private func refreshTokenParameters(for application: SpotifyDeveloperApplication, from oldToken: SpotifyToken) -> Parameters {
         return [.grantType: SpotifyTokenGrantType.refreshToken.rawValue,
                 .refreshToken: oldToken.refreshToken]
+    }
+    
+    private func saveTrackHeaders(with token: SpotifyToken) -> HTTPHeaders {
+        return [.authorization: .bearer + token.accessToken]
+    }
+    
+    private func saveTrackParameters(with trackId: String) -> Parameters {
+        return [.ids: trackId]
     }
     
     /**
