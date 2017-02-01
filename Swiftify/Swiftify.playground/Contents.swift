@@ -3,17 +3,30 @@
 import Cocoa
 import PlaygroundSupport
 
+import SwiftyJSON
 import Swiftify
 
 // Enable infinite execution
 // So that we can get asynchronously the response
 PlaygroundPage.current.needsIndefiniteExecution = true
 
+/*
+ The JSON with app's configuration located in 'Resources/application.json'
+ Create it and fill it with your Spotify developer app registered data
+ {
+    "client_id": "your client id",
+    "client_secret": "your client secret key",
+    "redirect_uri": "your redirect uri"
+ }
+ */
+let json = try JSON(Data(contentsOf: Bundle.main.url(forResource: "application", withExtension: "json")!))
+
 // The registered Spotify developer application
-// Fill the args with your app's data
-let application = SwiftifyHelper.SpotifyDeveloperApplication(clientId: "",
-                                                             clientSecret: "",
-                                                             redirectUri: "")
+let application = SwiftifyHelper.SpotifyDeveloperApplication(
+    clientId:     json["client_id"].stringValue,
+    clientSecret: json["client_secret"].stringValue,
+    redirectUri:  json["redirect_uri"].stringValue)
+
 let swiftify = SwiftifyHelper(with: application)
 
 // MARK: Search demo
@@ -23,9 +36,9 @@ swiftify.find(.track, "holding you") { results in
     
     for track in tracks {
         print("URI: \(track.uri), " +
-            "Name: \(track.name), " +
-            "Artist: \(track.artist.name), " +
-            "Album: \(track.album.name)")
+              "Name: \(track.name), " +
+              "Artist: \(track.artist.name), " +
+              "Album: \(track.album.name)")
     }
 }
 
