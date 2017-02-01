@@ -9,41 +9,36 @@ import Swiftify
 // So that we can get asynchronously the response
 PlaygroundPage.current.needsIndefiniteExecution = true
 
-let swiftify = SwiftifyHelper.shared
+// The registered Spotify developer application
+// Fill the args with your app's data
+let application = SwiftifyHelper.SpotifyDeveloperApplication(clientId: "",
+                                                             clientSecret: "",
+                                                             redirectUri: "")
+let swiftify = SwiftifyHelper(with: application)
 
-// The search keyword
-var keyword = "holding you"
+// MARK: Search demo
 
-swiftify.find(.track, keyword) { results in
+swiftify.find(.track, "holding you") { results in
     guard let tracks = results as? [SpotifyTrack] else { return }
     
     for track in tracks {
         print("URI: \(track.uri), " +
-              "Name: \(track.name), " +
-              "Artist: \(track.artist.name), " +
-              "Album: \(track.album.name)")
+            "Name: \(track.name), " +
+            "Artist: \(track.artist.name), " +
+            "Album: \(track.album.name)")
     }
 }
 
-keyword = "vessels"
+// MARK: Authorization demo
 
-swiftify.find(.album, keyword) { results in
-    guard let albums = results as? [SpotifyAlbum] else { return }
-    
-    for album in albums {
-        print("URI: \(album.uri), " +
-              "Name: \(album.name), " +
-              "Artist: \(album.artist.name)")
-    }
-}
+// Fill this var with the string after 'code' in the webpage opened
+// after authorize()
+let authorizationCode = ""
 
-keyword = "the lost electric"
-
-swiftify.find(.artist, keyword) { results in
-    guard let artists = results as? [SpotifyArtist] else { return }
-    
-    for artist in artists {
-        print("URI: \(artist.uri), " +
-              "Name: \(artist.name)")
-    }
+if authorizationCode != "" {
+    // Save the token
+    swiftify.saveToken(from: authorizationCode)
+} else {
+    // Authorization
+    swiftify.authorize()
 }
