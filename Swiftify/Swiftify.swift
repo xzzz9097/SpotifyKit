@@ -52,6 +52,7 @@ fileprivate enum SpotifyQuery: String {
     
     // User's library
     case tracks    = "https://api.spotify.com/v1/me/tracks"
+    case contains  = "https://api.spotify.com/v1/me/tracks/contains"
     
     public var url: URLConvertible {
         return self.rawValue as URLConvertible
@@ -246,7 +247,7 @@ public class SwiftifyHelper {
     public func save(trackId: String) {
         guard let token = token else { return }
         
-        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: saveTrackParameters(with: trackId), encoding: URLEncoding(destination: .queryString), headers: authorizationHeader(with: token)).responseJSON { response in
+        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: trackIdsParameters(for: trackId), encoding: URLEncoding(destination: .queryString), headers: authorizationHeader(with: token)).responseJSON { response in
         }
     }
     
@@ -255,7 +256,31 @@ public class SwiftifyHelper {
      - parameter track: the 'SpotifyTrack' object to save
      */
     public func save(track: SpotifyTrack) {
-        save(trackId: track.uri)
+        save(trackId: track.id)
+    }
+    
+    /**
+     Checks if a track is saved into user's "Your Music" library
+     - parameter track: the id of the track to check
+     - parameter
+     */
+    public func isSaved(trackId: String, completionHandler: @escaping (Bool) -> Void) {
+        guard let token = token else { return }
+        
+        Alamofire.request(SpotifyQuery.contains.url, method: .get, parameters: trackIdsParameters(for: trackId), headers: authorizationHeader(with: token)).responseJSON { response in
+            guard let value = response.result.value else { return }
+            
+            // Sends the 'isSaved' value back to the completion handler
+            completionHandler(JSON(value)[0].boolValue)
+        }
+    }
+    
+    /**
+     Checks if a track is saved into user's "Your Music" library
+     - parameter track: the '"SpotifyTrack' object to check
+     */
+    public func isSaved(track: SpotifyTrack, completionHandler: @escaping (Bool) -> Void) {
+        isSaved(trackId: track.id, completionHandler: completionHandler)
     }
     
     // MARK: Helper functions
@@ -275,7 +300,7 @@ public class SwiftifyHelper {
         return [.clientId: application.clientId,
                 .responseType: SpotifyAuthorizationResponseType.code.rawValue,
                 .redirectUri: application.redirectUri,
-                .scope: "user-read-private user-read-email user-library-modify"]
+                .scope: "user-read-private user-read-email user-library-modify user-library-read"]
     }
     
     /**
@@ -311,7 +336,7 @@ public class SwiftifyHelper {
      Builds parameters for saving a track into user's library
      - return: parameters for track saving
      */
-    private func saveTrackParameters(with trackId: String) -> Parameters {
+    private func trackIdsParameters(for trackId: String) -> Parameters {
         return [.ids: trackId]
     }
     

@@ -56,6 +56,13 @@ if authorizationCode != "" {
     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
         swiftify.save(trackId: "3C3cr2JQwXIhqAHqOardVO")
     }
+    
+    // Check if the track is saved
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+        swiftify.isSaved(trackId: "3C3cr2JQwXIhqAHqOardVO") { saved in
+            print("Saved: \(saved)")
+        }
+    }
 } else {
     // Authorization
     swiftify.authorize()
