@@ -217,10 +217,10 @@ public class SwiftifyHelper {
     public func saveToken(from authorizationCode: String) {
         guard let application = application else { return }
         
-        Alamofire.request(SpotifyQuery.token.url, method: .post, parameters: tokenParameters(for: application, from: authorizationCode)).responseJSON { response in
-            self.token = self.generateToken(from: response)
-            
-            if let token = self.token { print(token.accessToken) }
+        Alamofire.request(SpotifyQuery.token.url, method: .post, parameters: tokenParameters(for: application, from: authorizationCode)).validate().responseJSON { response in
+            if response.result.isSuccess {
+                self.token = self.generateToken(from: response)
+            }
         }
     }
     
@@ -230,10 +230,10 @@ public class SwiftifyHelper {
     public func refreshToken() {
         guard let application = application, let token = self.token else { return }
         
-        Alamofire.request(SpotifyQuery.token.url, method: .post, parameters: refreshTokenParameters(for: application, from: token)).responseJSON { response in
-            self.token = self.generateToken(from: response)
-            
-            if let token = self.token { print(token.accessToken) }
+        Alamofire.request(SpotifyQuery.token.url, method: .post, parameters: refreshTokenParameters(for: application, from: token)).validate().responseJSON { response in
+            if response.result.isSuccess {
+                self.token = self.generateToken(from: response)
+            }
         }
     }
     
