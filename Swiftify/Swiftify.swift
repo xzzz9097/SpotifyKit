@@ -240,8 +240,6 @@ public class SwiftifyHelper {
      - parameters: the token data
      */
     public func saveToken(accessToken: String, expiresIn: Int, refreshToken: String, tokenType: String) {
-        print(accessToken)
-        
         self.token = SpotifyToken(accessToken: accessToken,
                                   expiresIn: expiresIn,
                                   refreshToken: refreshToken,
