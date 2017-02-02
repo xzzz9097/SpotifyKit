@@ -246,7 +246,7 @@ public class SwiftifyHelper {
     public func save(trackId: String) {
         guard let token = token else { return }
         
-        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: saveTrackParameters(with: trackId), encoding: URLEncoding(destination: .queryString), headers: saveTrackHeaders(with: token)).responseJSON { response in
+        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: saveTrackParameters(with: trackId), encoding: URLEncoding(destination: .queryString), headers: authorizationHeader(with: token)).responseJSON { response in
         }
     }
     
@@ -291,7 +291,7 @@ public class SwiftifyHelper {
     }
     
     /**
-     Builds token reshresh parameters
+     Builds token refresh parameters
      - return: parameters for token refresh
      */
     private func refreshTokenParameters(for application: SpotifyDeveloperApplication, from oldToken: SpotifyToken) -> Parameters {
@@ -299,10 +299,18 @@ public class SwiftifyHelper {
                 .refreshToken: oldToken.refreshToken]
     }
     
-    private func saveTrackHeaders(with token: SpotifyToken) -> HTTPHeaders {
+    /**
+     Builds the authorization header for user library interactions
+     - return: authorization header
+     */
+    private func authorizationHeader(with token: SpotifyToken) -> HTTPHeaders {
         return [.authorization: .bearer + token.accessToken]
     }
     
+    /**
+     Builds parameters for saving a track into user's library
+     - return: parameters for track saving
+     */
     private func saveTrackParameters(with trackId: String) -> Parameters {
         return [.ids: trackId]
     }
