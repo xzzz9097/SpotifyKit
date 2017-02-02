@@ -140,11 +140,18 @@ public class SwiftifyHelper {
         var refreshToken: String
         var tokenType:    String
         
+        init(accessToken: String, expiresIn: Int, refreshToken: String, tokenType: String) {
+            self.accessToken  = accessToken
+            self.expiresIn    = expiresIn
+            self.refreshToken = refreshToken
+            self.tokenType    = tokenType
+        }
+        
         init(from item: JSON) {
-            self.accessToken  = item["access_token"].stringValue
-            self.expiresIn    = item["expires_in"].intValue
-            self.refreshToken = item["refresh_token"].stringValue
-            self.tokenType    = item["token_type"].stringValue
+            self.init(accessToken:  item["access_token"].stringValue,
+                      expiresIn:    item["expires_in"].intValue,
+                      refreshToken: item["refresh_token"].stringValue,
+                      tokenType:    item["token_type"].stringValue)
         }
     }
     
@@ -221,8 +228,34 @@ public class SwiftifyHelper {
         Alamofire.request(SpotifyQuery.token.url, method: .post, parameters: tokenParameters(for: application, from: authorizationCode)).validate().responseJSON { response in
             if response.result.isSuccess {
                 self.token = self.generateToken(from: response)
+                
+                // Prints the token for debug
+                print(self.token)
             }
         }
+    }
+    
+    /**
+     Generates a token from values provided by the user
+     - parameters: the token data
+     */
+    public func saveToken(accessToken: String, expiresIn: Int, refreshToken: String, tokenType: String) {
+        print(accessToken)
+        
+        self.token = SpotifyToken(accessToken: accessToken,
+                                  expiresIn: expiresIn,
+                                  refreshToken: refreshToken,
+                                  tokenType: tokenType)
+        
+        // Prints the token for debug
+        print(self.token)
+    }
+    
+    /**
+     Returns if the helper is currently holding a token
+     */
+    public var hasToken: Bool {
+        return token != nil
     }
     
     /**
