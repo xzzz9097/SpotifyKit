@@ -85,20 +85,22 @@ if !shouldAuth {
     
     // Save the track
     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-        swiftify.save(trackId: "3C3cr2JQwXIhqAHqOardVO")
+        swiftify.save(trackId: "3C3cr2JQwXIhqAHqOardVO") { saved in
+            print("Saved: \(saved)")
+        }
     }
     
     // Check if the track is saved
     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-        swiftify.isSaved(trackId: "3C3cr2JQwXIhqAHqOardVO") { saved in
-            print("Saved: \(saved)")
+        swiftify.isSaved(trackId: "3C3cr2JQwXIhqAHqOardVO") { isSaved in
+            print("Is saved: \(isSaved)")
         }
     }
     
     // Delete the track
     DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-        swiftify.delete(trackId: "3C3cr2JQwXIhqAHqOardVO") { success in
-            print("Deleted: \(success)")
+        swiftify.delete(trackId: "3C3cr2JQwXIhqAHqOardVO") { deleted in
+            print("Deleted: \(deleted)")
         }
     }
 } else {

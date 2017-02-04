@@ -274,27 +274,32 @@ public class SwiftifyHelper {
     /**
      Saves a track to user's "Your Music" library
      - parameter trackId: the id of the track to save
+     - parameter completionHandler: the callback to execute after response,
+                                    brings the saving success as parameter
      */
-    public func save(trackId: String) {
+    public func save(trackId: String, completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
         
-        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: trackIdsParameters(for: trackId), encoding: URLEncoding(destination: .queryString), headers: authorizationHeader(with: token)).responseJSON { response in
+        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: trackIdsParameters(for: trackId), encoding: URLEncoding(destination: .queryString), headers: authorizationHeader(with: token)).validate().responseData { response in
+            completionHandler(response.result.isSuccess)
         }
     }
     
     /**
      Saves a track to user's "Your Music" library
      - parameter track: the 'SpotifyTrack' object to save
+     - parameter completionHandler: the callback to execute after response,
+                                    brings the saving success as parameter
      */
-    public func save(track: SpotifyTrack) {
-        save(trackId: track.id)
+    public func save(track: SpotifyTrack, completionHandler: @escaping (Bool) -> Void) {
+        save(trackId: track.id, completionHandler: completionHandler)
     }
     
     /**
      Deletes a track from user's "Your Music" library
      - parameter trackId: the id of the track to save
      - parameter completionHandler: the callback to execute after response,
-                                    brings the result success as parameter
+                                    brings the deletion success as parameter
      */
     public func delete(trackId: String, completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
@@ -308,7 +313,7 @@ public class SwiftifyHelper {
      Deletes a track from user's "Your Music" library
      - parameter track: the 'SpotifyTrack' object to save
      - parameter completionHandler: the callback to execute after response,
-     brings the result success as parameter
+                                    brings the deletion success as parameter
      */
     public func delete(track: SpotifyTrack, completionHandler: @escaping (Bool) -> Void) {
         delete(trackId: track.id, completionHandler: completionHandler)
