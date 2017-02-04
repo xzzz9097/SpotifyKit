@@ -14,7 +14,7 @@ import SwiftyJSON
 /**
  Parameter names for Spotify HTTP requests
  */
-fileprivate extension String {
+fileprivate struct SpotifyParameter {
     // Search
     static let name = "q"
     static let type = "type"
@@ -32,8 +32,15 @@ fileprivate extension String {
     static let refreshToken = "refresh_token"
     
     // User's library
+    static let ids          = "ids"
+}
+
+/**
+ Header names for Spotify HTTP requests
+ */
+fileprivate struct SpotifyHeader {
+    // Authorization
     static let authorization = "Authorization"
-    static let ids           = "ids"
 }
 
 // MARK: Queries data types
@@ -413,17 +420,18 @@ public class SwiftifyHelper {
      */
     private func searchParameters(for type: SpotifySearchType,
                                   _ keyword: String) -> Parameters {
-        return [.name: keyword, .type: type.rawValue]
+        return [SpotifyParameter.name: keyword,
+                SpotifyParameter.type: type.rawValue]
     }
     
     /**
      Builds authorization parameters
      */
     private func authorizationParameters(for application: SpotifyDeveloperApplication) -> Parameters {
-        return [.clientId: application.clientId,
-                .responseType: SpotifyAuthorizationResponseType.code.rawValue,
-                .redirectUri: application.redirectUri,
-                .scope: "user-read-private user-read-email user-library-modify user-library-read"]
+        return [SpotifyParameter.clientId: application.clientId,
+                SpotifyParameter.responseType: SpotifyAuthorizationResponseType.code.rawValue,
+                SpotifyParameter.redirectUri: application.redirectUri,
+                SpotifyParameter.scope: "user-read-private user-read-email user-library-modify user-library-read"]
     }
     
     /**
@@ -432,11 +440,11 @@ public class SwiftifyHelper {
      */
     private func tokenParameters(for application: SpotifyDeveloperApplication,
                                  from authorizationCode: String) -> Parameters {
-        return [.clientId: application.clientId,
-                .clientSecret: application.clientSecret,
-                .grantType: SpotifyTokenGrantType.authorizationCode.rawValue,
-                .code: authorizationCode,
-                .redirectUri: application.redirectUri]
+        return [SpotifyParameter.clientId: application.clientId,
+                SpotifyParameter.clientSecret: application.clientSecret,
+                SpotifyParameter.grantType: SpotifyTokenGrantType.authorizationCode.rawValue,
+                SpotifyParameter.code: authorizationCode,
+                SpotifyParameter.redirectUri: application.redirectUri]
     }
     
     /**
@@ -444,8 +452,8 @@ public class SwiftifyHelper {
      - return: parameters for token refresh
      */
     private func refreshTokenParameters(from oldToken: SpotifyToken) -> Parameters {
-        return [.grantType: SpotifyTokenGrantType.refreshToken.rawValue,
-                .refreshToken: oldToken.refreshToken]
+        return [SpotifyParameter.grantType: SpotifyTokenGrantType.refreshToken.rawValue,
+                SpotifyParameter.refreshToken: oldToken.refreshToken]
     }
     
     /**
@@ -463,8 +471,8 @@ public class SwiftifyHelper {
      - return: authorization header
      */
     private func authorizationHeader(with token: SpotifyToken) -> HTTPHeaders {
-        return [.authorization: SpotifyAuthorizationType.bearer.rawValue +
-                                token.accessToken]
+        return [SpotifyHeader.authorization: SpotifyAuthorizationType.bearer.rawValue +
+                                             token.accessToken]
     }
     
     /**
@@ -472,7 +480,7 @@ public class SwiftifyHelper {
      - return: parameters for track saving
      */
     private func trackIdsParameters(for trackId: String) -> Parameters {
-        return [.ids: trackId]
+        return [SpotifyParameter.ids: trackId]
     }
     
     /**
