@@ -94,6 +94,13 @@ if !shouldAuth {
             print("Saved: \(saved)")
         }
     }
+    
+    // Delete the track
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
+        swiftify.delete(trackId: "3C3cr2JQwXIhqAHqOardVO") { success in
+            print("Deleted: \(success)")
+        }
+    }
 } else {
     // Authorization
     swiftify.authorize()
