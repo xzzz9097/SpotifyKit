@@ -65,6 +65,34 @@ fileprivate enum SpotifyQuery: String {
     }
 }
 
+/**
+ Scopes (aka permissions) required by our app
+ during authorization phase
+ // TODO: test this more
+ */
+fileprivate enum SpotifyScope: String {
+    case readPrivate   = "user-read-private"
+    case readEmail     = "user-read-email"
+    case libraryModify = "user-library-modify"
+    case libraryRead   = "user-library-read"
+    
+    /**
+     Creates a string to pass as parameter value
+     with desired scope keys
+     */
+    static func string(with scopes: [SpotifyScope]) -> String {
+        var string = ""
+        
+        for scope in scopes {
+            // Add the selected scopes
+            string += "\(scope.rawValue) "
+        }
+        
+        // Delete last space character
+        return string.substring(to: string.index(before: string.endIndex))
+    }
+}
+
 fileprivate enum SpotifyAuthorizationResponseType: String {
     case code = "code"
 }
@@ -495,7 +523,7 @@ public class SwiftifyHelper {
         return [SpotifyParameter.clientId: application.clientId,
                 SpotifyParameter.responseType: SpotifyAuthorizationResponseType.code.rawValue,
                 SpotifyParameter.redirectUri: application.redirectUri,
-                SpotifyParameter.scope: "user-read-private user-read-email user-library-modify user-library-read"]
+                SpotifyParameter.scope: SpotifyScope.string(with: [.readPrivate, .readEmail, .libraryModify, .libraryRead])]
     }
     
     /**
