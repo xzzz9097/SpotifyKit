@@ -33,7 +33,6 @@ fileprivate extension String {
     
     // User's library
     static let authorization = "Authorization"
-    static let bearer        = "Bearer "
     static let ids           = "ids"
 }
 
@@ -61,6 +60,11 @@ fileprivate enum SpotifyQuery: String {
 
 fileprivate enum SpotifyAuthorizationResponseType: String {
     case code = "code"
+}
+
+fileprivate enum SpotifyAuthorizationType: String {
+    case basic  = "Basic "
+    case bearer = "Bearer "
 }
 
 /**
@@ -288,14 +292,16 @@ public class SwiftifyHelper {
     /**
      Refreshes the token when expired
      */
-    public func refreshToken() {
+    public func refreshToken(completionHandler: @escaping (Bool) -> Void) {
         guard let application = application, let token = self.token else { return }
         
         Alamofire.request(SpotifyQuery.token.url,
                           method: .post,
-                          parameters: refreshTokenParameters(for: application,
-                                                             from: token))
+                          parameters: refreshTokenParameters(from: token),
+                          headers: refreshTokenHeaders(for: application))
             .validate().responseJSON { response in
+            completionHandler(response.result.isSuccess)
+            
             if response.result.isSuccess {
                 self.token = self.generateToken(from: response)
             }
@@ -437,10 +443,19 @@ public class SwiftifyHelper {
      Builds token refresh parameters
      - return: parameters for token refresh
      */
-    private func refreshTokenParameters(for application: SpotifyDeveloperApplication,
-                                        from oldToken: SpotifyToken) -> Parameters {
+    private func refreshTokenParameters(from oldToken: SpotifyToken) -> Parameters {
         return [.grantType: SpotifyTokenGrantType.refreshToken.rawValue,
                 .refreshToken: oldToken.refreshToken]
+    }
+    
+    /**
+     Builds the authorization header for token refresh
+     - return: authorization header
+     */
+    private func refreshTokenHeaders(for application: SpotifyDeveloperApplication) -> HTTPHeaders {
+        guard let auth = Request.authorizationHeader(user: application.clientId, password: application.clientSecret) else { return [:] }
+        
+        return [auth.key: auth.value]
     }
     
     /**
@@ -448,7 +463,8 @@ public class SwiftifyHelper {
      - return: authorization header
      */
     private func authorizationHeader(with token: SpotifyToken) -> HTTPHeaders {
-        return [.authorization: .bearer + token.accessToken]
+        return [.authorization: SpotifyAuthorizationType.bearer.rawValue +
+                                token.accessToken]
     }
     
     /**

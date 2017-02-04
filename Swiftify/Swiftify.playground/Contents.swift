@@ -81,6 +81,10 @@ if !shouldAuth {
     // Save the token
     if !hasToken { swiftify.saveToken(from: authorizationCode) }
     
+    swiftify.refreshToken { refreshed in
+        print("Token refreshed: \(refreshed)")
+    }
+    
     // MARK: Library interaction demo
     
     // Save the track
