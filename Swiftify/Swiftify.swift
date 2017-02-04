@@ -173,6 +173,14 @@ public class SwiftifyHelper {
         }
         
         /**
+         Updates a token from a JSON, for instance after calling 'refreshToken',
+         when only a new 'accessToken' is provided
+         */
+        mutating func refresh(from item: JSON) {
+            accessToken = item["access_token"].stringValue
+        }
+        
+        /**
          Returns whether a token is expired basing on saving time,
          current time and provided duration limit
          */
@@ -319,7 +327,12 @@ public class SwiftifyHelper {
             completionHandler(response.result.isSuccess)
             
             if response.result.isSuccess {
-                self.token = self.generateToken(from: response)
+                guard let response = response.result.value else { return }
+                
+                // Refresh current token
+                // Only 'accessToken' needs to be changed
+                // guard is not really needed here because we checked before
+                self.token?.refresh(from: JSON(response))
                 
                 // Prints the token for debug
                 if let token = self.token { debugPrint(token.description) }
