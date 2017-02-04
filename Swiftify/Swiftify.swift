@@ -127,7 +127,9 @@ public class SwiftifyHelper {
         var clientSecret: String
         var redirectUri:  String
         
-        public init(clientId: String, clientSecret: String, redirectUri: String) {
+        public init(clientId:     String,
+                    clientSecret: String,
+                    redirectUri:  String) {
             self.clientId     = clientId
             self.clientSecret = clientSecret
             self.redirectUri  = redirectUri
@@ -141,7 +143,10 @@ public class SwiftifyHelper {
         var tokenType:    String
         var saveTime:     TimeInterval
         
-        init(accessToken: String, expiresIn: Int, refreshToken: String, tokenType: String) {
+        init(accessToken:  String,
+             expiresIn:    Int,
+             refreshToken: String,
+             tokenType:    String) {
             self.accessToken  = accessToken
             self.expiresIn    = expiresIn
             self.refreshToken = refreshToken
@@ -187,8 +192,12 @@ public class SwiftifyHelper {
      - parameter completionHandler: the block to run when results
         are found and passed as parameter to it
      */
-    public func find(_ type: SpotifySearchType, _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
-        Alamofire.request(SpotifyQuery.search.url, method: .get, parameters: searchParameters(for: type, keyword)).responseJSON { response in
+    public func find(_ type: SpotifySearchType,
+                     _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
+        Alamofire.request(SpotifyQuery.search.url,
+                          method: .get,
+                          parameters: searchParameters(for: type, keyword))
+            .responseJSON { response in
             guard let response = response.result.value else { return }
             
             var results: [Any] = []
@@ -221,7 +230,10 @@ public class SwiftifyHelper {
     public func authorize() {
         guard let application = application else { return }
         
-        Alamofire.request(SpotifyQuery.authorize.url, method: .get, parameters: authorizationParameters(for: application)).response { response in
+        Alamofire.request(SpotifyQuery.authorize.url,
+                          method: .get,
+                          parameters: authorizationParameters(for: application))
+            .response { response in
             if let request = response.request, let url = request.url {
                 NSWorkspace.shared().open(url)
             }
@@ -235,7 +247,11 @@ public class SwiftifyHelper {
     public func saveToken(from authorizationCode: String) {
         guard let application = application else { return }
         
-        Alamofire.request(SpotifyQuery.token.url, method: .post, parameters: tokenParameters(for: application, from: authorizationCode)).validate().responseJSON { response in
+        Alamofire.request(SpotifyQuery.token.url,
+                          method: .post,
+                          parameters: tokenParameters(for: application,
+                                                      from: authorizationCode))
+            .validate().responseJSON { response in
             if response.result.isSuccess {
                 self.token = self.generateToken(from: response)
                 
@@ -249,7 +265,10 @@ public class SwiftifyHelper {
      Generates a token from values provided by the user
      - parameters: the token data
      */
-    public func saveToken(accessToken: String, expiresIn: Int, refreshToken: String, tokenType: String) {
+    public func saveToken(accessToken:  String,
+                          expiresIn:    Int,
+                          refreshToken: String,
+                          tokenType:    String) {
         self.token = SpotifyToken(accessToken: accessToken,
                                   expiresIn: expiresIn,
                                   refreshToken: refreshToken,
@@ -272,7 +291,11 @@ public class SwiftifyHelper {
     public func refreshToken() {
         guard let application = application, let token = self.token else { return }
         
-        Alamofire.request(SpotifyQuery.token.url, method: .post, parameters: refreshTokenParameters(for: application, from: token)).validate().responseJSON { response in
+        Alamofire.request(SpotifyQuery.token.url,
+                          method: .post,
+                          parameters: refreshTokenParameters(for: application,
+                                                             from: token))
+            .validate().responseJSON { response in
             if response.result.isSuccess {
                 self.token = self.generateToken(from: response)
             }
@@ -287,10 +310,16 @@ public class SwiftifyHelper {
      - parameter completionHandler: the callback to execute after response,
                                     brings the saving success as parameter
      */
-    public func save(trackId: String, completionHandler: @escaping (Bool) -> Void) {
+    public func save(trackId: String,
+                     completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
         
-        Alamofire.request(SpotifyQuery.tracks.url, method: .put, parameters: trackIdsParameters(for: trackId), encoding: URLEncoding(destination: .queryString), headers: authorizationHeader(with: token)).validate().responseData { response in
+        Alamofire.request(SpotifyQuery.tracks.url,
+                          method: .put,
+                          parameters: trackIdsParameters(for: trackId),
+                          encoding: URLEncoding(destination: .queryString),
+                          headers: authorizationHeader(with: token))
+            .validate().responseData { response in
             completionHandler(response.result.isSuccess)
         }
     }
@@ -301,7 +330,8 @@ public class SwiftifyHelper {
      - parameter completionHandler: the callback to execute after response,
                                     brings the saving success as parameter
      */
-    public func save(track: SpotifyTrack, completionHandler: @escaping (Bool) -> Void) {
+    public func save(track: SpotifyTrack,
+                     completionHandler: @escaping (Bool) -> Void) {
         save(trackId: track.id, completionHandler: completionHandler)
     }
     
@@ -311,10 +341,16 @@ public class SwiftifyHelper {
      - parameter completionHandler: the callback to execute after response,
                                     brings the deletion success as parameter
      */
-    public func delete(trackId: String, completionHandler: @escaping (Bool) -> Void) {
+    public func delete(trackId: String,
+                       completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
         
-        Alamofire.request(SpotifyQuery.tracks.url, method: .delete, parameters: trackIdsParameters(for: trackId), encoding: URLEncoding(destination: .queryString), headers: authorizationHeader(with: token)).validate().responseData { response in
+        Alamofire.request(SpotifyQuery.tracks.url,
+                          method: .delete,
+                          parameters: trackIdsParameters(for: trackId),
+                          encoding: URLEncoding(destination: .queryString),
+                          headers: authorizationHeader(with: token))
+            .validate().responseData { response in
             completionHandler(response.result.isSuccess)
         }
     }
@@ -325,7 +361,8 @@ public class SwiftifyHelper {
      - parameter completionHandler: the callback to execute after response,
                                     brings the deletion success as parameter
      */
-    public func delete(track: SpotifyTrack, completionHandler: @escaping (Bool) -> Void) {
+    public func delete(track: SpotifyTrack,
+                       completionHandler: @escaping (Bool) -> Void) {
         delete(trackId: track.id, completionHandler: completionHandler)
     }
     
@@ -335,10 +372,15 @@ public class SwiftifyHelper {
      - parameter completionHandler: the callback to execute after response,
                                     brings 'isSaved' as parameter
      */
-    public func isSaved(trackId: String, completionHandler: @escaping (Bool) -> Void) {
+    public func isSaved(trackId: String,
+                        completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
         
-        Alamofire.request(SpotifyQuery.contains.url, method: .get, parameters: trackIdsParameters(for: trackId), headers: authorizationHeader(with: token)).responseJSON { response in
+        Alamofire.request(SpotifyQuery.contains.url,
+                          method: .get,
+                          parameters: trackIdsParameters(for: trackId),
+                          headers: authorizationHeader(with: token))
+            .responseJSON { response in
             guard let value = response.result.value else { return }
             
             // Sends the 'isSaved' value back to the completion handler
@@ -352,7 +394,8 @@ public class SwiftifyHelper {
      - parameter completionHandler: the callback to execute after response,
                                     brings 'isSaved' as parameter
      */
-    public func isSaved(track: SpotifyTrack, completionHandler: @escaping (Bool) -> Void) {
+    public func isSaved(track: SpotifyTrack,
+                        completionHandler: @escaping (Bool) -> Void) {
         isSaved(trackId: track.id, completionHandler: completionHandler)
     }
     
@@ -362,7 +405,8 @@ public class SwiftifyHelper {
      Builds search query parameters for an element on Spotify
      - return: searchquery parameters
      */
-    private func searchParameters(for type: SpotifySearchType, _ keyword: String) -> Parameters {
+    private func searchParameters(for type: SpotifySearchType,
+                                  _ keyword: String) -> Parameters {
         return [.name: keyword, .type: type.rawValue]
     }
     
@@ -380,7 +424,8 @@ public class SwiftifyHelper {
      Builds token parameters
      - return: parameters for token retrieval
      */
-    private func tokenParameters(for application: SpotifyDeveloperApplication, from authorizationCode: String) -> Parameters {
+    private func tokenParameters(for application: SpotifyDeveloperApplication,
+                                 from authorizationCode: String) -> Parameters {
         return [.clientId: application.clientId,
                 .clientSecret: application.clientSecret,
                 .grantType: SpotifyTokenGrantType.authorizationCode.rawValue,
@@ -392,7 +437,8 @@ public class SwiftifyHelper {
      Builds token refresh parameters
      - return: parameters for token refresh
      */
-    private func refreshTokenParameters(for application: SpotifyDeveloperApplication, from oldToken: SpotifyToken) -> Parameters {
+    private func refreshTokenParameters(for application: SpotifyDeveloperApplication,
+                                        from oldToken: SpotifyToken) -> Parameters {
         return [.grantType: SpotifyTokenGrantType.refreshToken.rawValue,
                 .refreshToken: oldToken.refreshToken]
     }
