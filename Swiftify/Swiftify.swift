@@ -317,7 +317,8 @@ public class SwiftifyHelper {
     /**
      Checks if a track is saved into user's "Your Music" library
      - parameter track: the id of the track to check
-     - parameter
+     - parameter completionHandler: the callback to execute after response,
+                                    brings 'isSaved' as parameter
      */
     public func isSaved(trackId: String, completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
@@ -332,7 +333,9 @@ public class SwiftifyHelper {
     
     /**
      Checks if a track is saved into user's "Your Music" library
-     - parameter track: the '"SpotifyTrack' object to check
+     - parameter track: the 'SpotifyTrack' object to check
+     - parameter completionHandler: the callback to execute after response,
+                                    brings 'isSaved' as parameter
      */
     public func isSaved(track: SpotifyTrack, completionHandler: @escaping (Bool) -> Void) {
         isSaved(trackId: track.id, completionHandler: completionHandler)
