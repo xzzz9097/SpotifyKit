@@ -179,6 +179,15 @@ public class SwiftifyHelper {
         var isExpired: Bool {
             return Date.timeIntervalSinceReferenceDate - saveTime > Double(expiresIn)
         }
+        
+        var description: NSString {
+            let description =   "Access token:  \(accessToken)\r\n" +
+                                "Expires in:    \(expiresIn)\r\n" +
+                                "Refresh token: \(refreshToken)\r\n" +
+                                "Token type:    \(tokenType)"
+            
+            return description as NSString
+        }
     }
     
     private var application: SpotifyDeveloperApplication?
@@ -267,7 +276,7 @@ public class SwiftifyHelper {
                 self.token = self.generateToken(from: response)
                 
                 // Prints the token for debug
-                print(self.token)
+                if let token = self.token { debugPrint(token.description) }
             }
         }
     }
@@ -286,7 +295,7 @@ public class SwiftifyHelper {
                                   tokenType: tokenType)
         
         // Prints the token for debug
-        print(self.token)
+        if let token = self.token { debugPrint(token.description) }
     }
     
     /**
@@ -311,6 +320,9 @@ public class SwiftifyHelper {
             
             if response.result.isSuccess {
                 self.token = self.generateToken(from: response)
+                
+                // Prints the token for debug
+                if let token = self.token { debugPrint(token.description) }
             }
         }
     }
