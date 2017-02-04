@@ -139,12 +139,14 @@ public class SwiftifyHelper {
         var expiresIn:    Int
         var refreshToken: String
         var tokenType:    String
+        var saveTime:     TimeInterval
         
         init(accessToken: String, expiresIn: Int, refreshToken: String, tokenType: String) {
             self.accessToken  = accessToken
             self.expiresIn    = expiresIn
             self.refreshToken = refreshToken
             self.tokenType    = tokenType
+            self.saveTime     = Date.timeIntervalSinceReferenceDate
         }
         
         init(from item: JSON) {
@@ -152,6 +154,14 @@ public class SwiftifyHelper {
                       expiresIn:    item["expires_in"].intValue,
                       refreshToken: item["refresh_token"].stringValue,
                       tokenType:    item["token_type"].stringValue)
+        }
+        
+        /**
+         Returns whether a token is expired basing on saving time,
+         current time and provided duration limit
+         */
+        var isExpired: Bool {
+            return Date.timeIntervalSinceReferenceDate - saveTime > Double(expiresIn)
         }
     }
     
