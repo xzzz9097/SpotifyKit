@@ -327,6 +327,19 @@ public class SwiftifyHelper {
                      completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
         
+        guard !token.isExpired else {
+            // If the token is expired, refresh it first
+            // Then try repeating the operation
+            refreshToken { refreshed in
+                if refreshed {
+                    self.save(trackId: trackId,
+                              completionHandler: completionHandler)
+                }
+            }
+            
+            return
+        }
+        
         Alamofire.request(SpotifyQuery.tracks.url,
                           method: .put,
                           parameters: trackIdsParameters(for: trackId),
@@ -358,6 +371,19 @@ public class SwiftifyHelper {
                        completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
         
+        guard !token.isExpired else {
+            // If the token is expired, refresh it first
+            // Then try repeating the operation
+            refreshToken { refreshed in
+                if refreshed {
+                    self.delete(trackId: trackId,
+                                completionHandler: completionHandler)
+                }
+            }
+            
+            return
+        }
+        
         Alamofire.request(SpotifyQuery.tracks.url,
                           method: .delete,
                           parameters: trackIdsParameters(for: trackId),
@@ -388,6 +414,19 @@ public class SwiftifyHelper {
     public func isSaved(trackId: String,
                         completionHandler: @escaping (Bool) -> Void) {
         guard let token = token else { return }
+        
+        guard !token.isExpired else {
+            // If the token is expired, refresh it first
+            // Then try repeating the operation
+            refreshToken { refreshed in
+                if refreshed {
+                    self.isSaved(trackId: trackId,
+                                 completionHandler: completionHandler)
+                }
+            }
+            
+            return
+        }
         
         Alamofire.request(SpotifyQuery.contains.url,
                           method: .get,
