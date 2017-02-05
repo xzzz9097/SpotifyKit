@@ -206,6 +206,7 @@ public class SwiftifyHelper {
          */
         mutating func refresh(from item: JSON) {
             accessToken = item["access_token"].stringValue
+            saveTime    = Date.timeIntervalSinceReferenceDate
         }
         
         /**
