@@ -59,6 +59,7 @@ fileprivate enum SpotifyQuery: String {
     // User's library
     case tracks    = "https://api.spotify.com/v1/me/tracks"
     case albums    = "https://api.spotify.com/v1/me/albums"
+    case playlists = "https://api.spotify.com/v1/me/playlists"
     case contains  = "https://api.spotify.com/v1/me/tracks/contains"
     
     public var url: URLConvertible {
@@ -115,9 +116,10 @@ fileprivate enum SpotifyTokenGrantType: String {
  Item type for Spotify search query
  */
 public enum SpotifyItemType: String {
-    case track  = "track"
-    case album  = "album"
-    case artist = "artist"
+    case track    = "track"
+    case album    = "album"
+    case artist   = "artist"
+    case playlist = "playlist"
 }
 
 // MARK: Items data types
@@ -147,6 +149,16 @@ public struct SpotifyAlbum {
         self.uri    = item["uri"].stringValue
         self.name   = item["name"].stringValue
         self.artist = SpotifyArtist(from: item["artists"][0])
+    }
+}
+
+public struct SpotifyPlaylist {
+    public var uri:  String
+    public var name: String
+    
+    init(from item: JSON) {
+        self.uri  = item["uri"].stringValue
+        self.name = item["name"].stringValue
     }
 }
 
@@ -251,7 +263,8 @@ public class SwiftifyHelper {
         are found and passed as parameter to it
      */
     public func find(_ type: SpotifyItemType,
-                     _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
+                     _ keyword: String,
+                     completionHandler: @escaping ([Any]) -> Void) {
         Alamofire.request(SpotifyQuery.search.url,
                           method: .get,
                           parameters: searchParameters(for: type, keyword))
@@ -270,6 +283,8 @@ public class SwiftifyHelper {
                     results.append(SpotifyAlbum(from: item))
                 case .artist:
                     results.append(SpotifyArtist(from: item))
+                case .playlist:
+                    results.append(SpotifyPlaylist(from: item))
                 }
             }
             
@@ -373,11 +388,11 @@ public class SwiftifyHelper {
     // MARK: User library interaction
     
     /**
-     Gets the first 20 saved tracks/albums in user's library
-     - parameter type: .track or .album
+     Gets the first saved tracks/albums/playlists in user's library
+     - parameter type: .track, .album or .playlist
      - parameter completionHandler: the callback to run, passes the tracks array
                                     as argument
-     // TODO: read more than 20 items
+     // TODO: read more than 20/10 items
      */
     public func library(_ type: SpotifyItemType,
                         completionHandler: @escaping ([Any]) -> Void) {
@@ -390,6 +405,8 @@ public class SwiftifyHelper {
             url = SpotifyQuery.tracks.url
         } else if type == .album {
             url = SpotifyQuery.albums.url
+        } else if type == .playlist {
+            url = SpotifyQuery.playlists.url
         } else {
             // Artists are not supported
             return
@@ -411,6 +428,8 @@ public class SwiftifyHelper {
                     results.append(SpotifyTrack(from: item[type.rawValue]))
                 case .album:
                     results.append(SpotifyAlbum(from: item[type.rawValue]))
+                case .playlist:
+                    results.append(SpotifyPlaylist(from: item))
                 default:
                     break
                 }

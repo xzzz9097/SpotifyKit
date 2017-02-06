@@ -108,16 +108,14 @@ if !shouldAuth {
         }
     }
     
-    // Print first 20 tracks from user library
-    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
-        swiftify.library(.track) { results in
-            guard let tracks = results as? [SpotifyTrack] else { return }
+    // Print first 10 playlists from user library
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(4)) {
+        swiftify.library(.playlist) { results in
+            guard let playlists = results as? [SpotifyPlaylist] else { return }
             
-            for track in tracks {
-                print("URI: \(track.uri), " +
-                    "Name: \(track.name), " +
-                    "Artist: \(track.artist.name), " +
-                    "Album: \(track.album.name)")
+            for playlist in playlists {
+                print("URI: \(playlist.uri), " +
+                      "Name: \(playlist.name)")
             }
         }
     }
