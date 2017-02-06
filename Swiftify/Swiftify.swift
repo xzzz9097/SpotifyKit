@@ -113,7 +113,7 @@ fileprivate enum SpotifyTokenGrantType: String {
 /**
  Item type for Spotify search query
  */
-public enum SpotifySearchType: String {
+public enum SpotifyItemType: String {
     case track  = "track"
     case album  = "album"
     case artist = "artist"
@@ -249,7 +249,7 @@ public class SwiftifyHelper {
      - parameter completionHandler: the block to run when results
         are found and passed as parameter to it
      */
-    public func find(_ type: SpotifySearchType,
+    public func find(_ type: SpotifyItemType,
                      _ keyword: String, completionHandler: @escaping ([Any]) -> Void) {
         Alamofire.request(SpotifyQuery.search.url,
                           method: .get,
@@ -511,7 +511,7 @@ public class SwiftifyHelper {
      Builds search query parameters for an element on Spotify
      - return: searchquery parameters
      */
-    private func searchParameters(for type: SpotifySearchType,
+    private func searchParameters(for type: SpotifyItemType,
                                   _ keyword: String) -> Parameters {
         return [SpotifyParameter.name: keyword,
                 SpotifyParameter.type: type.rawValue]
