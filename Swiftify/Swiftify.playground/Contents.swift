@@ -107,6 +107,20 @@ if !shouldAuth {
             print("Deleted: \(deleted)")
         }
     }
+    
+    // Print first 20 tracks from user library
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(3)) {
+        swiftify.library(.track) { results in
+            guard let tracks = results as? [SpotifyTrack] else { return }
+            
+            for track in tracks {
+                print("URI: \(track.uri), " +
+                    "Name: \(track.name), " +
+                    "Artist: \(track.artist.name), " +
+                    "Album: \(track.album.name)")
+            }
+        }
+    }
 } else {
     // Authorization
     swiftify.authorize()

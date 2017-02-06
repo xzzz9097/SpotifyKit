@@ -58,6 +58,7 @@ fileprivate enum SpotifyQuery: String {
     
     // User's library
     case tracks    = "https://api.spotify.com/v1/me/tracks"
+    case albums    = "https://api.spotify.com/v1/me/albums"
     case contains  = "https://api.spotify.com/v1/me/tracks/contains"
     
     public var url: URLConvertible {
@@ -370,6 +371,54 @@ public class SwiftifyHelper {
     }
     
     // MARK: User library interaction
+    
+    /**
+     Gets the first 20 saved tracks/albums in user's library
+     - parameter type: .track or .album
+     - parameter completionHandler: the callback to run, passes the tracks array
+                                    as argument
+     // TODO: read more than 20 items
+     */
+    public func library(_ type: SpotifyItemType,
+                        completionHandler: @escaping ([Any]) -> Void) {
+        guard let token = self.token else { return }
+        
+        var url: URLConvertible
+        
+        // Pick the correct URL for track or album
+        if type == .track {
+            url = SpotifyQuery.tracks.url
+        } else if type == .album {
+            url = SpotifyQuery.albums.url
+        } else {
+            // Artists are not supported
+            return
+        }
+        
+        Alamofire.request(url,
+                          method: .get,
+                          headers: authorizationHeader(with: token))
+            .responseJSON { response in
+            guard let response = response.result.value else { return }
+                
+            var results: [Any] = []
+                
+            let json = JSON(response)
+            
+            for (_, item) : (String, JSON) in json["items"] {
+                switch type {
+                case .track:
+                    results.append(SpotifyTrack(from: item[type.rawValue]))
+                case .album:
+                    results.append(SpotifyAlbum(from: item[type.rawValue]))
+                default:
+                    break
+                }
+            }
+                
+            completionHandler(results)
+        }
+    }
     
     /**
      Saves a track to user's "Your Music" library
