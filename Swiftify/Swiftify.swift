@@ -426,13 +426,14 @@ public class SwiftifyHelper {
         var url: URLConvertible
         
         // Pick the correct URL for track or album
-        if type == .track {
+        switch type {
+        case .track:
             url = SpotifyQuery.tracks.url
-        } else if type == .album {
+        case .album:
             url = SpotifyQuery.albums.url
-        } else if type == .playlist {
+        case .playlist:
             url = SpotifyQuery.playlists.url
-        } else {
+        default:
             // Artists are not supported
             return
         }
