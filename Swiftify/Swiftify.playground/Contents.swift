@@ -119,6 +119,24 @@ if !shouldAuth {
             }
         }
     }
+    
+    // Print tracks in an album
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+        swiftify.tracks(in: .album, "6akEvsycLGftJxYudPjmqK") { tracks in
+            for track in tracks {
+                print("Name: \(track.name)")
+            }
+        }
+    }
+    
+    // Print tracks in a playlist
+    DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(5)) {
+        swiftify.tracks(in: .playlist, "5FJXhjdILmRA2z5bvz4nzf", userId: "spotify") { tracks in
+            for track in tracks {
+                print("Name: \(track.name)")
+            }
+        }
+    }
 } else {
     // Authorization
     swiftify.authorize()
