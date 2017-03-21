@@ -212,10 +212,10 @@ public class SwiftifyHelper {
             self.redirectUri  = redirectUri
         }
         
-        public init(from json: JSON) {
-            self.clientId     = json["client_id"].stringValue
-            self.clientSecret = json["client_secret"].stringValue
-            self.redirectUri  = json["redirect_uri"].stringValue
+        public init(from item: JSON) {
+            self.clientId     = item["client_id"].stringValue
+            self.clientSecret = item["client_secret"].stringValue
+            self.redirectUri  = item["redirect_uri"].stringValue
         }
     }
     
@@ -273,7 +273,11 @@ public class SwiftifyHelper {
     
     private var application: SpotifyDeveloperApplication?
     
+    private var applicationJsonURL: URL?
+    
     private var token: SpotifyToken?
+    
+    private var tokenJsonURL: URL?
     
     // MARK: Constructors
     
@@ -285,12 +289,22 @@ public class SwiftifyHelper {
         self.application = application
     }
     
-    public init(with jsonURL: URL?) {
-        guard let url = jsonURL else { return }
-        
-        do {
-            try self.application = SpotifyDeveloperApplication(from: JSON(Data(contentsOf: url)))
-        } catch { }
+    public init(with applicationJsonURL: URL? = nil, _ tokenJsonURL: URL? = nil) {
+        if let applicationURL = applicationJsonURL {
+            do {
+                try self.application = SpotifyDeveloperApplication(from: JSON(Data(contentsOf: applicationURL)))
+                
+                self.applicationJsonURL = applicationURL
+            } catch { }
+        }
+            
+        if let tokenURL = tokenJsonURL {
+            do {
+                try self.token = SpotifyToken(from: JSON(Data(contentsOf: tokenURL)))
+                
+                self.tokenJsonURL = tokenURL
+            } catch { }
+        }
     }
     
     // MARK: Query functions

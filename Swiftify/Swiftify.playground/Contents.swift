@@ -23,8 +23,6 @@ PlaygroundPage.current.needsIndefiniteExecution = true
  */
 let applicationJsonURL = Bundle.main.url(forResource: "application", withExtension: "json")
 
-let swiftify = SwiftifyHelper(with: applicationJsonURL)
-
 // MARK: Import token data from JSON
 
 /*
@@ -40,13 +38,9 @@ let swiftify = SwiftifyHelper(with: applicationJsonURL)
 	"token_type": "your token type (usually Bearer)"
  }
  */
-// TODO: Check if JSON exists
-let tokenJson = try JSON(Data(contentsOf: Bundle.main.url(forResource: "token", withExtension: "json")!))
+let tokenJsonURL = Bundle.main.url(forResource: "token", withExtension: "json")
 
-swiftify.saveToken(accessToken:  tokenJson["access_token"].stringValue,
-                   expiresIn:    tokenJson["expires_in"].intValue,
-                   refreshToken: tokenJson["refresh_token"].stringValue,
-                   tokenType:    tokenJson["token_type"].stringValue)
+let swiftify = SwiftifyHelper(with: applicationJsonURL, tokenJsonURL)
 
 // MARK: Search demo
 
