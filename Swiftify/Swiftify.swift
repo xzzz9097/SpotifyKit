@@ -211,6 +211,12 @@ public class SwiftifyHelper {
             self.clientSecret = clientSecret
             self.redirectUri  = redirectUri
         }
+        
+        public init(from json: JSON) {
+            self.clientId     = json["client_id"].stringValue
+            self.clientSecret = json["client_secret"].stringValue
+            self.redirectUri  = json["redirect_uri"].stringValue
+        }
     }
     
     private struct SpotifyToken {
@@ -277,6 +283,14 @@ public class SwiftifyHelper {
     
     public init(with application: SpotifyDeveloperApplication) {
         self.application = application
+    }
+    
+    public init(with jsonURL: URL?) {
+        guard let url = jsonURL else { return }
+        
+        do {
+            try self.application = SpotifyDeveloperApplication(from: JSON(Data(contentsOf: url)))
+        } catch { }
     }
     
     // MARK: Query functions

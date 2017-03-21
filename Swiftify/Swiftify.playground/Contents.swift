@@ -21,15 +21,9 @@ PlaygroundPage.current.needsIndefiniteExecution = true
     "redirect_uri": "your redirect uri"
  }
  */
-let applicationJson = try JSON(Data(contentsOf: Bundle.main.url(forResource: "application", withExtension: "json")!))
+let applicationJsonURL = Bundle.main.url(forResource: "application", withExtension: "json")
 
-// The registered Spotify developer application
-let application = SwiftifyHelper.SpotifyDeveloperApplication(
-    clientId:     applicationJson["client_id"].stringValue,
-    clientSecret: applicationJson["client_secret"].stringValue,
-    redirectUri:  applicationJson["redirect_uri"].stringValue)
-
-let swiftify = SwiftifyHelper(with: application)
+let swiftify = SwiftifyHelper(with: applicationJsonURL)
 
 // MARK: Import token data from JSON
 
