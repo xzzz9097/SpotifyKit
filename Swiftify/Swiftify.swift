@@ -289,6 +289,16 @@ public class SwiftifyHelper {
             return Date.timeIntervalSinceReferenceDate - saveTime > Double(expiresIn)
         }
         
+        /**
+         Returns true if the token is valid (aka not blank)
+         */
+        var isValid: Bool {
+            return  self.accessToken  != "" &&
+                    self.expiresIn    != 0  &&
+                    self.refreshToken != "" &&
+                    self.tokenType    != ""
+        }
+        
         var description: NSString {
             let description =   "Access token:  \(accessToken)\r\n" +
                                 "Expires in:    \(expiresIn)\r\n" +
@@ -441,7 +451,10 @@ public class SwiftifyHelper {
      Returns if the helper is currently holding a token
      */
     public var hasToken: Bool {
-        return token != nil
+        guard let token = token else { return false }
+        
+        // Only return true if the token is actually valid
+        return token.isValid
     }
     
     /**
