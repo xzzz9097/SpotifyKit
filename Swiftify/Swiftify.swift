@@ -11,6 +11,15 @@ import Cocoa
 import Alamofire
 import SwiftyJSON
 
+// MARK: Token saving options
+
+enum TokenSavingMethod {
+    case file
+    case preference
+}
+
+// MARK: Spotify queries addresses
+
 /**
  Parameter names for Spotify HTTP requests
  */
@@ -228,6 +237,8 @@ public class SwiftifyHelper {
         var tokenType:    String
         var saveTime:     TimeInterval
         
+        static let preferenceKey = "spotifyToken"
+        
         init(accessToken:  String,
              expiresIn:    Int,
              refreshToken: String,
@@ -239,11 +250,28 @@ public class SwiftifyHelper {
             self.saveTime     = Date.timeIntervalSinceReferenceDate
         }
         
-        init(from item: JSON) {
-            self.init(accessToken:  item["access_token"].stringValue,
-                      expiresIn:    item["expires_in"].intValue,
-                      refreshToken: item["refresh_token"].stringValue,
-                      tokenType:    item["token_type"].stringValue)
+        init(from json: JSON) {
+            self.init(accessToken:  json["access_token"].stringValue,
+                      expiresIn:    json["expires_in"].intValue,
+                      refreshToken: json["refresh_token"].stringValue,
+                      tokenType:    json["token_type"].stringValue)
+        }
+        
+        init(from dictionary: [String: Any]) {
+            self.init(accessToken:  dictionary["access_token"] as? String ?? "",
+                      expiresIn:    dictionary["expires_in"] as? Int ?? 0,
+                      refreshToken: dictionary["refresh_token"] as? String ?? "",
+                      tokenType:    dictionary["token_type"] as? String ?? "")
+        }
+        
+        /**
+         Returns a dictionary representation suited for usage in preferences.
+         */
+        var dictionaryRepresentation: [String: Any] {
+            return ["access_token":  self.accessToken,
+                    "expires_in":    self.expiresIn,
+                    "refresh_token": self.refreshToken,
+                    "token_type":    self.tokenType]
         }
         
         /**
@@ -251,7 +279,7 @@ public class SwiftifyHelper {
          This allows to save new data when a new token is received.
          http://stackoverflow.com/questions/28768015/how-to-save-an-array-as-a-json-file-in-swift
          */
-        func write(to path: URL?) {
+        func writeJSON(to path: URL?) {
             guard let path = path else { return }
             
             do {
@@ -272,6 +300,25 @@ public class SwiftifyHelper {
             } catch {
                 // Item has not been updated
             }
+        }
+        
+        /**
+         Writes the contents of the token to a preference.
+         */
+        func writePreference() {
+            UserDefaults.standard.set(self.dictionaryRepresentation,
+                                      forKey: SpotifyToken.preferenceKey)
+        }
+        
+        /**
+         Loads the token object from a preference.
+         */
+        static func loadPreference() -> SpotifyToken? {
+            if let dictionaryRepresentation = UserDefaults.standard.value(forKey: preferenceKey) as? [String: Any] {
+                return self.init(from: dictionaryRepresentation)
+            }
+            
+            return nil
         }
         
         /**
@@ -313,6 +360,8 @@ public class SwiftifyHelper {
     
     private var application: SpotifyDeveloperApplication?
     
+    private var tokenSavingMethod: TokenSavingMethod = .preference
+    
     private var applicationJsonURL: URL?
     
     private var token: SpotifyToken?
@@ -327,6 +376,10 @@ public class SwiftifyHelper {
     
     public init(with application: SpotifyDeveloperApplication) {
         self.application = application
+        
+        if let token = SpotifyToken.loadPreference() {
+            self.token = token
+        }
     }
     
     public init(with applicationJsonURL: URL? = nil,
@@ -350,6 +403,12 @@ public class SwiftifyHelper {
                 try self.token = SpotifyToken(from: JSON(Data(contentsOf: tokenURL)))
             } catch { }
             self.tokenJsonURL = tokenURL
+            
+            // Set the proper toking saving method
+            // if a JSON file URL is available
+            self.tokenSavingMethod = .file
+        } else if let token = SpotifyToken.loadPreference() {
+            self.token = token
         }
     }
     
@@ -462,8 +521,13 @@ public class SwiftifyHelper {
                     if let token = self.token {
                         debugPrint(token.description)
                         
-                        // Save token to JSON file
-                        token.write(to: self.tokenJsonURL)
+                        switch self.tokenSavingMethod {
+                        case .file:
+                            // Save token to JSON file
+                            token.writeJSON(to: self.tokenJsonURL)
+                        case .preference:
+                            token.writePreference()
+                        }
                     }
                 }
         }
