@@ -414,6 +414,25 @@ public class SwiftifyHelper {
     
     // MARK: Query functions
     
+    private func tokenQuery(operation: @escaping (SpotifyToken) -> ()) {
+        guard let token = self.token else { return }
+        
+        guard !token.isExpired else {
+            // If the token is expired, refresh it first
+            // Then try repeating the operation
+            refreshToken { refreshed in
+                if refreshed {
+                    operation(token)
+                }
+            }
+            
+            return
+        }
+        
+        // Run the requested query operation
+        operation(token)
+    }
+    
     /**
      Finds tracks on Spotify that match a provided keyword
      - parameter track: the track name
@@ -423,45 +442,33 @@ public class SwiftifyHelper {
     public func find(_ type: SpotifyItemType,
                      _ keyword: String,
                      completionHandler: @escaping ([Any]) -> Void) {
-        guard let token = self.token else { return }
-        
-        guard !token.isExpired else {
-            // If the token is expired, refresh it first
-            // Then try repeating the operation
-            refreshToken { refreshed in
-                if refreshed {
-                    self.find(type, keyword, completionHandler: completionHandler)
-                }
-            }
-            
-            return
-        }
-        
-        Alamofire.request(SpotifyQuery.search.url,
-                          method: .get,
-                          parameters: searchParameters(for: type, keyword),
-                          headers: authorizationHeader(with: token))
-            .responseJSON { response in
-                guard let response = response.result.value else { return }
-                
-                var results: [Any] = []
-                
-                let json = JSON(response)
-                
-                for (_, item) : (String, JSON) in json[type.rawValue + "s"]["items"] {
-                    switch type {
-                    case .track:
-                        results.append(SpotifyTrack(from: item))
-                    case .album:
-                        results.append(SpotifyAlbum(from: item))
-                    case .artist:
-                        results.append(SpotifyArtist(from: item))
-                    case .playlist:
-                        results.append(SpotifyPlaylist(from: item))
+        tokenQuery { token in
+            Alamofire.request(SpotifyQuery.search.url,
+                              method: .get,
+                              parameters: self.searchParameters(for: type, keyword),
+                              headers: self.authorizationHeader(with: token))
+                .responseJSON { response in
+                    guard let response = response.result.value else { return }
+                    
+                    var results: [Any] = []
+                    
+                    let json = JSON(response)
+                    
+                    for (_, item) : (String, JSON) in json[type.rawValue + "s"]["items"] {
+                        switch type {
+                        case .track:
+                            results.append(SpotifyTrack(from: item))
+                        case .album:
+                            results.append(SpotifyAlbum(from: item))
+                        case .artist:
+                            results.append(SpotifyArtist(from: item))
+                        case .playlist:
+                            results.append(SpotifyPlaylist(from: item))
+                        }
                     }
-                }
-                
-                completionHandler(results)
+                    
+                    completionHandler(results)
+            }
         }
     }
     
@@ -598,47 +605,47 @@ public class SwiftifyHelper {
      */
     public func library(_ type: SpotifyItemType,
                         completionHandler: @escaping ([Any]) -> Void) {
-        guard let token = self.token else { return }
-        
-        var url: URLConvertible
-        
-        // Pick the correct URL for track or album
-        switch type {
-        case .track:
-            url = SpotifyQuery.tracks.url
-        case .album:
-            url = SpotifyQuery.albums.url
-        case .playlist:
-            url = SpotifyQuery.playlists.url
-        default:
-            // Artists are not supported
-            return
-        }
-        
-        Alamofire.request(url,
-                          method: .get,
-                          headers: authorizationHeader(with: token))
-            .responseJSON { response in
-                guard let response = response.result.value else { return }
-                
-                var results: [Any] = []
-                
-                let json = JSON(response)
-                
-                for (_, item) : (String, JSON) in json["items"] {
-                    switch type {
-                    case .track:
-                        results.append(SpotifyTrack(from: item[type.rawValue]))
-                    case .album:
-                        results.append(SpotifyAlbum(from: item[type.rawValue]))
-                    case .playlist:
-                        results.append(SpotifyPlaylist(from: item))
-                    default:
-                        break
+        tokenQuery { token in
+            var url: URLConvertible
+            
+            // Pick the correct URL for track or album
+            switch type {
+            case .track:
+                url = SpotifyQuery.tracks.url
+            case .album:
+                url = SpotifyQuery.albums.url
+            case .playlist:
+                url = SpotifyQuery.playlists.url
+            default:
+                // Artists are not supported
+                return
+            }
+            
+            Alamofire.request(url,
+                              method: .get,
+                              headers: self.authorizationHeader(with: token))
+                .responseJSON { response in
+                    guard let response = response.result.value else { return }
+                    
+                    var results: [Any] = []
+                    
+                    let json = JSON(response)
+                    
+                    for (_, item) : (String, JSON) in json["items"] {
+                        switch type {
+                        case .track:
+                            results.append(SpotifyTrack(from: item[type.rawValue]))
+                        case .album:
+                            results.append(SpotifyAlbum(from: item[type.rawValue]))
+                        case .playlist:
+                            results.append(SpotifyPlaylist(from: item))
+                        default:
+                            break
+                        }
                     }
-                }
-                
-                completionHandler(results)
+                    
+                    completionHandler(results)
+            }
         }
     }
     
@@ -687,28 +694,15 @@ public class SwiftifyHelper {
      */
     public func save(trackId: String,
                      completionHandler: @escaping (Bool) -> Void) {
-        guard let token = token else { return }
-        
-        guard !token.isExpired else {
-            // If the token is expired, refresh it first
-            // Then try repeating the operation
-            refreshToken { refreshed in
-                if refreshed {
-                    self.save(trackId: trackId,
-                              completionHandler: completionHandler)
-                }
+        tokenQuery { token in
+            Alamofire.request(SpotifyQuery.tracks.url,
+                              method: .put,
+                              parameters: self.trackIdsParameters(for: trackId),
+                              encoding: URLEncoding(destination: .queryString),
+                              headers: self.authorizationHeader(with: token))
+                .validate().responseData { response in
+                    completionHandler(response.result.isSuccess)
             }
-            
-            return
-        }
-        
-        Alamofire.request(SpotifyQuery.tracks.url,
-                          method: .put,
-                          parameters: trackIdsParameters(for: trackId),
-                          encoding: URLEncoding(destination: .queryString),
-                          headers: authorizationHeader(with: token))
-            .validate().responseData { response in
-                completionHandler(response.result.isSuccess)
         }
     }
     
@@ -731,28 +725,15 @@ public class SwiftifyHelper {
      */
     public func delete(trackId: String,
                        completionHandler: @escaping (Bool) -> Void) {
-        guard let token = token else { return }
-        
-        guard !token.isExpired else {
-            // If the token is expired, refresh it first
-            // Then try repeating the operation
-            refreshToken { refreshed in
-                if refreshed {
-                    self.delete(trackId: trackId,
-                                completionHandler: completionHandler)
-                }
+        tokenQuery { token in
+            Alamofire.request(SpotifyQuery.tracks.url,
+                              method: .delete,
+                              parameters: self.trackIdsParameters(for: trackId),
+                              encoding: URLEncoding(destination: .queryString),
+                              headers: self.authorizationHeader(with: token))
+                .validate().responseData { response in
+                    completionHandler(response.result.isSuccess)
             }
-            
-            return
-        }
-        
-        Alamofire.request(SpotifyQuery.tracks.url,
-                          method: .delete,
-                          parameters: trackIdsParameters(for: trackId),
-                          encoding: URLEncoding(destination: .queryString),
-                          headers: authorizationHeader(with: token))
-            .validate().responseData { response in
-                completionHandler(response.result.isSuccess)
         }
     }
     
@@ -775,30 +756,17 @@ public class SwiftifyHelper {
      */
     public func isSaved(trackId: String,
                         completionHandler: @escaping (Bool) -> Void) {
-        guard let token = token else { return }
-        
-        guard !token.isExpired else {
-            // If the token is expired, refresh it first
-            // Then try repeating the operation
-            refreshToken { refreshed in
-                if refreshed {
-                    self.isSaved(trackId: trackId,
-                                 completionHandler: completionHandler)
-                }
+        tokenQuery { token in
+            Alamofire.request(SpotifyQuery.contains.url,
+                              method: .get,
+                              parameters: self.trackIdsParameters(for: trackId),
+                              headers: self.authorizationHeader(with: token))
+                .responseJSON { response in
+                    guard let value = response.result.value else { return }
+                    
+                    // Sends the 'isSaved' value back to the completion handler
+                    completionHandler(JSON(value)[0].boolValue)
             }
-            
-            return
-        }
-        
-        Alamofire.request(SpotifyQuery.contains.url,
-                          method: .get,
-                          parameters: trackIdsParameters(for: trackId),
-                          headers: authorizationHeader(with: token))
-            .responseJSON { response in
-                guard let value = response.result.value else { return }
-                
-                // Sends the 'isSaved' value back to the completion handler
-                completionHandler(JSON(value)[0].boolValue)
         }
     }
     
