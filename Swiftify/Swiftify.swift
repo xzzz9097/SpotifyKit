@@ -163,12 +163,14 @@ public struct SpotifyAlbum {
     public var id:     String
     public var uri:    String
     public var name:   String
+    public var artUri: String
     public var artist: SpotifyArtist
     
     init(from item: JSON) {
         self.id     = item["id"].stringValue
         self.uri    = item["uri"].stringValue
         self.name   = item["name"].stringValue
+        self.artUri = item["images"][0]["url"].stringValue
         self.artist = SpotifyArtist(from: item["artists"][0])
     }
 }
@@ -255,13 +257,13 @@ public class SwiftifyHelper {
             do {
                 // Open the JSON file
                 var item = try JSON(Data(contentsOf: path))
-            
+                
                 // Update it
                 item["access_token"].stringValue  = self.accessToken
                 item["expires_in"].intValue       = self.expiresIn
                 item["refresh_token"].stringValue = self.refreshToken
                 item["token_type"].stringValue    = self.tokenType
-
+                
                 // Open the file stream for writing
                 let file = try FileHandle(forUpdating: path)
                 
@@ -294,16 +296,16 @@ public class SwiftifyHelper {
          */
         var isValid: Bool {
             return  self.accessToken  != "" &&
-                    self.expiresIn    != 0  &&
-                    self.refreshToken != "" &&
-                    self.tokenType    != ""
+                self.expiresIn    != 0  &&
+                self.refreshToken != "" &&
+                self.tokenType    != ""
         }
         
         var description: NSString {
             let description =   "Access token:  \(accessToken)\r\n" +
-                                "Expires in:    \(expiresIn)\r\n" +
-                                "Refresh token: \(refreshToken)\r\n" +
-                                "Token type:    \(tokenType)"
+                "Expires in:    \(expiresIn)\r\n" +
+                "Refresh token: \(refreshToken)\r\n" +
+            "Token type:    \(tokenType)"
             
             return description as NSString
         }
@@ -327,21 +329,27 @@ public class SwiftifyHelper {
         self.application = application
     }
     
-    public init(with applicationJsonURL: URL? = nil, _ tokenJsonURL: URL? = nil) {
+    public init(with applicationJsonURL: URL? = nil,
+                _ tokenJsonURL: URL?          = nil,
+                fallbackURL: URL?             = nil) {
         if let applicationURL = applicationJsonURL {
             do {
                 try self.application = SpotifyDeveloperApplication(from: JSON(Data(contentsOf: applicationURL)))
-                
-                self.applicationJsonURL = applicationURL
-            } catch { }
+            } catch {
+                if let applicationURL = fallbackURL {
+                    do {
+                        try self.application = SpotifyDeveloperApplication(from: JSON(Data(contentsOf: applicationURL)))
+                    } catch { }
+                }
+            }
+            self.applicationJsonURL = applicationURL
         }
-            
+        
         if let tokenURL = tokenJsonURL {
             do {
                 try self.token = SpotifyToken(from: JSON(Data(contentsOf: tokenURL)))
-                
-                self.tokenJsonURL = tokenURL
             } catch { }
+            self.tokenJsonURL = tokenURL
         }
     }
     
@@ -351,35 +359,66 @@ public class SwiftifyHelper {
      Finds tracks on Spotify that match a provided keyword
      - parameter track: the track name
      - parameter completionHandler: the block to run when results
-        are found and passed as parameter to it
+     are found and passed as parameter to it
      */
     public func find(_ type: SpotifyItemType,
                      _ keyword: String,
                      completionHandler: @escaping ([Any]) -> Void) {
-        Alamofire.request(SpotifyQuery.search.url,
-                          method: .get,
-                          parameters: searchParameters(for: type, keyword))
-            .responseJSON { response in
-            guard let response = response.result.value else { return }
-            
-            var results: [Any] = []
-         
-            let json = JSON(response)
-            
-            for (_, item) : (String, JSON) in json[type.rawValue + "s"]["items"] {
-                switch type {
-                case .track:
-                    results.append(SpotifyTrack(from: item))
-                case .album:
-                    results.append(SpotifyAlbum(from: item))
-                case .artist:
-                    results.append(SpotifyArtist(from: item))
-                case .playlist:
-                    results.append(SpotifyPlaylist(from: item))
+        guard let token = self.token else { return }
+        
+        guard !token.isExpired else {
+            // If the token is expired, refresh it first
+            // Then try repeating the operation
+            refreshToken { refreshed in
+                if refreshed {
+                    self.find(type, keyword, completionHandler: completionHandler)
                 }
             }
             
-            completionHandler(results)
+            return
+        }
+        
+        Alamofire.request(SpotifyQuery.search.url,
+                          method: .get,
+                          parameters: searchParameters(for: type, keyword),
+                          headers: authorizationHeader(with: token))
+            .responseJSON { response in
+                guard let response = response.result.value else { return }
+                
+                var results: [Any] = []
+                
+                let json = JSON(response)
+                
+                for (_, item) : (String, JSON) in json[type.rawValue + "s"]["items"] {
+                    switch type {
+                    case .track:
+                        results.append(SpotifyTrack(from: item))
+                    case .album:
+                        results.append(SpotifyAlbum(from: item))
+                    case .artist:
+                        results.append(SpotifyArtist(from: item))
+                    case .playlist:
+                        results.append(SpotifyPlaylist(from: item))
+                    }
+                }
+                
+                completionHandler(results)
+        }
+    }
+    
+    /**
+     Finds the first track on Spotify matching search results for
+     - parameter title: the title of the track
+     - parameter artist: the artist of the track
+     - parameter completionHandler: the handler that is executed with the track as parameter
+     */
+    func getTrack(title: String,
+                  artist: String,
+                  completionHandler: @escaping (SpotifyTrack) -> Void) {
+        find(.track, "\(title) \(artist)") { results in
+            if let track = results.first as? SpotifyTrack {
+                completionHandler(track)
+            }
         }
     }
     
@@ -388,8 +427,8 @@ public class SwiftifyHelper {
     /**
      Retrieves the authorization code with user interaction
      Note: this only opens the browser window with the proper request,
-           you then have to manually copy the 'code' from the opened url
-           and insert it to get the actual token
+     you then have to manually copy the 'code' from the opened url
+     and insert it to get the actual token
      */
     public func authorize() {
         guard let application = application else { return }
@@ -398,9 +437,9 @@ public class SwiftifyHelper {
                           method: .get,
                           parameters: authorizationParameters(for: application))
             .response { response in
-            if let request = response.request, let url = request.url {
-                NSWorkspace.shared().open(url)
-            }
+                if let request = response.request, let url = request.url {
+                    NSWorkspace.shared().open(url)
+                }
         }
     }
     
@@ -416,17 +455,17 @@ public class SwiftifyHelper {
                           parameters: tokenParameters(for: application,
                                                       from: authorizationCode))
             .validate().responseJSON { response in
-            if response.result.isSuccess {
-                self.token = self.generateToken(from: response)
-                
-                // Prints the token for debug
-                if let token = self.token {
-                    debugPrint(token.description)
+                if response.result.isSuccess {
+                    self.token = self.generateToken(from: response)
                     
-                    // Save token to JSON file
-                    token.write(to: self.tokenJsonURL)
+                    // Prints the token for debug
+                    if let token = self.token {
+                        debugPrint(token.description)
+                        
+                        // Save token to JSON file
+                        token.write(to: self.tokenJsonURL)
+                    }
                 }
-            }
         }
     }
     
@@ -468,19 +507,19 @@ public class SwiftifyHelper {
                           parameters: refreshTokenParameters(from: token),
                           headers: refreshTokenHeaders(for: application))
             .validate().responseJSON { response in
-            completionHandler(response.result.isSuccess)
-            
-            if response.result.isSuccess {
-                guard let response = response.result.value else { return }
+                completionHandler(response.result.isSuccess)
                 
-                // Refresh current token
-                // Only 'accessToken' needs to be changed
-                // guard is not really needed here because we checked before
-                self.token?.refresh(from: JSON(response))
-                
-                // Prints the token for debug
-                if let token = self.token { debugPrint(token.description) }
-            }
+                if response.result.isSuccess {
+                    guard let response = response.result.value else { return }
+                    
+                    // Refresh current token
+                    // Only 'accessToken' needs to be changed
+                    // guard is not really needed here because we checked before
+                    self.token?.refresh(from: JSON(response))
+                    
+                    // Prints the token for debug
+                    if let token = self.token { debugPrint(token.description) }
+                }
         }
     }
     
@@ -490,7 +529,7 @@ public class SwiftifyHelper {
      Gets the first saved tracks/albums/playlists in user's library
      - parameter type: .track, .album or .playlist
      - parameter completionHandler: the callback to run, passes the tracks array
-                                    as argument
+     as argument
      // TODO: read more than 20/10 items
      */
     public func library(_ type: SpotifyItemType,
@@ -516,26 +555,26 @@ public class SwiftifyHelper {
                           method: .get,
                           headers: authorizationHeader(with: token))
             .responseJSON { response in
-            guard let response = response.result.value else { return }
+                guard let response = response.result.value else { return }
                 
-            var results: [Any] = []
+                var results: [Any] = []
                 
-            let json = JSON(response)
-            
-            for (_, item) : (String, JSON) in json["items"] {
-                switch type {
-                case .track:
-                    results.append(SpotifyTrack(from: item[type.rawValue]))
-                case .album:
-                    results.append(SpotifyAlbum(from: item[type.rawValue]))
-                case .playlist:
-                    results.append(SpotifyPlaylist(from: item))
-                default:
-                    break
+                let json = JSON(response)
+                
+                for (_, item) : (String, JSON) in json["items"] {
+                    switch type {
+                    case .track:
+                        results.append(SpotifyTrack(from: item[type.rawValue]))
+                    case .album:
+                        results.append(SpotifyAlbum(from: item[type.rawValue]))
+                    case .playlist:
+                        results.append(SpotifyPlaylist(from: item))
+                    default:
+                        break
+                    }
                 }
-            }
                 
-            completionHandler(results)
+                completionHandler(results)
         }
     }
     
@@ -580,7 +619,7 @@ public class SwiftifyHelper {
      Saves a track to user's "Your Music" library
      - parameter trackId: the id of the track to save
      - parameter completionHandler: the callback to execute after response,
-                                    brings the saving success as parameter
+     brings the saving success as parameter
      */
     public func save(trackId: String,
                      completionHandler: @escaping (Bool) -> Void) {
@@ -605,7 +644,7 @@ public class SwiftifyHelper {
                           encoding: URLEncoding(destination: .queryString),
                           headers: authorizationHeader(with: token))
             .validate().responseData { response in
-            completionHandler(response.result.isSuccess)
+                completionHandler(response.result.isSuccess)
         }
     }
     
@@ -613,7 +652,7 @@ public class SwiftifyHelper {
      Saves a track to user's "Your Music" library
      - parameter track: the 'SpotifyTrack' object to save
      - parameter completionHandler: the callback to execute after response,
-                                    brings the saving success as parameter
+     brings the saving success as parameter
      */
     public func save(track: SpotifyTrack,
                      completionHandler: @escaping (Bool) -> Void) {
@@ -624,7 +663,7 @@ public class SwiftifyHelper {
      Deletes a track from user's "Your Music" library
      - parameter trackId: the id of the track to save
      - parameter completionHandler: the callback to execute after response,
-                                    brings the deletion success as parameter
+     brings the deletion success as parameter
      */
     public func delete(trackId: String,
                        completionHandler: @escaping (Bool) -> Void) {
@@ -649,7 +688,7 @@ public class SwiftifyHelper {
                           encoding: URLEncoding(destination: .queryString),
                           headers: authorizationHeader(with: token))
             .validate().responseData { response in
-            completionHandler(response.result.isSuccess)
+                completionHandler(response.result.isSuccess)
         }
     }
     
@@ -657,7 +696,7 @@ public class SwiftifyHelper {
      Deletes a track from user's "Your Music" library
      - parameter track: the 'SpotifyTrack' object to save
      - parameter completionHandler: the callback to execute after response,
-                                    brings the deletion success as parameter
+     brings the deletion success as parameter
      */
     public func delete(track: SpotifyTrack,
                        completionHandler: @escaping (Bool) -> Void) {
@@ -668,7 +707,7 @@ public class SwiftifyHelper {
      Checks if a track is saved into user's "Your Music" library
      - parameter track: the id of the track to check
      - parameter completionHandler: the callback to execute after response,
-                                    brings 'isSaved' as parameter
+     brings 'isSaved' as parameter
      */
     public func isSaved(trackId: String,
                         completionHandler: @escaping (Bool) -> Void) {
@@ -692,10 +731,10 @@ public class SwiftifyHelper {
                           parameters: trackIdsParameters(for: trackId),
                           headers: authorizationHeader(with: token))
             .responseJSON { response in
-            guard let value = response.result.value else { return }
-            
-            // Sends the 'isSaved' value back to the completion handler
-            completionHandler(JSON(value)[0].boolValue)
+                guard let value = response.result.value else { return }
+                
+                // Sends the 'isSaved' value back to the completion handler
+                completionHandler(JSON(value)[0].boolValue)
         }
     }
     
@@ -703,7 +742,7 @@ public class SwiftifyHelper {
      Checks if a track is saved into user's "Your Music" library
      - parameter track: the 'SpotifyTrack' object to check
      - parameter completionHandler: the callback to execute after response,
-                                    brings 'isSaved' as parameter
+     brings 'isSaved' as parameter
      */
     public func isSaved(track: SpotifyTrack,
                         completionHandler: @escaping (Bool) -> Void) {
@@ -770,7 +809,7 @@ public class SwiftifyHelper {
      */
     private func authorizationHeader(with token: SpotifyToken) -> HTTPHeaders {
         return [SpotifyHeader.authorization: SpotifyAuthorizationType.bearer.rawValue +
-                                             token.accessToken]
+            token.accessToken]
     }
     
     /**
