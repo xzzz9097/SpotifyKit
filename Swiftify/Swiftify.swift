@@ -504,7 +504,7 @@ public class SwiftifyHelper {
                           parameters: authorizationParameters(for: application))
             .response { response in
                 if let request = response.request, let url = request.url {
-                    NSWorkspace.shared().open(url)
+                    NSWorkspace.shared.open(url)
                 }
         }
     }
