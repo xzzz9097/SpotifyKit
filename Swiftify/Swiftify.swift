@@ -119,7 +119,7 @@ fileprivate enum SpotifyScope: String {
         }
         
         // Delete last space character
-        return string.substring(to: string.index(before: string.endIndex))
+        return String(string[..<string.index(before: string.endIndex)])
     }
 }
 
