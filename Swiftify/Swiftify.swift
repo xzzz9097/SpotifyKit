@@ -152,12 +152,23 @@ public enum SpotifyItemType: String {
 
 // MARK: Items data types
 
-public struct SpotifyTrack {
+public struct SpotifyTrack: Decodable {
     public var id:     String
     public var uri:    String
     public var name:   String
     public var album:  SpotifyAlbum
-    public var artist: SpotifyArtist
+    
+    var artists = [SpotifyArtist]()
+    
+    public var artist: SpotifyArtist {
+        set {
+            artists = [newValue]
+        }
+        
+        get {
+            return artists.first!
+        }
+    }
     
     init(from item: JSON) {
         self.id     = item["id"].stringValue
@@ -168,12 +179,37 @@ public struct SpotifyTrack {
     }
 }
 
-public struct SpotifyAlbum {
+public struct SpotifyAlbum: Decodable {
+    struct Image: Decodable {
+        var url: String
+    }
+    
     public var id:     String
     public var uri:    String
     public var name:   String
-    public var artUri: String
-    public var artist: SpotifyArtist
+    
+    var images  = [Image]()
+    var artists = [SpotifyArtist]()
+    
+    public var artist: SpotifyArtist {
+        set {
+            artists = [newValue]
+        }
+        
+        get {
+            return artists.first!
+        }
+    }
+    
+    public var artUri: String {
+        set {
+            images = [Image(url: newValue)]
+        }
+        
+        get {
+            return images.first!.url
+        }
+    }
     
     init(from item: JSON) {
         self.id     = item["id"].stringValue
