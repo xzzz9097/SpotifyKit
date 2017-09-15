@@ -244,6 +244,38 @@ public struct SpotifyArtist: Decodable {
     }
 }
 
+public struct SpotifyFindResponse<T: Decodable> {
+    public struct Results: Decodable {
+        public var items: [T]
+    }
+    
+    public var type: Results
+}
+
+extension SpotifyFindResponse: Decodable {
+    enum Keys: String, CodingKey {
+        case artists, tracks, albums, playlists
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Keys.self)
+        
+        var results = Results(items: [])
+        
+        if let artists = try? container.decode(Results.self, forKey: .artists) {
+            results = artists
+        } else if let tracks = try? container.decode(Results.self, forKey: .tracks) {
+            results = tracks
+        } else if let albums = try? container.decode(Results.self, forKey: .albums) {
+            results = albums
+        } else if let playlists = try? container.decode(Results.self, forKey: .playlists) {
+            results = playlists
+        }
+        
+        self.init(type: results)
+    }
+}
+
 public class SwiftifyHelper {
     
     public struct SpotifyDeveloperApplication {
