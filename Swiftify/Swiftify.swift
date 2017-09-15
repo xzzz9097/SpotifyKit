@@ -249,7 +249,7 @@ public struct SpotifyFindResponse<T: Decodable> {
         public var items: [T]
     }
     
-    public var type: Results
+    public var results: Results
 }
 
 extension SpotifyFindResponse: Decodable {
@@ -272,7 +272,7 @@ extension SpotifyFindResponse: Decodable {
             results = playlists
         }
         
-        self.init(type: results)
+        self.init(results: results)
     }
 }
 

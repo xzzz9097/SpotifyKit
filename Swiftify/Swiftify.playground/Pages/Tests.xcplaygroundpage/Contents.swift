@@ -12,7 +12,7 @@ let track = try JSONDecoder().decode(SpotifyTrack.self, from: sampleResponses[.t
 func parseFindResponse<T: Decodable>(data: Data) -> [T]? {
     let parsed = try? JSONDecoder().decode(SpotifyFindResponse<T>.self, from: data)
     
-    return parsed?.type.items
+    return parsed?.results.items
 }
 
 let artists: [SpotifyArtist]? = parseFindResponse(data: sampleResponses[.findArtist]!)
