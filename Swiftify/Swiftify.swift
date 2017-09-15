@@ -184,7 +184,7 @@ public struct SpotifyAlbum {
     }
 }
 
-public struct SpotifyPlaylist {
+public struct SpotifyPlaylist: Decodable {
     public var id:   String
     public var uri:  String
     public var name: String
@@ -196,7 +196,7 @@ public struct SpotifyPlaylist {
     }
 }
 
-public struct SpotifyArtist {
+public struct SpotifyArtist: Decodable {
     public var id:     String
     public var uri:    String
     public var name:   String
