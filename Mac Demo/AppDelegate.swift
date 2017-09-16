@@ -28,7 +28,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         loadSwiftify()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
-            self.find(.track, "concrete heartbeat")
+            self.find(SpotifyTrack.self, "concrete heartbeat")
         }
     }
     
@@ -76,7 +76,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: Swiftify features implementation
     
-    func find(_ type: SpotifyItemType, _ keyword: String) {
+    func find<T>(_ type: T.Type, _ keyword: String) where T: SpotifyItem {
         swiftify.find(type, keyword) { result in
             print(result)
         }
