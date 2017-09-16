@@ -8,13 +8,30 @@
 import Foundation
 import SwiftyJSON
 
+/**
+ Item type for Spotify search query
+ */
+public enum SpotifyItemType: String {
+    case track, album, artist, playlist
+}
+
 // MARK: Items data types
 
-public struct SpotifyTrack: Decodable {
+public protocol SpotifyItem: Decodable {
+    var id:     String { set get }
+    var uri:    String { set get }
+    var name:   String { set get }
+    
+    static var type:   SpotifyItemType { get }
+}
+
+public struct SpotifyTrack: SpotifyItem {
     public var id:     String
     public var uri:    String
     public var name:   String
     public var album:  SpotifyAlbum
+    
+    public static let type: SpotifyItemType = .track
     
     var artists = [SpotifyArtist]()
     
@@ -37,7 +54,7 @@ public struct SpotifyTrack: Decodable {
     }
 }
 
-public struct SpotifyAlbum: Decodable {
+public struct SpotifyAlbum: SpotifyItem {
     struct Image: Decodable {
         var url: String
     }
@@ -45,6 +62,8 @@ public struct SpotifyAlbum: Decodable {
     public var id:     String
     public var uri:    String
     public var name:   String
+    
+    public static let type: SpotifyItemType = .album
     
     var images  = [Image]()
     var artists = [SpotifyArtist]()
@@ -78,22 +97,12 @@ public struct SpotifyAlbum: Decodable {
     }
 }
 
-public struct SpotifyPlaylist: Decodable {
+public struct SpotifyPlaylist: SpotifyItem {
     public var id:   String
     public var uri:  String
     public var name: String
     
-    init(from item: JSON) {
-        self.id   = item["id"].stringValue
-        self.uri  = item["uri"].stringValue
-        self.name = item["name"].stringValue
-    }
-}
-
-public struct SpotifyArtist: Decodable {
-    public var id:     String
-    public var uri:    String
-    public var name:   String
+    public static let type: SpotifyItemType = .playlist
     
     init(from item: JSON) {
         self.id     = item["id"].stringValue
@@ -102,7 +111,21 @@ public struct SpotifyArtist: Decodable {
     }
 }
 
-public struct SpotifyFindResponse<T: Decodable> {
+public struct SpotifyArtist: SpotifyItem {
+    public var id:     String
+    public var uri:    String
+    public var name:   String
+    
+    public static let type: SpotifyItemType = .artist
+    
+    init(from item: JSON) {
+        self.id     = item["id"].stringValue
+        self.uri    = item["uri"].stringValue
+        self.name   = item["name"].stringValue
+    }
+}
+
+public struct SpotifyFindResponse<T: SpotifyItem> {
     public struct Results: Decodable {
         public var items: [T]
     }
