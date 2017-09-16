@@ -3,12 +3,17 @@
 
 source 'https://github.com/CocoaPods/Specs.git'
 
-target 'Swiftify' do
-  # Comment this line if you're not using Swift and don't want to use dynamic frameworks
-  use_frameworks!
+use_frameworks!
 
-  # Pods for Swiftify
-  pod 'Alamofire', '~> 4.3'
+def pods
+  pod 'Alamofire', '~> 4.5'
   pod 'SwiftyJSON'
+end
 
+target 'Swiftify' do
+  pods
+end
+
+target 'Mac Demo' do
+  pods
 end
