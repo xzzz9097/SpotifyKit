@@ -140,16 +140,6 @@ fileprivate enum SpotifyTokenGrantType: String {
     case refreshToken      = "refresh_token"
 }
 
-/**
- Item type for Spotify search query
- */
-public enum SpotifyItemType: String {
-    case track    = "track"
-    case album    = "album"
-    case artist   = "artist"
-    case playlist = "playlist"
-}
-
 // MARK: Helper class
 
 public class SwiftifyHelper {
@@ -378,42 +368,28 @@ public class SwiftifyHelper {
     }
     
     /**
-     Finds tracks on Spotify that match a provided keyword
-     - parameter track: the track name
+     Finds items on Spotify that match a provided keyword
+     - parameter what: the type of the item ('SpotifyTrack', 'SpotifyAlbum'...)
+     - parameter keyword: the item name
      - parameter completionHandler: the block to run when results
      are found and passed as parameter to it
      */
-    public func find(_ type: SpotifyItemType,
-                     _ keyword: String,
-                     completionHandler: @escaping ([Any]) -> Void) {
+    public func find<T>(_ what: T.Type,
+                        _ keyword: String,
+                        completionHandler: @escaping ([T]) -> Void) where T: SpotifyItem {
         tokenQuery { token in
             Alamofire.request(SpotifyQuery.search.url,
                               method: .get,
-                              parameters: self.searchParameters(for: type, keyword),
+                              parameters: self.searchParameters(for: what.type, keyword),
                               headers: self.authorizationHeader(with: token))
                 .responseJSON { response in
                     guard let data = response.data else { return }
                     
-                    var results: [Any] = []
-                    
-                    var parsedResults: [Any]?
-                    
-                    switch type {
-                    case .track:
-                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyTrack>.self, from: data).results.items
-                    case .album:
-                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyAlbum>.self, from: data).results.items
-                    case .playlist:
-                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyPlaylist>.self, from: data).results.items
-                    case .artist:
-                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyArtist>.self, from: data).results.items
-                    }
+                    let parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<T>.self, from: data).results.items
                     
                     if let parsedResults = parsedResults {
-                        results.append(parsedResults)
+                        completionHandler(parsedResults)
                     }
-                    
-                    completionHandler(results)
             }
         }
     }
@@ -427,8 +403,8 @@ public class SwiftifyHelper {
     func getTrack(title: String,
                   artist: String,
                   completionHandler: @escaping (SpotifyTrack) -> Void) {
-        find(.track, "\(title) \(artist)") { results in
-            if let track = results.first as? SpotifyTrack {
+        find(SpotifyTrack.self, "\(title) \(artist)") { results in
+            if let track = results.first {
                 completionHandler(track)
             }
         }
