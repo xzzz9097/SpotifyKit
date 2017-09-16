@@ -35,18 +35,18 @@ public enum SpotifyItemType: String {
 // MARK: Items data types
 
 public protocol SpotifyItem: Decodable {
-    var id:     String { set get }
-    var uri:    String { set get }
-    var name:   String { set get }
+    var id:   String { set get }
+    var uri:  String { set get }
+    var name: String { set get }
     
-    static var type:   SpotifyItemType { get }
+    static var type: SpotifyItemType { get }
 }
 
 public struct SpotifyTrack: SpotifyItem {
-    public var id:     String
-    public var uri:    String
-    public var name:   String
-    public var album:  SpotifyAlbum
+    public var id:    String
+    public var uri:   String
+    public var name:  String
+    public var album: SpotifyAlbum
     
     public static let type: SpotifyItemType = .track
     
@@ -76,9 +76,9 @@ public struct SpotifyAlbum: SpotifyItem {
         var url: String
     }
     
-    public var id:     String
-    public var uri:    String
-    public var name:   String
+    public var id:   String
+    public var uri:  String
+    public var name: String
     
     public static let type: SpotifyItemType = .album
     
@@ -129,9 +129,9 @@ public struct SpotifyPlaylist: SpotifyItem {
 }
 
 public struct SpotifyArtist: SpotifyItem {
-    public var id:     String
-    public var uri:    String
-    public var name:   String
+    public var id:   String
+    public var uri:  String
+    public var name: String
     
     public static let type: SpotifyItemType = .artist
     
