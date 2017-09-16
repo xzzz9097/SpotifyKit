@@ -392,23 +392,25 @@ public class SwiftifyHelper {
                               parameters: self.searchParameters(for: type, keyword),
                               headers: self.authorizationHeader(with: token))
                 .responseJSON { response in
-                    guard let response = response.result.value else { return }
+                    guard let data = response.data else { return }
                     
                     var results: [Any] = []
                     
-                    let json = JSON(response)
+                    var parsedResults: [Any]?
                     
-                    for (_, item) : (String, JSON) in json[type.rawValue + "s"]["items"] {
-                        switch type {
-                        case .track:
-                            results.append(SpotifyTrack(from: item))
-                        case .album:
-                            results.append(SpotifyAlbum(from: item))
-                        case .artist:
-                            results.append(SpotifyArtist(from: item))
-                        case .playlist:
-                            results.append(SpotifyPlaylist(from: item))
-                        }
+                    switch type {
+                    case .track:
+                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyTrack>.self, from: data).results.items
+                    case .album:
+                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyAlbum>.self, from: data).results.items
+                    case .playlist:
+                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyPlaylist>.self, from: data).results.items
+                    case .artist:
+                        parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<SpotifyArtist>.self, from: data).results.items
+                    }
+                    
+                    if let parsedResults = parsedResults {
+                        results.append(parsedResults)
                     }
                     
                     completionHandler(results)
