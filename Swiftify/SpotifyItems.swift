@@ -13,6 +13,23 @@ import SwiftyJSON
  */
 public enum SpotifyItemType: String {
     case track, album, artist, playlist
+    
+    enum SearchKey: String, CodingKey {
+        case tracks, albums, artists, playlists
+    }
+    
+    var searchKey: SearchKey {
+        switch self {
+        case .track:
+            return .tracks
+        case .album:
+            return .albums
+        case .artist:
+            return .artists
+        case .playlist:
+            return .playlists
+        }
+    }
 }
 
 // MARK: Items data types
@@ -134,23 +151,13 @@ public struct SpotifyFindResponse<T: SpotifyItem> {
 }
 
 extension SpotifyFindResponse: Decodable {
-    enum Keys: String, CodingKey {
-        case artists, tracks, albums, playlists
-    }
-    
     public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: Keys.self)
+        let container = try decoder.container(keyedBy: SpotifyItemType.SearchKey.self)
         
         var results = Results(items: [])
         
-        if let artists = try? container.decode(Results.self, forKey: .artists) {
-            results = artists
-        } else if let tracks = try? container.decode(Results.self, forKey: .tracks) {
-            results = tracks
-        } else if let albums = try? container.decode(Results.self, forKey: .albums) {
-            results = albums
-        } else if let playlists = try? container.decode(Results.self, forKey: .playlists) {
-            results = playlists
+        if let fetchedResults = try? container.decode(Results.self, forKey: T.type.searchKey) {
+            results = fetchedResults
         }
         
         self.init(results: results)
