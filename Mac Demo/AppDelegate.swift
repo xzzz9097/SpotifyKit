@@ -26,6 +26,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         initEventManager()
         
         loadSwiftify()
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            self.find(.track, "concrete heartbeat")
+        }
     }
     
     func applicationWillTerminate(_ aNotification: Notification) { }
@@ -67,6 +71,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             if let authorizationCode = code {
                 swiftify.saveToken(from: authorizationCode)
             }
+        }
+    }
+    
+    // MARK: Swiftify features implementation
+    
+    func find(_ type: SpotifyItemType, _ keyword: String) {
+        swiftify.find(type, keyword) { result in
+            print(result)
         }
     }
     
