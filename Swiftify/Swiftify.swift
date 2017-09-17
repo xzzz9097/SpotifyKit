@@ -525,13 +525,13 @@ public class SwiftifyHelper {
      as argument
      // TODO: read more than 20/10 items
      */
-    public func library(_ type: SpotifyItemType,
-                        completionHandler: @escaping ([Any]) -> Void) {
+    public func library<T>(_ what: T.Type,
+                           completionHandler: @escaping ([T]) -> Void) where T: SpotifyItem {
         tokenQuery { token in
             var url: URLConvertible
             
             // Pick the correct URL for track or album
-            switch type {
+            switch what.type {
             case .track:
                 url = SpotifyQuery.tracks.url
             case .album:
@@ -547,26 +547,13 @@ public class SwiftifyHelper {
                               method: .get,
                               headers: self.authorizationHeader(with: token))
                 .responseJSON { response in
-                    guard let response = response.result.value else { return }
+                    guard let data = response.data else { return }
                     
-                    var results: [Any] = []
+                    let parsedResults = try? JSONDecoder().decode(SpotifyLibraryResponse<T>.self, from: data).items
                     
-                    let json = JSON(response)
-                    
-                    for (_, item) : (String, JSON) in json["items"] {
-                        switch type {
-                        case .track:
-                            results.append(SpotifyTrack(from: item[type.rawValue]))
-                        case .album:
-                            results.append(SpotifyAlbum(from: item[type.rawValue]))
-                        case .playlist:
-                            results.append(SpotifyPlaylist(from: item))
-                        default:
-                            break
-                        }
+                    if let parsedResults = parsedResults {
+                        completionHandler(parsedResults)
                     }
-                    
-                    completionHandler(results)
             }
         }
     }

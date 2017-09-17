@@ -142,6 +142,10 @@ public struct SpotifyArtist: SpotifyItem {
     }
 }
 
+public struct SpotifyLibraryResponse<T: SpotifyItem>: Decodable {
+    public var items: [T]
+}
+
 public struct SpotifyFindResponse<T: SpotifyItem> {
     public struct Results: Decodable {
         public var items: [T]
