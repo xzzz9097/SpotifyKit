@@ -29,6 +29,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             self.find(SpotifyTrack.self, "concrete heartbeat")
+            self.library(SpotifyPlaylist.self)
         }
     }
     
@@ -78,6 +79,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func find<T>(_ type: T.Type, _ keyword: String) where T: SpotifyItem {
         swiftify.find(type, keyword) { result in
+            print(result)
+        }
+    }
+    
+    func library<T>(_ type: T.Type) where T: SpotifyItem {
+        swiftify.library(type) { result in
             print(result)
         }
     }
