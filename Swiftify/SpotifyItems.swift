@@ -115,9 +115,19 @@ public struct SpotifyAlbum: SpotifyItem {
 }
 
 public struct SpotifyPlaylist: SpotifyItem {
+    public struct Tracks: Decodable {
+        public struct Item: Decodable {
+            public var track: SpotifyTrack
+        }
+        
+        public var items: [Item]?
+    }
+    
     public var id:   String
     public var uri:  String
     public var name: String
+    
+    public var tracks: Tracks
     
     public static let type: SpotifyItemType = .playlist
     
@@ -125,6 +135,7 @@ public struct SpotifyPlaylist: SpotifyItem {
         self.id     = item["id"].stringValue
         self.uri    = item["uri"].stringValue
         self.name   = item["name"].stringValue
+        self.tracks = Tracks(items: []) // TODO: placeholder
     }
 }
 
