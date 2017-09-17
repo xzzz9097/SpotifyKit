@@ -1,7 +1,7 @@
 import Foundation
 
 public enum SampleResponseType {
-    case artist, album, track, findArtist, findTrack
+    case artist, album, track, playlist, findArtist, findTrack
 }
 
 public var sampleResponses: [SampleResponseType: Data] = [
@@ -490,6 +490,469 @@ public var sampleResponses: [SampleResponseType: Data] = [
 "uri" : "spotify:track:3n3Ppam7vgaVa1iaRUc9Lp"
 }
 """.data(using: .utf8)!,
+    .playlist: """
+    {
+    "collaborative" : false,
+    "description" : null,
+    "external_urls" : {
+    "spotify" : "http://open.spotify.com/user/edge9097/playlist/2LKpvYKQmtbYoQBwA8qa7U"
+    },
+    "followers" : {
+    "href" : null,
+    "total" : 0
+    },
+    "href" : "https://api.spotify.com/v1/users/edge9097/playlists/2LKpvYKQmtbYoQBwA8qa7U",
+    "id" : "2LKpvYKQmtbYoQBwA8qa7U",
+    "images" : [ {
+    "height" : 640,
+    "url" : "https://mosaic.scdn.co/640/be3fae1dbec734476c18fd4298f4577a4c598e73c0193357d5a9a2261729189694fe1488eb0045c7a8db79f3ed9d5f3712f8c0a9b356c184c46ac25586d2ea59969c263d3c82d5ef37013b9a3f18807c",
+    "width" : 640
+    }, {
+    "height" : 300,
+    "url" : "https://mosaic.scdn.co/300/be3fae1dbec734476c18fd4298f4577a4c598e73c0193357d5a9a2261729189694fe1488eb0045c7a8db79f3ed9d5f3712f8c0a9b356c184c46ac25586d2ea59969c263d3c82d5ef37013b9a3f18807c",
+    "width" : 300
+    }, {
+    "height" : 60,
+    "url" : "https://mosaic.scdn.co/60/be3fae1dbec734476c18fd4298f4577a4c598e73c0193357d5a9a2261729189694fe1488eb0045c7a8db79f3ed9d5f3712f8c0a9b356c184c46ac25586d2ea59969c263d3c82d5ef37013b9a3f18807c",
+    "width" : 60
+    } ],
+    "name" : "Favourites",
+    "owner" : {
+    "external_urls" : {
+    "spotify" : "http://open.spotify.com/user/edge9097"
+    },
+    "href" : "https://api.spotify.com/v1/users/edge9097",
+    "id" : "edge9097",
+    "type" : "user",
+    "uri" : "spotify:user:edge9097"
+    },
+    "public" : true,
+    "snapshot_id" : "umz11l0s3Ag69gjtN8zKP/RMeuxwl47h+tM7JbH7BSnHZLvmsjyvvgXCyJMmNVSy",
+    "tracks" : {
+    "href" : "https://api.spotify.com/v1/users/edge9097/playlists/2LKpvYKQmtbYoQBwA8qa7U/tracks?offset=0&limit=100",
+    "items" : [ {
+    "added_at" : "2017-08-01T07:47:00Z",
+    "added_by" : {
+    "external_urls" : {
+    "spotify" : "http://open.spotify.com/user/edge9097"
+    },
+    "href" : "https://api.spotify.com/v1/users/edge9097",
+    "id" : "edge9097",
+    "type" : "user",
+    "uri" : "spotify:user:edge9097"
+    },
+    "is_local" : false,
+    "track" : {
+    "album" : {
+    "album_type" : "album",
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/07QEuhtrNmmZ0zEcqE9SF6"
+    },
+    "href" : "https://api.spotify.com/v1/artists/07QEuhtrNmmZ0zEcqE9SF6",
+    "id" : "07QEuhtrNmmZ0zEcqE9SF6",
+    "name" : "Owl City",
+    "type" : "artist",
+    "uri" : "spotify:artist:07QEuhtrNmmZ0zEcqE9SF6"
+    } ],
+    "available_markets" : [ ],
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/album/0mcAVDF8XdRrsV4Q0dXcR9"
+    },
+    "href" : "https://api.spotify.com/v1/albums/0mcAVDF8XdRrsV4Q0dXcR9",
+    "id" : "0mcAVDF8XdRrsV4Q0dXcR9",
+    "images" : [ {
+    "height" : 640,
+    "url" : "https://i.scdn.co/image/9184d232ead9bf6f53159950107239dc516f8c65",
+    "width" : 640
+    }, {
+    "height" : 300,
+    "url" : "https://i.scdn.co/image/17ff58fc64de516149994322d36500d638088624",
+    "width" : 300
+    }, {
+    "height" : 64,
+    "url" : "https://i.scdn.co/image/e63973849351539842afa4f0befe4ac903256cdf",
+    "width" : 64
+    } ],
+    "name" : "Ultraviolet",
+    "type" : "album",
+    "uri" : "spotify:album:0mcAVDF8XdRrsV4Q0dXcR9"
+    },
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/07QEuhtrNmmZ0zEcqE9SF6"
+    },
+    "href" : "https://api.spotify.com/v1/artists/07QEuhtrNmmZ0zEcqE9SF6",
+    "id" : "07QEuhtrNmmZ0zEcqE9SF6",
+    "name" : "Owl City",
+    "type" : "artist",
+    "uri" : "spotify:artist:07QEuhtrNmmZ0zEcqE9SF6"
+    } ],
+    "available_markets" : [ ],
+    "disc_number" : 1,
+    "duration_ms" : 231453,
+    "explicit" : false,
+    "external_ids" : {
+    "isrc" : "USUM71406978"
+    },
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/track/7nOLBi8XnzQMxslv95fHox"
+    },
+    "href" : "https://api.spotify.com/v1/tracks/7nOLBi8XnzQMxslv95fHox",
+    "id" : "7nOLBi8XnzQMxslv95fHox",
+    "name" : "Up All Night",
+    "popularity" : 1,
+    "preview_url" : null,
+    "track_number" : 2,
+    "type" : "track",
+    "uri" : "spotify:track:7nOLBi8XnzQMxslv95fHox"
+    }
+    }, {
+    "added_at" : "2017-08-01T07:47:09Z",
+    "added_by" : {
+    "external_urls" : {
+    "spotify" : "http://open.spotify.com/user/edge9097"
+    },
+    "href" : "https://api.spotify.com/v1/users/edge9097",
+    "id" : "edge9097",
+    "type" : "user",
+    "uri" : "spotify:user:edge9097"
+    },
+    "is_local" : false,
+    "track" : {
+    "album" : {
+    "album_type" : "album",
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/3TVXtAsR1Inumwj472S9r4"
+    },
+    "href" : "https://api.spotify.com/v1/artists/3TVXtAsR1Inumwj472S9r4",
+    "id" : "3TVXtAsR1Inumwj472S9r4",
+    "name" : "Drake",
+    "type" : "artist",
+    "uri" : "spotify:artist:3TVXtAsR1Inumwj472S9r4"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/album/3hARKC8cinq3mZLLAEaBh9"
+    },
+    "href" : "https://api.spotify.com/v1/albums/3hARKC8cinq3mZLLAEaBh9",
+    "id" : "3hARKC8cinq3mZLLAEaBh9",
+    "images" : [ {
+    "height" : 640,
+    "url" : "https://i.scdn.co/image/c0193357d5a9a2261729189694fe1488eb0045c7",
+    "width" : 640
+    }, {
+    "height" : 300,
+    "url" : "https://i.scdn.co/image/b48b1b7e56f424818f2e8df537c3b692740f100b",
+    "width" : 300
+    }, {
+    "height" : 64,
+    "url" : "https://i.scdn.co/image/3cc13a8c1fc2fb71a178d2ad7e6e812b27ac913f",
+    "width" : 64
+    } ],
+    "name" : "Views",
+    "type" : "album",
+    "uri" : "spotify:album:3hARKC8cinq3mZLLAEaBh9"
+    },
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/3TVXtAsR1Inumwj472S9r4"
+    },
+    "href" : "https://api.spotify.com/v1/artists/3TVXtAsR1Inumwj472S9r4",
+    "id" : "3TVXtAsR1Inumwj472S9r4",
+    "name" : "Drake",
+    "type" : "artist",
+    "uri" : "spotify:artist:3TVXtAsR1Inumwj472S9r4"
+    }, {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/5pKCCKE2ajJHZ9KAiaK11H"
+    },
+    "href" : "https://api.spotify.com/v1/artists/5pKCCKE2ajJHZ9KAiaK11H",
+    "id" : "5pKCCKE2ajJHZ9KAiaK11H",
+    "name" : "Rihanna",
+    "type" : "artist",
+    "uri" : "spotify:artist:5pKCCKE2ajJHZ9KAiaK11H"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "disc_number" : 1,
+    "duration_ms" : 263373,
+    "explicit" : true,
+    "external_ids" : {
+    "isrc" : "USCM51600088"
+    },
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/track/11KJSRSgaDxqydKYiD2Jew"
+    },
+    "href" : "https://api.spotify.com/v1/tracks/11KJSRSgaDxqydKYiD2Jew",
+    "id" : "11KJSRSgaDxqydKYiD2Jew",
+    "name" : "Too Good",
+    "popularity" : 78,
+    "preview_url" : null,
+    "track_number" : 16,
+    "type" : "track",
+    "uri" : "spotify:track:11KJSRSgaDxqydKYiD2Jew"
+    }
+    }, {
+    "added_at" : "2017-08-01T07:47:21Z",
+    "added_by" : {
+    "external_urls" : {
+    "spotify" : "http://open.spotify.com/user/edge9097"
+    },
+    "href" : "https://api.spotify.com/v1/users/edge9097",
+    "id" : "edge9097",
+    "type" : "user",
+    "uri" : "spotify:user:edge9097"
+    },
+    "is_local" : false,
+    "track" : {
+    "album" : {
+    "album_type" : "album",
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/39eKOohR66fk0DaVRgYr18"
+    },
+    "href" : "https://api.spotify.com/v1/artists/39eKOohR66fk0DaVRgYr18",
+    "id" : "39eKOohR66fk0DaVRgYr18",
+    "name" : "The Lost Electric",
+    "type" : "artist",
+    "uri" : "spotify:artist:39eKOohR66fk0DaVRgYr18"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/album/4IKyYu9zNndBVpi8FoekaS"
+    },
+    "href" : "https://api.spotify.com/v1/albums/4IKyYu9zNndBVpi8FoekaS",
+    "id" : "4IKyYu9zNndBVpi8FoekaS",
+    "images" : [ {
+    "height" : 640,
+    "url" : "https://i.scdn.co/image/a8db79f3ed9d5f3712f8c0a9b356c184c46ac255",
+    "width" : 640
+    }, {
+    "height" : 300,
+    "url" : "https://i.scdn.co/image/236e9432881298c4a99479e68ee66e6a9213eb78",
+    "width" : 300
+    }, {
+    "height" : 64,
+    "url" : "https://i.scdn.co/image/9cac394599a05824708e2be2a3e2627b58e6cf32",
+    "width" : 64
+    } ],
+    "name" : "The Lost Electric",
+    "type" : "album",
+    "uri" : "spotify:album:4IKyYu9zNndBVpi8FoekaS"
+    },
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/39eKOohR66fk0DaVRgYr18"
+    },
+    "href" : "https://api.spotify.com/v1/artists/39eKOohR66fk0DaVRgYr18",
+    "id" : "39eKOohR66fk0DaVRgYr18",
+    "name" : "The Lost Electric",
+    "type" : "artist",
+    "uri" : "spotify:artist:39eKOohR66fk0DaVRgYr18"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "disc_number" : 1,
+    "duration_ms" : 170965,
+    "explicit" : false,
+    "external_ids" : {
+    "isrc" : "US3DF1607125"
+    },
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/track/3eXOzLl7KjJHoOPeXUsDAB"
+    },
+    "href" : "https://api.spotify.com/v1/tracks/3eXOzLl7KjJHoOPeXUsDAB",
+    "id" : "3eXOzLl7KjJHoOPeXUsDAB",
+    "name" : "Concrete Heartbeat",
+    "popularity" : 29,
+    "preview_url" : "https://p.scdn.co/mp3-preview/57a999a45673529d93320a97c5d06d0f4e0c241c?cid=8897482848704f2a8f8d7c79726a70d4",
+    "track_number" : 1,
+    "type" : "track",
+    "uri" : "spotify:track:3eXOzLl7KjJHoOPeXUsDAB"
+    }
+    }, {
+    "added_at" : "2017-08-01T07:47:40Z",
+    "added_by" : {
+    "external_urls" : {
+    "spotify" : "http://open.spotify.com/user/edge9097"
+    },
+    "href" : "https://api.spotify.com/v1/users/edge9097",
+    "id" : "edge9097",
+    "type" : "user",
+    "uri" : "spotify:user:edge9097"
+    },
+    "is_local" : false,
+    "track" : {
+    "album" : {
+    "album_type" : "single",
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/3dz0NnIZhtKKeXZxLOxCam"
+    },
+    "href" : "https://api.spotify.com/v1/artists/3dz0NnIZhtKKeXZxLOxCam",
+    "id" : "3dz0NnIZhtKKeXZxLOxCam",
+    "name" : "Porter Robinson",
+    "type" : "artist",
+    "uri" : "spotify:artist:3dz0NnIZhtKKeXZxLOxCam"
+    }, {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/4pb4rqWSoGUgxm63xmJ8xc"
+    },
+    "href" : "https://api.spotify.com/v1/artists/4pb4rqWSoGUgxm63xmJ8xc",
+    "id" : "4pb4rqWSoGUgxm63xmJ8xc",
+    "name" : "Madeon",
+    "type" : "artist",
+    "uri" : "spotify:artist:4pb4rqWSoGUgxm63xmJ8xc"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/album/1n8ESe5nt7EeuZedZUI3yu"
+    },
+    "href" : "https://api.spotify.com/v1/albums/1n8ESe5nt7EeuZedZUI3yu",
+    "id" : "1n8ESe5nt7EeuZedZUI3yu",
+    "images" : [ {
+    "height" : 640,
+    "url" : "https://i.scdn.co/image/86d2ea59969c263d3c82d5ef37013b9a3f18807c",
+    "width" : 640
+    }, {
+    "height" : 300,
+    "url" : "https://i.scdn.co/image/68f416fd0621950781ac84d273978b9e0a4b7eaa",
+    "width" : 300
+    }, {
+    "height" : 64,
+    "url" : "https://i.scdn.co/image/a0e8487416d4a219b23192bc6eeec705dbae1adb",
+    "width" : 64
+    } ],
+    "name" : "Shelter",
+    "type" : "album",
+    "uri" : "spotify:album:1n8ESe5nt7EeuZedZUI3yu"
+    },
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/3dz0NnIZhtKKeXZxLOxCam"
+    },
+    "href" : "https://api.spotify.com/v1/artists/3dz0NnIZhtKKeXZxLOxCam",
+    "id" : "3dz0NnIZhtKKeXZxLOxCam",
+    "name" : "Porter Robinson",
+    "type" : "artist",
+    "uri" : "spotify:artist:3dz0NnIZhtKKeXZxLOxCam"
+    }, {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/4pb4rqWSoGUgxm63xmJ8xc"
+    },
+    "href" : "https://api.spotify.com/v1/artists/4pb4rqWSoGUgxm63xmJ8xc",
+    "id" : "4pb4rqWSoGUgxm63xmJ8xc",
+    "name" : "Madeon",
+    "type" : "artist",
+    "uri" : "spotify:artist:4pb4rqWSoGUgxm63xmJ8xc"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "disc_number" : 1,
+    "duration_ms" : 218964,
+    "explicit" : false,
+    "external_ids" : {
+    "isrc" : "QMUY41600040"
+    },
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/track/2CgOd0Lj5MuvOqzqdaAXtS"
+    },
+    "href" : "https://api.spotify.com/v1/tracks/2CgOd0Lj5MuvOqzqdaAXtS",
+    "id" : "2CgOd0Lj5MuvOqzqdaAXtS",
+    "name" : "Shelter",
+    "popularity" : 75,
+    "preview_url" : "https://p.scdn.co/mp3-preview/2312e9b4429d32218bf18778afb4dca0b25ac3f5?cid=8897482848704f2a8f8d7c79726a70d4",
+    "track_number" : 1,
+    "type" : "track",
+    "uri" : "spotify:track:2CgOd0Lj5MuvOqzqdaAXtS"
+    }
+    }, {
+    "added_at" : "2017-08-01T07:48:06Z",
+    "added_by" : {
+    "external_urls" : {
+    "spotify" : "http://open.spotify.com/user/edge9097"
+    },
+    "href" : "https://api.spotify.com/v1/users/edge9097",
+    "id" : "edge9097",
+    "type" : "user",
+    "uri" : "spotify:user:edge9097"
+    },
+    "is_local" : false,
+    "track" : {
+    "album" : {
+    "album_type" : "album",
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/422RLznpwUa5FsQgnTlgUH"
+    },
+    "href" : "https://api.spotify.com/v1/artists/422RLznpwUa5FsQgnTlgUH",
+    "id" : "422RLznpwUa5FsQgnTlgUH",
+    "name" : "Great Good Fine Ok",
+    "type" : "artist",
+    "uri" : "spotify:artist:422RLznpwUa5FsQgnTlgUH"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/album/6LxFWRPqoL446CkxQyL7sQ"
+    },
+    "href" : "https://api.spotify.com/v1/albums/6LxFWRPqoL446CkxQyL7sQ",
+    "id" : "6LxFWRPqoL446CkxQyL7sQ",
+    "images" : [ {
+    "height" : 640,
+    "url" : "https://i.scdn.co/image/f0a94ee5288c59ebf419a0b2f6cdff10d86281f4",
+    "width" : 640
+    }, {
+    "height" : 300,
+    "url" : "https://i.scdn.co/image/198c086e531a7ca8995e2d64835b31742e4b6bae",
+    "width" : 300
+    }, {
+    "height" : 64,
+    "url" : "https://i.scdn.co/image/5fc7d2da74214f18700a7f91024121d3a363e03a",
+    "width" : 64
+    } ],
+    "name" : "III",
+    "type" : "album",
+    "uri" : "spotify:album:6LxFWRPqoL446CkxQyL7sQ"
+    },
+    "artists" : [ {
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/artist/422RLznpwUa5FsQgnTlgUH"
+    },
+    "href" : "https://api.spotify.com/v1/artists/422RLznpwUa5FsQgnTlgUH",
+    "id" : "422RLznpwUa5FsQgnTlgUH",
+    "name" : "Great Good Fine Ok",
+    "type" : "artist",
+    "uri" : "spotify:artist:422RLznpwUa5FsQgnTlgUH"
+    } ],
+    "available_markets" : [ "AD", "AR", "AT", "AU", "BE", "BG", "BO", "BR", "CA", "CH", "CL", "CO", "CR", "CY", "CZ", "DE", "DK", "DO", "EC", "EE", "ES", "FI", "FR", "GB", "GR", "GT", "HK", "HN", "HU", "ID", "IE", "IS", "IT", "JP", "LI", "LT", "LU", "LV", "MC", "MT", "MX", "MY", "NI", "NL", "NO", "NZ", "PA", "PE", "PH", "PL", "PT", "PY", "SE", "SG", "SK", "SV", "TH", "TR", "TW", "US", "UY" ],
+    "disc_number" : 1,
+    "duration_ms" : 211095,
+    "explicit" : false,
+    "external_ids" : {
+    "isrc" : "TCACW1601464"
+    },
+    "external_urls" : {
+    "spotify" : "https://open.spotify.com/track/0Xe3C9GFIcEAiOw5ryA6y7"
+    },
+    "href" : "https://api.spotify.com/v1/tracks/0Xe3C9GFIcEAiOw5ryA6y7",
+    "id" : "0Xe3C9GFIcEAiOw5ryA6y7",
+    "name" : "Holding You",
+    "popularity" : 52,
+    "preview_url" : "https://p.scdn.co/mp3-preview/90ce9a7fc914b062957e348fc90287a0b17cfdcd?cid=8897482848704f2a8f8d7c79726a70d4",
+    "track_number" : 4,
+    "type" : "track",
+    "uri" : "spotify:track:0Xe3C9GFIcEAiOw5ryA6y7"
+    }
+    } ],
+    "limit" : 100,
+    "next" : null,
+    "offset" : 0,
+    "previous" : null,
+    "total" : 5
+    },
+    "type" : "playlist",
+    "uri" : "spotify:user:edge9097:playlist:2LKpvYKQmtbYoQBwA8qa7U"
+    }
+    """.data(using: .utf8)!,
     .findArtist: """
 {
 "artists" : {

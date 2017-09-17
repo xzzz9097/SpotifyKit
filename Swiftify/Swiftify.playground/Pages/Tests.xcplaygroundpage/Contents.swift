@@ -9,7 +9,7 @@ let album = try JSONDecoder().decode(SpotifyAlbum.self, from: sampleResponses[.a
 
 let track = try JSONDecoder().decode(SpotifyTrack.self, from: sampleResponses[.track]!)
 
-func parseFindResponse<T: Decodable>(data: Data) -> [T]? {
+func parseFindResponse<T: SpotifyItem>(data: Data) -> [T]? {
     let parsed = try? JSONDecoder().decode(SpotifyFindResponse<T>.self, from: data)
     
     return parsed?.results.items
@@ -18,4 +18,6 @@ func parseFindResponse<T: Decodable>(data: Data) -> [T]? {
 let artists: [SpotifyArtist]? = parseFindResponse(data: sampleResponses[.findArtist]!)
 
 let tracks: [SpotifyTrack]? = parseFindResponse(data: sampleResponses[.findTrack]!)
+
+let playlist = try JSONDecoder().decode(SpotifyPlaylist.self, from: sampleResponses[.playlist]!)
 
