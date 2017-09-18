@@ -30,6 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             self.find(SpotifyTrack.self, "concrete heartbeat")
             self.library(SpotifyPlaylist.self)
+            self.get(SpotifyAlbum.self, id: "4IKyYu9zNndBVpi8FoekaS")
         }
     }
     
@@ -76,6 +77,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     // MARK: Swiftify features implementation
+    
+    func get<T>(_ type: T.Type, id: String, playlistUserId: String? = nil) where T: SpotifySearchItem {
+        swiftify.get(type, id: id) { result in
+            print("Got: \(result)")
+        }
+    }
     
     func find<T>(_ type: T.Type, _ keyword: String) where T: SpotifySearchItem {
         swiftify.find(type, keyword) { result in
