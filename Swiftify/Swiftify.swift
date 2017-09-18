@@ -376,7 +376,7 @@ public class SwiftifyHelper {
      */
     public func find<T>(_ what: T.Type,
                         _ keyword: String,
-                        completionHandler: @escaping ([T]) -> Void) where T: SpotifyItem {
+                        completionHandler: @escaping ([T]) -> Void) where T: SpotifySearchItem {
         tokenQuery { token in
             Alamofire.request(SpotifyQuery.search.url,
                               method: .get,
@@ -526,7 +526,7 @@ public class SwiftifyHelper {
      // TODO: read more than 20/10 items
      */
     public func library<T>(_ what: T.Type,
-                           completionHandler: @escaping ([T]) -> Void) where T: SpotifyItem {
+                           completionHandler: @escaping ([T]) -> Void) where T: SpotifyLibraryItem {
         tokenQuery { token in
             var url: URLConvertible
             

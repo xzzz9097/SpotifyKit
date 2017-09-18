@@ -42,7 +42,11 @@ public protocol SpotifyItem: Decodable {
     static var type: SpotifyItemType { get }
 }
 
-public struct SpotifyTrack: SpotifyItem {
+public protocol SpotifySearchItem: SpotifyItem { }
+
+public protocol SpotifyLibraryItem: SpotifyItem { }
+
+public struct SpotifyTrack: SpotifySearchItem, SpotifyLibraryItem {
     public var id:    String
     public var uri:   String
     public var name:  String
@@ -74,7 +78,7 @@ public struct SpotifyTrack: SpotifyItem {
     }
 }
 
-public struct SpotifyAlbum: SpotifyItem {
+public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem {
     public struct Tracks: Decodable {
         var items: [SpotifyTrack]
     }
@@ -124,7 +128,7 @@ public struct SpotifyAlbum: SpotifyItem {
     }
 }
 
-public struct SpotifyPlaylist: SpotifyItem {
+public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem {
     public struct Tracks: Decodable {
         public struct Item: Decodable {
             public var track: SpotifyTrack
@@ -149,7 +153,7 @@ public struct SpotifyPlaylist: SpotifyItem {
     }
 }
 
-public struct SpotifyArtist: SpotifyItem {
+public struct SpotifyArtist: SpotifySearchItem {
     public var id:   String
     public var uri:  String
     public var name: String
@@ -163,7 +167,7 @@ public struct SpotifyArtist: SpotifyItem {
     }
 }
 
-public struct SpotifyLibraryResponse<T: SpotifyItem> {
+public struct SpotifyLibraryResponse<T> where T: SpotifyLibraryItem {
     struct SavedItem {
         var item: T?
     }
@@ -221,7 +225,7 @@ extension SpotifyLibraryResponse: Decodable {
     }
 }
 
-public struct SpotifyFindResponse<T: SpotifyItem> {
+public struct SpotifyFindResponse<T> where T: SpotifySearchItem {
     public struct Results: Decodable {
         public var items: [T]
     }
