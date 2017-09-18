@@ -11,7 +11,7 @@ import SwiftyJSON
 /**
  Item type for Spotify search query
  */
-public enum SpotifyItemType: String {
+public enum SpotifyItemType: String, CodingKey {
     case track, album, artist, playlist
     
     enum SearchKey: String, CodingKey {
@@ -153,8 +153,62 @@ public struct SpotifyArtist: SpotifyItem {
     }
 }
 
-public struct SpotifyLibraryResponse<T: SpotifyItem>: Decodable {
-    public var items: [T]
+public struct SpotifyLibraryResponse<T: SpotifyItem> {
+    struct SavedItem {
+        var item: T?
+    }
+    
+    // Playlists from user library come out directly as an array
+    var unwrappedItems: [T]?
+    
+    // Tracks and albums from user library come wrapped inside a "saved item" object
+    // that contains the saved item (keyed by type: "track" or "album")
+    // and the save date
+    var wrappedItems: [SavedItem]?
+    
+    public var items: [T] {
+        if let wrap = wrappedItems {
+            return wrap.flatMap { $0.item }
+        }
+        
+        if let items = unwrappedItems {
+            return items
+        }
+        
+        return []
+    }
+}
+
+extension SpotifyLibraryResponse.SavedItem: Decodable {
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: SpotifyItemType.self)
+
+        self.init(item: try? container.decode(T.self, forKey: T.type))
+    }
+}
+
+extension SpotifyLibraryResponse: Decodable {
+    enum Key: String, CodingKey {
+        case items
+    }
+    
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: Key.self)
+        
+        switch T.type {
+        case .track, .album:
+            self.init(unwrappedItems: nil,
+                      wrappedItems: try? container.decode([SavedItem].self,
+                                                          forKey: .items))
+            
+        case .playlist:
+            self.init(unwrappedItems: try? container.decode([T].self,
+                                                            forKey: .items),
+                      wrappedItems: nil)
+        default:
+            self.init(unwrappedItems: nil, wrappedItems: nil)
+        }
+    }
 }
 
 public struct SpotifyFindResponse<T: SpotifyItem> {
