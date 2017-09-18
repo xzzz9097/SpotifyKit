@@ -46,7 +46,10 @@ public struct SpotifyTrack: SpotifyItem {
     public var id:    String
     public var uri:   String
     public var name:  String
-    public var album: SpotifyAlbum
+    
+    // Simplified track objects don't contain album reference
+    // so it should be an optional
+    public var album: SpotifyAlbum?
     
     public static let type: SpotifyItemType = .track
     
@@ -72,6 +75,10 @@ public struct SpotifyTrack: SpotifyItem {
 }
 
 public struct SpotifyAlbum: SpotifyItem {
+    public struct Tracks: Decodable {
+        var items: [SpotifyTrack]
+    }
+    
     struct Image: Decodable {
         var url: String
     }
@@ -79,6 +86,9 @@ public struct SpotifyAlbum: SpotifyItem {
     public var id:   String
     public var uri:  String
     public var name: String
+    
+    // Track list is contained only in full album objects
+    public var tracks: Tracks?
     
     public static let type: SpotifyItemType = .album
     
