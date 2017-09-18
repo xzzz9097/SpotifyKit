@@ -57,8 +57,14 @@ fileprivate struct SpotifyHeader {
 /**
  URLs for Spotify HTTP queries
  */
-fileprivate enum SpotifyQuery: String {
+fileprivate enum SpotifyQuery: String, URLConvertible {
+    func asURL() throws -> URL {
+        return URL(string: self.rawValue)!
+    }
+    
     // TODO: Make this more understandable
+    
+    case master = "https://api.spotify.com/v1/"
     
     // Search
     case search    = "https://api.spotify.com/v1/search"
@@ -87,6 +93,18 @@ fileprivate enum SpotifyQuery: String {
             return (SpotifyQuery.user.rawValue + "/\(userId)/playlists/\(id)/tracks") as URLConvertible
         default:
             return ""
+        }
+    }
+    
+    static func urlFor<T>(_ what: T.Type,
+                          id: String,
+                          playlistUserId: String? = nil) -> URLConvertible where T: SpotifySearchItem {
+        switch what.type {
+        case .track, .album, .artist:
+            return master.rawValue + what.type.searchKey.rawValue + "/\(id)"
+        case .playlist:
+            guard let userId = playlistUserId else { return "" }
+            return user.rawValue + "/\(userId)/playlists/\(id)"
         }
     }
     
@@ -366,6 +384,34 @@ public class SwiftifyHelper {
         // Run the requested query operation
         operation(token)
     }
+
+    /**
+     Gets a specific Spotify item (track, album, artist or playlist
+     - parameter what: the type of the item ('SpotifyTrack', 'SpotifyAlbum'...)
+     - parameter id: the item Spotify identifier
+     - parameter playlistUserId: the id of the user who owns the requested playlist
+     - parameter completionHandler: the block to run when result is found and passed as parameter to it
+     */
+    public func get<T>(_ what: T.Type,
+                       id: String,
+                       playlistUserId: String? = nil,
+                       completionHandler: @escaping ((T) -> Void)) where T: SpotifySearchItem {
+        tokenQuery { token in
+            Alamofire.request(SpotifyQuery.urlFor(what,
+                                                  id: id,
+                                                  playlistUserId: playlistUserId),
+                              method: .get,
+                              headers: self.authorizationHeader(with: token))
+                .responseJSON { response in
+                    guard let data = response.data else { return }
+                    
+                    if let parsedResult = try? JSONDecoder().decode(what,
+                                                                    from: data) {
+                        completionHandler(parsedResult)
+                    }
+            }
+        }
+    }
     
     /**
      Finds items on Spotify that match a provided keyword
@@ -564,7 +610,7 @@ public class SwiftifyHelper {
      - parameter id: the id of the source
      - parameter userId: the name of the source owner, required for playlist only
      */
-    public func tracks(in type: SpotifyItemType,
+    /**public func tracks(in type: SpotifyItemType,
                        _ id: String,
                        userId: String? = nil,
                        completionHandler: @escaping ([SpotifyTrack]) -> Void) {
@@ -593,7 +639,7 @@ public class SwiftifyHelper {
         default:
             return
         }
-    }
+    }*/
     
     /**
      Saves a track to user's "Your Music" library
@@ -778,7 +824,7 @@ public class SwiftifyHelper {
      - parameter json: the JSON containing the tracks
      - return: the array of tracks
      */
-    private func tracks(from json: JSON, source: SpotifyItemType) -> [SpotifyTrack] {
+    /*private func tracks(from json: JSON, source: SpotifyItemType) -> [SpotifyTrack] {
         var tracks: [SpotifyTrack] = []
         
         for (_, item) : (String, JSON) in json["items"] {
@@ -793,6 +839,6 @@ public class SwiftifyHelper {
         }
         
         return tracks
-    }
+    }*/
     
 }
