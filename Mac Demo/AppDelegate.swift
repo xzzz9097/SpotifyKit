@@ -77,13 +77,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     // MARK: Swiftify features implementation
     
-    func find<T>(_ type: T.Type, _ keyword: String) where T: SpotifyItem {
+    func find<T>(_ type: T.Type, _ keyword: String) where T: SpotifySearchItem {
         swiftify.find(type, keyword) { result in
             print(result)
         }
     }
     
-    func library<T>(_ type: T.Type) where T: SpotifyItem {
+    func library<T>(_ type: T.Type) where T: SpotifyLibraryItem {
         swiftify.library(type) { result in
             print(result)
         }
