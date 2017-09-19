@@ -14,7 +14,6 @@ import SwiftyJSON
 // MARK: Token saving options
 
 enum TokenSavingMethod {
-    case file
     case preference
 }
 
@@ -163,12 +162,6 @@ public class SwiftifyHelper {
             self.clientSecret = clientSecret
             self.redirectUri  = redirectUri
         }
-        
-        public init(from item: JSON) {
-            self.clientId     = item["client_id"].stringValue
-            self.clientSecret = item["client_secret"].stringValue
-            self.redirectUri  = item["redirect_uri"].stringValue
-        }
     }
     
     private struct SpotifyToken {
@@ -213,34 +206,6 @@ public class SwiftifyHelper {
                     "expires_in":    self.expiresIn,
                     "refresh_token": self.refreshToken,
                     "token_type":    self.tokenType]
-        }
-        
-        /**
-         Writes the contents of the token back to the JSON file.
-         This allows to save new data when a new token is received.
-         http://stackoverflow.com/questions/28768015/how-to-save-an-array-as-a-json-file-in-swift
-         */
-        func writeJSON(to path: URL?) {
-            guard let path = path else { return }
-            
-            do {
-                // Open the JSON file
-                var item = try JSON(Data(contentsOf: path))
-                
-                // Update it
-                item["access_token"].stringValue  = self.accessToken
-                item["expires_in"].intValue       = self.expiresIn
-                item["refresh_token"].stringValue = self.refreshToken
-                item["token_type"].stringValue    = self.tokenType
-                
-                // Open the file stream for writing
-                let file = try FileHandle(forUpdating: path)
-                
-                // Actually write back to the file
-                if let data = item.description.data(using: .utf8) { file.write(data) }
-            } catch {
-                // Item has not been updated
-            }
         }
         
         /**
@@ -319,36 +284,6 @@ public class SwiftifyHelper {
         self.application = application
         
         if let token = SpotifyToken.loadPreference() {
-            self.token = token
-        }
-    }
-    
-    public init(with applicationJsonURL: URL? = nil,
-                _ tokenJsonURL: URL?          = nil,
-                fallbackURL: URL?             = nil) {
-        if let applicationURL = applicationJsonURL {
-            do {
-                try self.application = SpotifyDeveloperApplication(from: JSON(Data(contentsOf: applicationURL)))
-            } catch {
-                if let applicationURL = fallbackURL {
-                    do {
-                        try self.application = SpotifyDeveloperApplication(from: JSON(Data(contentsOf: applicationURL)))
-                    } catch { }
-                }
-            }
-            self.applicationJsonURL = applicationURL
-        }
-        
-        if let tokenURL = tokenJsonURL {
-            do {
-                try self.token = SpotifyToken(from: JSON(Data(contentsOf: tokenURL)))
-            } catch { }
-            self.tokenJsonURL = tokenURL
-            
-            // Set the proper toking saving method
-            // if a JSON file URL is available
-            self.tokenSavingMethod = .file
-        } else if let token = SpotifyToken.loadPreference() {
             self.token = token
         }
     }
@@ -486,9 +421,6 @@ public class SwiftifyHelper {
                         debugPrint(token.description)
                         
                         switch self.tokenSavingMethod {
-                        case .file:
-                            // Save token to JSON file
-                            token.writeJSON(to: self.tokenJsonURL)
                         case .preference:
                             token.writePreference()
                         }
