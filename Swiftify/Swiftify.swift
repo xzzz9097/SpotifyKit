@@ -81,21 +81,6 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
     case playlists = "https://api.spotify.com/v1/me/playlists"
     case contains  = "https://api.spotify.com/v1/me/tracks/contains"
     
-    static func urlForTracksIn(_ type: SpotifyItemType,
-                               _ id: String,
-                               _ userId: String? = nil) -> URLConvertible {
-        switch type {
-        case .album:
-            return (SpotifyQuery.album.rawValue + "/\(id)/tracks") as URLConvertible
-        case .playlist:
-            guard let userId = userId else { return "" }
-            
-            return (SpotifyQuery.user.rawValue + "/\(userId)/playlists/\(id)/tracks") as URLConvertible
-        default:
-            return ""
-        }
-    }
-    
     static func urlFor<T>(_ what: T.Type,
                           id: String,
                           playlistUserId: String? = nil) -> URLConvertible where T: SpotifySearchItem {
@@ -605,43 +590,6 @@ public class SwiftifyHelper {
     }
     
     /**
-     Fetches the first tracks contained in a user playlist or album
-     - parameter type: the source type of the tracks, .album or .playlist
-     - parameter id: the id of the source
-     - parameter userId: the name of the source owner, required for playlist only
-     */
-    /**public func tracks(in type: SpotifyItemType,
-                       _ id: String,
-                       userId: String? = nil,
-                       completionHandler: @escaping ([SpotifyTrack]) -> Void) {
-        switch type {
-        case .album:
-            Alamofire.request(SpotifyQuery.urlForTracksIn(.album, id),
-                              method: .get)
-                .responseJSON { response in
-                    guard let response = response.result.value else { return }
-                    
-                    completionHandler(self.tracks(from: JSON(response), source: .album))
-            }
-        case .playlist:
-            guard let token = self.token, let userId = userId else { return }
-            
-            // Browsing a user playlist requires authorization
-            // TODO: Test this
-            Alamofire.request(SpotifyQuery.urlForTracksIn(.playlist, id, userId),
-                              method: .get,
-                              headers: authorizationHeader(with: token))
-                .responseJSON { response in
-                    guard let response = response.result.value else { return }
-                    
-                    completionHandler(self.tracks(from: JSON(response), source: .playlist))
-            }
-        default:
-            return
-        }
-    }*/
-    
-    /**
      Saves a track to user's "Your Music" library
      - parameter trackId: the id of the track to save
      - parameter completionHandler: the callback to execute after response,
@@ -818,27 +766,5 @@ public class SwiftifyHelper {
         
         return SpotifyToken(from: json)
     }
-    
-    /**
-     Generates an array of 'SpotifyTrack's from JSON data
-     - parameter json: the JSON containing the tracks
-     - return: the array of tracks
-     */
-    /*private func tracks(from json: JSON, source: SpotifyItemType) -> [SpotifyTrack] {
-        var tracks: [SpotifyTrack] = []
-        
-        for (_, item) : (String, JSON) in json["items"] {
-            switch source {
-            case .album:
-                tracks.append(SpotifyTrack(from: item))
-            case .playlist:
-                tracks.append(SpotifyTrack(from: item["track"]))
-            default:
-                break
-            }
-        }
-        
-        return tracks
-    }*/
     
 }

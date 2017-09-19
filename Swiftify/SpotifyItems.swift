@@ -60,21 +60,7 @@ public struct SpotifyTrack: SpotifySearchItem, SpotifyLibraryItem {
     var artists = [SpotifyArtist]()
     
     public var artist: SpotifyArtist {
-        set {
-            artists = [newValue]
-        }
-        
-        get {
-            return artists.first!
-        }
-    }
-    
-    init(from item: JSON) {
-        self.id     = item["id"].stringValue
-        self.uri    = item["uri"].stringValue
-        self.name   = item["name"].stringValue
-        self.album  = SpotifyAlbum(from: item["album"])
-        self.artist = SpotifyArtist(from: item["artists"][0])
+        return artists.first!
     }
 }
 
@@ -100,31 +86,11 @@ public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem {
     var artists = [SpotifyArtist]()
     
     public var artist: SpotifyArtist {
-        set {
-            artists = [newValue]
-        }
-        
-        get {
-            return artists.first!
-        }
+        return artists.first!
     }
     
     public var artUri: String {
-        set {
-            images = [Image(url: newValue)]
-        }
-        
-        get {
-            return images.first!.url
-        }
-    }
-    
-    init(from item: JSON) {
-        self.id     = item["id"].stringValue
-        self.uri    = item["uri"].stringValue
-        self.name   = item["name"].stringValue
-        self.artUri = item["images"][0]["url"].stringValue
-        self.artist = SpotifyArtist(from: item["artists"][0])
+        return images.first!.url
     }
 }
 
@@ -144,13 +110,6 @@ public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem {
     public var tracks: Tracks
     
     public static let type: SpotifyItemType = .playlist
-    
-    init(from item: JSON) {
-        self.id     = item["id"].stringValue
-        self.uri    = item["uri"].stringValue
-        self.name   = item["name"].stringValue
-        self.tracks = Tracks(items: []) // TODO: placeholder
-    }
 }
 
 public struct SpotifyArtist: SpotifySearchItem {
@@ -159,12 +118,6 @@ public struct SpotifyArtist: SpotifySearchItem {
     public var name: String
     
     public static let type: SpotifyItemType = .artist
-    
-    init(from item: JSON) {
-        self.id     = item["id"].stringValue
-        self.uri    = item["uri"].stringValue
-        self.name   = item["name"].stringValue
-    }
 }
 
 public struct SpotifyLibraryResponse<T> where T: SpotifyLibraryItem {
