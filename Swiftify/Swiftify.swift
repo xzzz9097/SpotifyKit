@@ -248,19 +248,16 @@ public class SwiftifyHelper {
          Returns true if the token is valid (aka not blank)
          */
         var isValid: Bool {
-            return  self.accessToken  != "" &&
-                self.expiresIn    != 0  &&
-                self.refreshToken != "" &&
-                self.tokenType    != ""
+            return !self.accessToken.isEmpty && !self.refreshToken.isEmpty && !self.tokenType.isEmpty && self.expiresIn != 0
         }
         
         var description: NSString {
-            let description =   "Access token:  \(accessToken)\r\n" +
-                "Expires in:    \(expiresIn)\r\n" +
-                "Refresh token: \(refreshToken)\r\n" +
-            "Token type:    \(tokenType)"
-            
-            return description as NSString
+            return  """
+            Access token:  \(accessToken)
+            Expires in:    \(expiresIn)
+            Refresh token: \(refreshToken)
+            Token type:    \(tokenType)
+            """ as NSString
         }
     }
     
