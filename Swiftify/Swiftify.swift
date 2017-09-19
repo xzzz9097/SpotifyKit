@@ -64,7 +64,7 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
     
     // TODO: Make this more understandable
     
-    case master = "https://api.spotify.com/v1/"
+    case master    = "https://api.spotify.com/v1/"
     
     // Search
     case search    = "https://api.spotify.com/v1/search"
@@ -76,10 +76,12 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
     case token     = "https://accounts.spotify.com/api/token"
     
     // User's library
-    case tracks    = "https://api.spotify.com/v1/me/tracks"
-    case albums    = "https://api.spotify.com/v1/me/albums"
-    case playlists = "https://api.spotify.com/v1/me/playlists"
+    case me        = "me/"
     case contains  = "https://api.spotify.com/v1/me/tracks/contains"
+    
+    static func libraryUrlFor<T>(_ what: T.Type) -> URLConvertible where T: SpotifyLibraryItem {
+        return master.rawValue + me.rawValue + what.type.searchKey.rawValue
+    }
     
     static func urlFor<T>(_ what: T.Type,
                           id: String,
@@ -559,22 +561,7 @@ public class SwiftifyHelper {
     public func library<T>(_ what: T.Type,
                            completionHandler: @escaping ([T]) -> Void) where T: SpotifyLibraryItem {
         tokenQuery { token in
-            var url: URLConvertible
-            
-            // Pick the correct URL for track or album
-            switch what.type {
-            case .track:
-                url = SpotifyQuery.tracks.url
-            case .album:
-                url = SpotifyQuery.albums.url
-            case .playlist:
-                url = SpotifyQuery.playlists.url
-            default:
-                // Artists are not supported
-                return
-            }
-            
-            Alamofire.request(url,
+            Alamofire.request(SpotifyQuery.libraryUrlFor(what),
                               method: .get,
                               headers: self.authorizationHeader(with: token))
                 .responseJSON { response in
@@ -598,7 +585,7 @@ public class SwiftifyHelper {
     public func save(trackId: String,
                      completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.tracks.url,
+            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self),
                               method: .put,
                               parameters: self.trackIdsParameters(for: trackId),
                               encoding: URLEncoding(destination: .queryString),
@@ -629,7 +616,7 @@ public class SwiftifyHelper {
     public func delete(trackId: String,
                        completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.tracks.url,
+            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self),
                               method: .delete,
                               parameters: self.trackIdsParameters(for: trackId),
                               encoding: URLEncoding(destination: .queryString),
