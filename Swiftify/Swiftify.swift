@@ -164,7 +164,7 @@ public class SwiftifyHelper {
         }
     }
     
-    private struct SpotifyToken: Decodable {
+    @objc(Swiftify)private class SpotifyToken: NSObject, Decodable, NSCoding {
         var accessToken:  String
         var expiresIn:    Int
         var refreshToken: String
@@ -177,24 +177,47 @@ public class SwiftifyHelper {
         // MARK: Decodable
         
         enum Key: String, CodingKey {
-            case access_token, expires_in, refresh_token, token_type
+            case access_token, expires_in, refresh_token, token_type, save_time
         }
         
-        init(from decoder: Decoder) throws {
+        convenience required init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: Key.self)
             
             self.init(
                 accessToken: try? container.decode(String.self, forKey: .access_token),
                 expiresIn: try? container.decode(Int.self, forKey: .expires_in),
                 refreshToken: try? container.decode(String.self, forKey: .refresh_token),
-                tokenType: try? container.decode(String.self, forKey: .token_type))
+                tokenType: try? container.decode(String.self, forKey: .token_type)
+            )
         }
         
-        init(accessToken:  String?,
-             expiresIn:    Int?,
-             refreshToken: String?,
-             tokenType:    String?,
-             saveTime:     TimeInterval? = nil) {
+        // MARK: NSCoding
+        
+        func encode(with coder: NSCoder) {
+            coder.encode(accessToken, forKey: Key.access_token.rawValue)
+            coder.encode(expiresIn, forKey: Key.expires_in.rawValue)
+            coder.encode(refreshToken, forKey: Key.refresh_token.rawValue)
+            coder.encode(tokenType, forKey: Key.token_type.rawValue)
+            coder.encode(saveTime, forKey: Key.save_time.rawValue)
+        }
+        
+        required convenience init?(coder decoder: NSCoder) {
+            self.init(
+                accessToken:  decoder.decodeObject(forKey: Key.access_token.rawValue) as? String,
+                expiresIn:    decoder.decodeInteger(forKey: Key.expires_in.rawValue),
+                refreshToken: decoder.decodeObject(forKey: Key.refresh_token.rawValue) as? String,
+                tokenType:    decoder.decodeObject(forKey: Key.token_type.rawValue) as? String,
+                saveTime:     decoder.decodeObject(forKey: Key.save_time.rawValue) as? TimeInterval
+            )
+        }
+        
+        // MARK: Other
+        
+        required init(accessToken:  String?,
+                      expiresIn:    Int?,
+                      refreshToken: String?,
+                      tokenType:    String?,
+                      saveTime:     TimeInterval? = nil) {
             self.accessToken  = accessToken ?? ""
             self.expiresIn    = expiresIn ?? 0
             self.refreshToken = refreshToken ?? ""
@@ -202,50 +225,25 @@ public class SwiftifyHelper {
             self.saveTime     = saveTime ?? Date.timeIntervalSinceReferenceDate
         }
         
-        init(from dictionary: [String: Any]) {
-            self.init(accessToken:  dictionary["access_token"] as? String,
-                      expiresIn:    dictionary["expires_in"] as? Int,
-                      refreshToken: dictionary["refresh_token"] as? String,
-                      tokenType:    dictionary["token_type"] as? String,
-                      saveTime:     dictionary["save_time"] as? TimeInterval
-            )
-        }
-        
-        /**
-         Returns a dictionary representation suited for usage in preferences.
-         */
-        var dictionaryRepresentation: [String: Any] {
-            return ["access_token":  self.accessToken,
-                    "expires_in":    self.expiresIn,
-                    "refresh_token": self.refreshToken,
-                    "token_type":    self.tokenType,
-                    "save_time":     self.saveTime
-            ]
-        }
-        
         /**
          Writes the contents of the token to a preference.
          */
         func writeToKeychain() {
-            Keychain.standard.set(self.dictionaryRepresentation, forKey: SpotifyToken.preferenceKey)
+            Keychain.standard.set(self, forKey: SpotifyToken.preferenceKey)
         }
         
         /**
          Loads the token object from a preference.
          */
-        static func loadFromKeychain() -> SpotifyToken? {            
-            guard let dictionaryRepresentation = Keychain.standard.value(forKey: SpotifyToken.preferenceKey) as? [String: Any] else {
-                return nil
-            }
-            
-            return self.init(from: dictionaryRepresentation)
+        static func loadFromKeychain() -> SpotifyToken? {
+            return Keychain.standard.value(forKey: SpotifyToken.preferenceKey) as? SpotifyToken
         }
         
         /**
          Updates a token from a JSON, for instance after calling 'refreshToken',
          when only a new 'accessToken' is provided
          */
-        mutating func refresh(from data: Data) {
+        func refresh(from data: Data) {
             guard let token = try? JSONDecoder().decode(SpotifyToken.self,
                                                         from: data) else { return }
             
@@ -268,7 +266,7 @@ public class SwiftifyHelper {
             return !self.accessToken.isEmpty && !self.refreshToken.isEmpty && !self.tokenType.isEmpty && self.expiresIn != 0
         }
         
-        var description: NSString {
+        var details: NSString {
             return  """
             Access token:  \(accessToken)
             Expires in:    \(expiresIn)
@@ -432,7 +430,7 @@ public class SwiftifyHelper {
                     
                     // Prints the token for debug
                     if let token = self.token {
-                        debugPrint(token.description)
+                        debugPrint(token.details)
                         
                         switch self.tokenSavingMethod {
                         case .preference:
@@ -457,7 +455,7 @@ public class SwiftifyHelper {
                                   tokenType: tokenType)
         
         // Prints the token for debug
-        if let token = self.token { debugPrint(token.description) }
+        if let token = self.token { debugPrint(token.details) }
     }
     
     /**
@@ -492,7 +490,7 @@ public class SwiftifyHelper {
                     self.token?.refresh(from: data)
                     
                     // Prints the token for debug
-                    if let token = self.token { debugPrint(token.description) }
+                    if let token = self.token { debugPrint(token.details) }
                 }
         }
     }
