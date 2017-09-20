@@ -227,20 +227,18 @@ public class SwiftifyHelper {
          Writes the contents of the token to a preference.
          */
         func writeToKeychain() {
-//            UserDefaults.standard.set(self.dictionaryRepresentation,
-//                                      forKey: SpotifyToken.preferenceKey)
             Keychain.standard.set(self.dictionaryRepresentation, forKey: SpotifyToken.preferenceKey)
         }
         
         /**
          Loads the token object from a preference.
          */
-        static func loadFromKeychain() -> SpotifyToken? {
-            if let dictionaryRepresentation = Keychain.standard.value(forKey: SpotifyToken.preferenceKey) as? [String: Any] {
-                return self.init(from: dictionaryRepresentation)
+        static func loadFromKeychain() -> SpotifyToken? {            
+            guard let dictionaryRepresentation = Keychain.standard.value(forKey: SpotifyToken.preferenceKey) as? [String: Any] else {
+                return nil
             }
             
-            return nil
+            return self.init(from: dictionaryRepresentation)
         }
         
         /**
