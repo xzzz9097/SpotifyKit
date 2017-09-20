@@ -164,38 +164,51 @@ public class SwiftifyHelper {
         }
     }
     
-    private struct SpotifyToken {
+    private struct SpotifyToken: Decodable {
         var accessToken:  String
         var expiresIn:    Int
         var refreshToken: String
         var tokenType:    String
-        var saveTime:     TimeInterval
+        
+        var saveTime: TimeInterval
         
         static let preferenceKey = "spotifyToken"
         
-        init(accessToken:  String,
-             expiresIn:    Int,
-             refreshToken: String,
-             tokenType:    String) {
-            self.accessToken  = accessToken
-            self.expiresIn    = expiresIn
-            self.refreshToken = refreshToken
-            self.tokenType    = tokenType
-            self.saveTime     = Date.timeIntervalSinceReferenceDate
+        // MARK: Decodable
+        
+        enum Key: String, CodingKey {
+            case access_token, expires_in, refresh_token, token_type
         }
         
-        init(from json: JSON) {
-            self.init(accessToken:  json["access_token"].stringValue,
-                      expiresIn:    json["expires_in"].intValue,
-                      refreshToken: json["refresh_token"].stringValue,
-                      tokenType:    json["token_type"].stringValue)
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: Key.self)
+            
+            self.init(
+                accessToken: try? container.decode(String.self, forKey: .access_token),
+                expiresIn: try? container.decode(Int.self, forKey: .expires_in),
+                refreshToken: try? container.decode(String.self, forKey: .refresh_token),
+                tokenType: try? container.decode(String.self, forKey: .token_type))
+        }
+        
+        init(accessToken:  String?,
+             expiresIn:    Int?,
+             refreshToken: String?,
+             tokenType:    String?,
+             saveTime:     TimeInterval? = nil) {
+            self.accessToken  = accessToken ?? ""
+            self.expiresIn    = expiresIn ?? 0
+            self.refreshToken = refreshToken ?? ""
+            self.tokenType    = tokenType ?? ""
+            self.saveTime     = saveTime ?? Date.timeIntervalSinceReferenceDate
         }
         
         init(from dictionary: [String: Any]) {
-            self.init(accessToken:  dictionary["access_token"] as? String ?? "",
-                      expiresIn:    dictionary["expires_in"] as? Int ?? 0,
-                      refreshToken: dictionary["refresh_token"] as? String ?? "",
-                      tokenType:    dictionary["token_type"] as? String ?? "")
+            self.init(accessToken:  dictionary["access_token"] as? String,
+                      expiresIn:    dictionary["expires_in"] as? Int,
+                      refreshToken: dictionary["refresh_token"] as? String,
+                      tokenType:    dictionary["token_type"] as? String,
+                      saveTime:     dictionary["save_time"] as? TimeInterval
+            )
         }
         
         /**
@@ -205,22 +218,25 @@ public class SwiftifyHelper {
             return ["access_token":  self.accessToken,
                     "expires_in":    self.expiresIn,
                     "refresh_token": self.refreshToken,
-                    "token_type":    self.tokenType]
+                    "token_type":    self.tokenType,
+                    "save_time":     self.saveTime
+            ]
         }
         
         /**
          Writes the contents of the token to a preference.
          */
-        func writePreference() {
-            UserDefaults.standard.set(self.dictionaryRepresentation,
-                                      forKey: SpotifyToken.preferenceKey)
+        func writeToKeychain() {
+//            UserDefaults.standard.set(self.dictionaryRepresentation,
+//                                      forKey: SpotifyToken.preferenceKey)
+            Keychain.standard.set(self.dictionaryRepresentation, forKey: SpotifyToken.preferenceKey)
         }
         
         /**
          Loads the token object from a preference.
          */
-        static func loadPreference() -> SpotifyToken? {
-            if let dictionaryRepresentation = UserDefaults.standard.value(forKey: preferenceKey) as? [String: Any] {
+        static func loadFromKeychain() -> SpotifyToken? {
+            if let dictionaryRepresentation = Keychain.standard.value(forKey: SpotifyToken.preferenceKey) as? [String: Any] {
                 return self.init(from: dictionaryRepresentation)
             }
             
@@ -231,9 +247,12 @@ public class SwiftifyHelper {
          Updates a token from a JSON, for instance after calling 'refreshToken',
          when only a new 'accessToken' is provided
          */
-        mutating func refresh(from item: JSON) {
-            accessToken = item["access_token"].stringValue
-            saveTime    = Date.timeIntervalSinceReferenceDate
+        mutating func refresh(from data: Data) {
+            guard let token = try? JSONDecoder().decode(SpotifyToken.self,
+                                                        from: data) else { return }
+            
+            accessToken = token.accessToken
+            saveTime     = Date.timeIntervalSinceReferenceDate
         }
         
         /**
@@ -280,7 +299,7 @@ public class SwiftifyHelper {
     public init(with application: SpotifyDeveloperApplication) {
         self.application = application
         
-        if let token = SpotifyToken.loadPreference() {
+        if let token = SpotifyToken.loadFromKeychain() {
             self.token = token
         }
     }
@@ -419,7 +438,7 @@ public class SwiftifyHelper {
                         
                         switch self.tokenSavingMethod {
                         case .preference:
-                            token.writePreference()
+                            token.writeToKeychain()
                         }
                     }
                 }
@@ -467,12 +486,12 @@ public class SwiftifyHelper {
                 completionHandler(response.result.isSuccess)
                 
                 if response.result.isSuccess {
-                    guard let response = response.result.value else { return }
+                    guard let data = response.data else { return }
                     
                     // Refresh current token
                     // Only 'accessToken' needs to be changed
                     // guard is not really needed here because we checked before
-                    self.token?.refresh(from: JSON(response))
+                    self.token?.refresh(from: data)
                     
                     // Prints the token for debug
                     if let token = self.token { debugPrint(token.description) }
@@ -678,11 +697,9 @@ public class SwiftifyHelper {
      - return: the 'SpotifyToken' object
      */
     private func generateToken(from response: DataResponse<Any>) -> SpotifyToken? {
-        guard let response = response.result.value else { return nil }
+        guard let data = response.data else { return nil }
         
-        let json = JSON(response)
-        
-        return SpotifyToken(from: json)
+        return try? JSONDecoder().decode(SpotifyToken.self, from: data)
     }
     
 }
