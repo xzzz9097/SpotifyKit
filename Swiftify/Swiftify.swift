@@ -9,7 +9,6 @@
 import Cocoa
 
 import Alamofire
-import SwiftyJSON
 
 // MARK: Token saving options
 
@@ -598,10 +597,13 @@ public class SwiftifyHelper {
                               parameters: self.trackIdsParameters(for: trackId),
                               headers: self.authorizationHeader(with: token))
                 .responseJSON { response in
-                    guard let value = response.result.value else { return }
+                    guard let data = response.data else { return }
                     
                     // Sends the 'isSaved' value back to the completion handler
-                    completionHandler(JSON(value)[0].boolValue)
+                    if  let results = try? JSONDecoder().decode([Bool].self, from: data),
+                        let saved = results.first {
+                        completionHandler(saved)
+                    }
             }
         }
     }

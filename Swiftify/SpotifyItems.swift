@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftyJSON
 
 /**
  Item type for Spotify search query

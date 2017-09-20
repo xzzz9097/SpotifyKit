@@ -31,6 +31,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.find(SpotifyTrack.self, "concrete heartbeat")
             self.library(SpotifyPlaylist.self)
             self.get(SpotifyAlbum.self, id: "4IKyYu9zNndBVpi8FoekaS")
+            self.isSaved("5FTCKvxzqy72ceS4Ujux4N")
         }
     }
     
@@ -96,5 +97,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    func isSaved(_ trackId: String) {
+        swiftify.isSaved(trackId: trackId) { saved in
+            print("Track \(trackId) saved: \(saved)")
+        }
+    }
 }
 
