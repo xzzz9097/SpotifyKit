@@ -41,6 +41,10 @@ public protocol SpotifyItem: Decodable {
     static var type: SpotifyItemType { get }
 }
 
+public protocol SpotifyTrackCollection {
+    var collectionTracks: [SpotifyTrack]? { get }
+}
+
 public protocol SpotifySearchItem: SpotifyItem { }
 
 public protocol SpotifyLibraryItem: SpotifyItem { }
@@ -63,8 +67,8 @@ public struct SpotifyTrack: SpotifySearchItem, SpotifyLibraryItem {
     }
 }
 
-public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem {
-    public struct Tracks: Decodable {
+public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackCollection {
+    struct Tracks: Decodable {
         var items: [SpotifyTrack]
     }
     
@@ -77,7 +81,11 @@ public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem {
     public var name: String
     
     // Track list is contained only in full album objects
-    public var tracks: Tracks?
+    var tracks: Tracks?
+    
+    public var collectionTracks: [SpotifyTrack]? {
+        return tracks?.items
+    }
     
     public static let type: SpotifyItemType = .album
     
@@ -93,20 +101,24 @@ public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem {
     }
 }
 
-public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem {
-    public struct Tracks: Decodable {
-        public struct Item: Decodable {
-            public var track: SpotifyTrack
+public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackCollection {
+    struct Tracks: Decodable {
+        struct Item: Decodable {
+            var track: SpotifyTrack
         }
         
-        public var items: [Item]?
+        var items: [Item]?
     }
     
     public var id:   String
     public var uri:  String
     public var name: String
     
-    public var tracks: Tracks
+    var tracks: Tracks
+    
+    public var collectionTracks: [SpotifyTrack]? {
+        return tracks.items?.map { $0.track }
+    }
     
     public static let type: SpotifyItemType = .playlist
 }
