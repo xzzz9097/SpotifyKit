@@ -89,7 +89,7 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
     
     static func urlFor<T>(_ what: T.Type,
                           id: String,
-                          playlistUserId: String? = nil) -> URLConvertible where T: SpotifySearchItem {
+                          playlistUserId: String? = nil) -> String where T: SpotifySearchItem {
         switch what.type {
         case .track, .album, .artist:
             return master.rawValue + what.type.searchKey.rawValue + "/\(id)"
@@ -332,18 +332,18 @@ public class SwiftifyHelper {
                        playlistUserId: String? = nil,
                        completionHandler: @escaping ((T) -> Void)) where T: SpotifySearchItem {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.urlFor(what,
-                                                  id: id,
-                                                  playlistUserId: playlistUserId),
-                              method: .get,
-                              headers: self.authorizationHeader(with: token))
-                .responseJSON { response in
-                    guard let data = response.data else { return }
-                    
-                    if let parsedResult = try? JSONDecoder().decode(what,
-                                                                    from: data) {
-                        completionHandler(parsedResult)
-                    }
+            URLSession.shared.request(SpotifyQuery.urlFor(what,
+                                                          id: id,
+                                                          playlistUserId: playlistUserId),
+                                      method: .GET,
+                                      headers: self.authorizationHeader(with: token))
+            { data in
+                guard let data = data else { return }
+                
+                if let result = try? JSONDecoder().decode(what,
+                                                          from: data) {
+                    completionHandler(result)
+                }
             }
         }
     }
