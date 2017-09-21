@@ -83,7 +83,7 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
     case me        = "me/"
     case contains  = "me/tracks/contains"
     
-    static func libraryUrlFor<T>(_ what: T.Type) -> URLConvertible where T: SpotifyLibraryItem {
+    static func libraryUrlFor<T>(_ what: T.Type) -> String where T: SpotifyLibraryItem {
         return master.rawValue + me.rawValue + what.type.searchKey.rawValue
     }
     
@@ -506,17 +506,16 @@ public class SwiftifyHelper {
     public func library<T>(_ what: T.Type,
                            completionHandler: @escaping ([T]) -> Void) where T: SpotifyLibraryItem {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.libraryUrlFor(what),
-                              method: .get,
-                              headers: self.authorizationHeader(with: token))
-                .responseJSON { response in
-                    guard let data = response.data else { return }
-                    
-                    let parsedResults = try? JSONDecoder().decode(SpotifyLibraryResponse<T>.self, from: data).items
-                    
-                    if let parsedResults = parsedResults {
-                        completionHandler(parsedResults)
-                    }
+            URLSession.shared.request(SpotifyQuery.libraryUrlFor(what),
+                                      method: .GET,
+                                      headers: self.authorizationHeader(with: token))
+            { data in
+                guard let data = data else { return }
+
+                if let results = try? JSONDecoder().decode(SpotifyLibraryResponse<T>.self,
+                                                           from: data).items {
+                    completionHandler(results)
+                }
             }
         }
     }
