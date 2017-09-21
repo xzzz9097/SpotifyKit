@@ -55,15 +55,15 @@ fileprivate struct SpotifyHeader {
 /**
  URLs for Spotify HTTP queries
  */
-fileprivate enum SpotifyQuery: String, URLConvertible {
-    func asURL() throws -> URL {
+fileprivate enum SpotifyQuery: String {
+    var url: URL? {
         switch self {
         case .master, .account:
-            return URL(string: self.rawValue)!
+            return URL(string: self.rawValue)
         case .search, .users, .me, .contains:
-            return URL(string: SpotifyQuery.master.rawValue + self.rawValue)!
+            return URL(string: SpotifyQuery.master.rawValue + self.rawValue)
         case .authorize, .token:
-            return URL(string: SpotifyQuery.account.rawValue + self.rawValue)!
+            return URL(string: SpotifyQuery.account.rawValue + self.rawValue)
         }
     }
     
@@ -83,19 +83,19 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
     case me        = "me/"
     case contains  = "me/tracks/contains"
     
-    static func libraryUrlFor<T>(_ what: T.Type) -> String where T: SpotifyLibraryItem {
-        return master.rawValue + me.rawValue + what.type.searchKey.rawValue
+    static func libraryUrlFor<T>(_ what: T.Type) -> URL? where T: SpotifyLibraryItem {
+        return URL(string: master.rawValue + me.rawValue + what.type.searchKey.rawValue)
     }
     
     static func urlFor<T>(_ what: T.Type,
                           id: String,
-                          playlistUserId: String? = nil) -> String where T: SpotifySearchItem {
+                          playlistUserId: String? = nil) -> URL? where T: SpotifySearchItem {
         switch what.type {
         case .track, .album, .artist:
-            return master.rawValue + what.type.searchKey.rawValue + "/\(id)"
+            return URL(string: master.rawValue + what.type.searchKey.rawValue + "/\(id)")
         case .playlist:
-            guard let userId = playlistUserId else { return "" }
-            return users.rawValue + "/\(userId)/playlists/\(id)"
+            guard let userId = playlistUserId else { return nil }
+            return URL(string: users.rawValue + "/\(userId)/playlists/\(id)")!
         }
     }
 }
@@ -359,7 +359,7 @@ public class SwiftifyHelper {
                         _ keyword: String,
                         completionHandler: @escaping ([T]) -> Void) where T: SpotifySearchItem {
         tokenQuery { token in
-            URLSession.shared.request(try! SpotifyQuery.search.asURL(),
+            URLSession.shared.request(SpotifyQuery.search.url,
                                       method: .GET,
                                       parameters: self.searchParameters(for: what.type, keyword),
                                       headers: self.authorizationHeader(with: token))
@@ -401,7 +401,7 @@ public class SwiftifyHelper {
     public func authorize() {
         guard let application = application else { return }
         
-        Alamofire.request(SpotifyQuery.authorize,
+        Alamofire.request(SpotifyQuery.authorize.url!,
                           method: .get,
                           parameters: authorizationParameters(for: application))
             .response { response in
@@ -418,7 +418,7 @@ public class SwiftifyHelper {
     public func saveToken(from authorizationCode: String) {
         guard let application = application else { return }
         
-        Alamofire.request(SpotifyQuery.token,
+        Alamofire.request(SpotifyQuery.token.url!,
                           method: .post,
                           parameters: tokenParameters(for: application,
                                                       from: authorizationCode))
@@ -472,7 +472,7 @@ public class SwiftifyHelper {
     public func refreshToken(completionHandler: @escaping (Bool) -> Void) {
         guard let application = application, let token = self.token else { return }
         
-        Alamofire.request(SpotifyQuery.token,
+        Alamofire.request(SpotifyQuery.token.url!,
                           method: .post,
                           parameters: refreshTokenParameters(from: token),
                           headers: refreshTokenHeaders(for: application))
@@ -528,7 +528,7 @@ public class SwiftifyHelper {
     public func save(trackId: String,
                      completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self),
+            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self)!,
                               method: .put,
                               parameters: self.trackIdsParameters(for: trackId),
                               encoding: URLEncoding(destination: .queryString),
@@ -559,7 +559,7 @@ public class SwiftifyHelper {
     public func delete(trackId: String,
                        completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self),
+            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self)!,
                               method: .delete,
                               parameters: self.trackIdsParameters(for: trackId),
                               encoding: URLEncoding(destination: .queryString),
@@ -590,7 +590,7 @@ public class SwiftifyHelper {
     public func isSaved(trackId: String,
                         completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.contains,
+            Alamofire.request(SpotifyQuery.contains.url!,
                               method: .get,
                               parameters: self.trackIdsParameters(for: trackId),
                               headers: self.authorizationHeader(with: token))

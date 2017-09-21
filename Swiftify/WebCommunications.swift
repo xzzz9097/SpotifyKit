@@ -28,11 +28,13 @@ public extension Dictionary where Key == String {
 
 public extension URLSession {
     
-    public func request(_ url: URL,
+    public func request(_ url: URL?,
                         method: RequestMethod = .GET,
                         parameters: RequestParameters? = nil,
                         headers: RequestHeaders? = nil,
                         completionHandler: @escaping (Data?) -> ()) {
+        guard let url = url else { return }
+        
         var request = URLRequest(url: url)
         
         // Configure the request
