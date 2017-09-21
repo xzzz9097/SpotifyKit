@@ -12,13 +12,17 @@ public enum RequestMethod: String {
     case GET, POST, PUT, DELETE
 }
 
-public typealias RequestParameters = [String: String]
+public typealias RequestParameters = [String: Any]
 public typealias RequestHeaders    = [String: String]
 
 public extension Dictionary where Key == String {
     
-    var httpCompatible: Data? {
-        return self.reduce("") { "\($0)&\($1.key)=\($1.value)" } .dropFirst().data(using: .utf8)
+    var httpCompatible: String {
+        return String(
+            self.reduce("") { "\($0)&\($1.key)=\($1.value)" }
+                .replacingOccurrences(of: " ", with: "+")
+                .dropFirst()
+        )
     }
 }
 
@@ -34,11 +38,14 @@ public extension URLSession {
         // Configure the request
         request.allHTTPHeaderFields = headers
         request.httpMethod          = method.rawValue
-        request.httpBody            = parameters?.httpCompatible
+
+        if let parameters = parameters {
+            request.url = URL(string: "\(url.absoluteString)?\(parameters.httpCompatible)")
+        }
         
-        let task = URLSession.shared.dataTask(with: request) { data, _, error in
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                // Placeholder: handle error
+                print(error)
             } else {
                 completionHandler(data)
             }

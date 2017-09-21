@@ -359,18 +359,18 @@ public class SwiftifyHelper {
                         _ keyword: String,
                         completionHandler: @escaping ([T]) -> Void) where T: SpotifySearchItem {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.search,
-                              method: .get,
-                              parameters: self.searchParameters(for: what.type, keyword),
-                              headers: self.authorizationHeader(with: token))
-                .responseJSON { response in
-                    guard let data = response.data else { return }
+            URLSession.shared.request(try! SpotifyQuery.search.asURL(),
+                                      method: .GET,
+                                      parameters: self.searchParameters(for: what.type, keyword),
+                                      headers: self.authorizationHeader(with: token))
+            { data in
+                guard let data = data else { return }
+                                    
+                let parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<T>.self, from: data).results.items
                     
-                    let parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<T>.self, from: data).results.items
-                    
-                    if let parsedResults = parsedResults {
-                        completionHandler(parsedResults)
-                    }
+                if let parsedResults = parsedResults {
+                    completionHandler(parsedResults)
+                }
             }
         }
     }
