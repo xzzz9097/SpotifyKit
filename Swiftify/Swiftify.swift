@@ -365,11 +365,10 @@ public class SwiftifyHelper {
                                       headers: self.authorizationHeader(with: token))
             { data in
                 guard let data = data else { return }
-                                    
-                let parsedResults = try? JSONDecoder().decode(SpotifyFindResponse<T>.self, from: data).results.items
-                    
-                if let parsedResults = parsedResults {
-                    completionHandler(parsedResults)
+
+                if let results = try? JSONDecoder().decode(SpotifyFindResponse<T>.self,
+                                                           from: data).results.items {
+                    completionHandler(results)
                 }
             }
         }
