@@ -53,6 +53,17 @@ extension Dictionary where Key == String {
     }
 }
 
+extension URL {
+    
+    func with(parameters: String) -> URL? {
+        return URL(string: "\(self.absoluteString)?\(parameters)")
+    }
+    
+    func with(parameters: HTTPRequestParameters) -> URL? {
+        return URL(string: "\(self.absoluteString)?\(parameters.httpCompatible)")
+    }
+}
+
 extension URLSession {
     
     func request(_ url:             URL?,
@@ -71,7 +82,7 @@ extension URLSession {
         if let parameters = parameters?.httpCompatible {
             switch method {
             case .GET, .PUT, .DELETE:
-                request.url = URL(string: "\(url.absoluteString)?\(parameters)")
+                request.url = url.with(parameters: parameters)
             case .POST:
                 request.httpBody = parameters.data(using: .utf8)
             }
