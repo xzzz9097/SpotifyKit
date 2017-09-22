@@ -128,4 +128,12 @@ extension URLSession {
                 headers: headers,
                 completionHandler: completionHandler)
     }
+    
+    static func authorizationHeader(user:     String,
+                                    password: String) -> (key: String, value: String)? {
+        guard let data = "\(user):\(password)".data(using: .utf8) else { return nil }
+
+        return (key:   "Authorization",
+                value: "Basic \(data.base64EncodedString(options: []))")
+    }
 }

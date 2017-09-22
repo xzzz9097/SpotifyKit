@@ -623,7 +623,7 @@ public class SwiftifyHelper {
      - return: searchquery parameters
      */
     private func searchParameters(for type: SpotifyItemType,
-                                  _ keyword: String) -> Parameters {
+                                  _ keyword: String) -> HTTPRequestParameters {
         return [SpotifyParameter.name: keyword,
                 SpotifyParameter.type: type.rawValue]
     }
@@ -631,7 +631,7 @@ public class SwiftifyHelper {
     /**
      Builds authorization parameters
      */
-    private func authorizationParameters(for application: SpotifyDeveloperApplication) -> Parameters {
+    private func authorizationParameters(for application: SpotifyDeveloperApplication) -> HTTPRequestParameters {
         return [SpotifyParameter.clientId: application.clientId,
                 SpotifyParameter.responseType: SpotifyAuthorizationResponseType.code.rawValue,
                 SpotifyParameter.redirectUri: application.redirectUri,
@@ -643,7 +643,7 @@ public class SwiftifyHelper {
      - return: parameters for token retrieval
      */
     private func tokenParameters(for application: SpotifyDeveloperApplication,
-                                 from authorizationCode: String) -> Parameters {
+                                 from authorizationCode: String) -> HTTPRequestParameters {
         return [SpotifyParameter.clientId: application.clientId,
                 SpotifyParameter.clientSecret: application.clientSecret,
                 SpotifyParameter.grantType: SpotifyTokenGrantType.authorizationCode.rawValue,
@@ -655,7 +655,7 @@ public class SwiftifyHelper {
      Builds token refresh parameters
      - return: parameters for token refresh
      */
-    private func refreshTokenParameters(from oldToken: SpotifyToken) -> Parameters {
+    private func refreshTokenParameters(from oldToken: SpotifyToken) -> HTTPRequestParameters {
         return [SpotifyParameter.grantType: SpotifyTokenGrantType.refreshToken.rawValue,
                 SpotifyParameter.refreshToken: oldToken.refreshToken]
     }
@@ -664,8 +664,8 @@ public class SwiftifyHelper {
      Builds the authorization header for token refresh
      - return: authorization header
      */
-    private func refreshTokenHeaders(for application: SpotifyDeveloperApplication) -> HTTPHeaders {
-        guard let auth = Request.authorizationHeader(user: application.clientId, password: application.clientSecret) else { return [:] }
+    private func refreshTokenHeaders(for application: SpotifyDeveloperApplication) -> HTTPRequestHeaders {
+        guard let auth = URLSession.authorizationHeader(user: application.clientId, password: application.clientSecret) else { return [:] }
         
         return [auth.key: auth.value]
     }
@@ -674,7 +674,7 @@ public class SwiftifyHelper {
      Builds the authorization header for user library interactions
      - return: authorization header
      */
-    private func authorizationHeader(with token: SpotifyToken) -> HTTPHeaders {
+    private func authorizationHeader(with token: SpotifyToken) -> HTTPRequestHeaders {
         return [SpotifyHeader.authorization: SpotifyAuthorizationType.bearer.rawValue +
             token.accessToken]
     }
@@ -683,7 +683,7 @@ public class SwiftifyHelper {
      Builds parameters for saving a track into user's library
      - return: parameters for track saving
      */
-    private func trackIdsParameters(for trackId: String) -> Parameters {
+    private func trackIdsParameters(for trackId: String) -> HTTPRequestParameters {
         return [SpotifyParameter.ids: trackId]
     }
     
