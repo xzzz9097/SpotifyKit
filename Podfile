@@ -6,7 +6,6 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def pods
-  pod 'Alamofire', '~> 4.5'
 end
 
 target 'Swiftify' do

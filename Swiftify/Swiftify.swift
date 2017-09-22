@@ -8,8 +8,6 @@
 
 import Cocoa
 
-import Alamofire
-
 // MARK: Token saving options
 
 enum TokenSavingMethod {
