@@ -590,18 +590,18 @@ public class SwiftifyHelper {
     public func isSaved(trackId: String,
                         completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.contains.url!,
-                              method: .get,
-                              parameters: self.trackIdsParameters(for: trackId),
-                              headers: self.authorizationHeader(with: token))
-                .responseJSON { response in
-                    guard let data = response.data else { return }
-                    
-                    // Sends the 'isSaved' value back to the completion handler
-                    if  let results = try? JSONDecoder().decode([Bool].self, from: data),
-                        let saved = results.first {
-                        completionHandler(saved)
-                    }
+            URLSession.shared.request(SpotifyQuery.contains.url,
+                                      method: .GET,
+                                      parameters: self.trackIdsParameters(for: trackId),
+                                      headers: self.authorizationHeader(with: token))
+            { data in
+                guard let data = data else { return }
+                
+                // Sends the 'isSaved' value back to the completion handler
+                if  let results = try? JSONDecoder().decode([Bool].self, from: data),
+                    let saved = results.first {
+                    completionHandler(saved)
+                }
             }
         }
     }
