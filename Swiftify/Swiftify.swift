@@ -114,15 +114,7 @@ fileprivate enum SpotifyScope: String {
      with desired scope keys
      */
     static func string(with scopes: [SpotifyScope]) -> String {
-        var string = ""
-        
-        for scope in scopes {
-            // Add the selected scopes
-            string += "\(scope.rawValue) "
-        }
-        
-        // Delete last space character
-        return String(string[..<string.index(before: string.endIndex)])
+        return String(scopes.reduce("") { "\($0) \($1.rawValue)" }.dropFirst())
     }
 }
 
