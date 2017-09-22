@@ -68,8 +68,13 @@ extension URLSession {
         request.allHTTPHeaderFields = headers
         request.httpMethod          = method.rawValue
 
-        if let parameters = parameters {
-            request.url = URL(string: "\(url.absoluteString)?\(parameters.httpCompatible)")
+        if let parameters = parameters?.httpCompatible {
+            switch method {
+            case .GET, .PUT, .DELETE:
+                request.url = URL(string: "\(url.absoluteString)?\(parameters)")
+            case .POST:
+                request.httpBody = parameters.data(using: .utf8)
+            }
         }
         
         let task = URLSession.shared.dataTask(with: request) { data, response, 
