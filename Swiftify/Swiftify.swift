@@ -55,7 +55,7 @@ fileprivate struct SpotifyHeader {
 /**
  URLs for Spotify HTTP queries
  */
-fileprivate enum SpotifyQuery: String {
+fileprivate enum SpotifyQuery: String, URLConvertible {
     var url: URL? {
         switch self {
         case .master, .account:
@@ -358,7 +358,7 @@ public class SwiftifyHelper {
                         _ keyword: String,
                         completionHandler: @escaping ([T]) -> Void) where T: SpotifySearchItem {
         tokenQuery { token in
-            URLSession.shared.request(SpotifyQuery.search.url,
+            URLSession.shared.request(SpotifyQuery.search,
                                       method: .GET,
                                       parameters: self.searchParameters(for: what.type, keyword),
                                       headers: self.authorizationHeader(with: token))
@@ -435,6 +435,8 @@ public class SwiftifyHelper {
                     }
                 }
         }
+        
+        
     }
     
     /**
@@ -587,7 +589,7 @@ public class SwiftifyHelper {
     public func isSaved(trackId: String,
                         completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            URLSession.shared.request(SpotifyQuery.contains.url,
+            URLSession.shared.request(SpotifyQuery.contains,
                                       method: .GET,
                                       parameters: self.trackIdsParameters(for: trackId),
                                       headers: self.authorizationHeader(with: token))

@@ -34,6 +34,11 @@ enum HTTPRequestResult {
     case failure(Error?)
 }
 
+protocol URLConvertible {
+    
+    var url: URL? { get }
+}
+
 typealias HTTPRequestParameters = [String: Any]
 typealias HTTPRequestHeaders    = [String: String]
 
@@ -50,11 +55,11 @@ extension Dictionary where Key == String {
 
 extension URLSession {
     
-    func request(_ url: URL?,
-                        method: HTTPRequestMethod = .GET,
-                        parameters: HTTPRequestParameters? = nil,
-                        headers: HTTPRequestHeaders? = nil,
-                        completionHandler: @escaping (HTTPRequestResult) -> ()) {
+    func request(_ url:             URL?,
+                 method:            HTTPRequestMethod = .GET,
+                 parameters:        HTTPRequestParameters? = nil,
+                 headers:           HTTPRequestHeaders? = nil,
+                 completionHandler: @escaping (HTTPRequestResult) -> ()) {
         guard let url = url else { return }
         
         var request = URLRequest(url: url)
@@ -84,17 +89,27 @@ extension URLSession {
         task.resume()
     }
     
-    func request(_ rawUrl: String,
-                        method: HTTPRequestMethod = .GET,
-                        parameters: HTTPRequestParameters? = nil,
-                        headers: HTTPRequestHeaders? = nil,
-                        completionHandler: @escaping (HTTPRequestResult) -> ()) {
-        if let url = URL(string: rawUrl) {
-            request(url,
-                    method: method,
-                    parameters: parameters,
-                    headers: headers,
-                    completionHandler: completionHandler)
-        }
+    func request(_ rawUrl:          String,
+                 method:            HTTPRequestMethod = .GET,
+                 parameters:        HTTPRequestParameters? = nil,
+                 headers:           HTTPRequestHeaders? = nil,
+                 completionHandler: @escaping (HTTPRequestResult) -> ()) {
+        request(URL(string: rawUrl),
+                method: method,
+                parameters: parameters,
+                headers: headers,
+                completionHandler: completionHandler)
+    }
+    
+    func request(_ urlConvertible:  URLConvertible,
+                 method:            HTTPRequestMethod = .GET,
+                 parameters:        HTTPRequestParameters? = nil,
+                 headers:           HTTPRequestHeaders? = nil,
+                 completionHandler: @escaping (HTTPRequestResult) -> ()) {
+        request(urlConvertible.url,
+                method: method,
+                parameters: parameters,
+                headers: headers,
+                completionHandler: completionHandler)
     }
 }
