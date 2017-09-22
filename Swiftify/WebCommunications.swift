@@ -12,9 +12,26 @@ enum HTTPRequestMethod: String {
     case GET, POST, PUT, DELETE
 }
 
-fileprivate enum HTTPResponseStatusCode: Int {
+fileprivate enum HTTPResponseStatusCode {
     
-    case OK = 200
+    case OK(Int)
+    case REDIRECTION(Int)
+    case ERROR(Int)
+    
+    init?(rawValue: Int) {
+        switch rawValue / 100 {
+        case 2: self = .OK(rawValue)
+        case 3: self = .REDIRECTION(rawValue)
+        case 4: self = .ERROR(rawValue)
+        default: return nil
+        }
+    }
+}
+
+enum HTTPRequestResult {
+    
+    case success(Data)
+    case failure(Error?)
 }
 
 typealias HTTPRequestParameters = [String: Any]
@@ -37,7 +54,7 @@ extension URLSession {
                         method: HTTPRequestMethod = .GET,
                         parameters: HTTPRequestParameters? = nil,
                         headers: HTTPRequestHeaders? = nil,
-                        completionHandler: @escaping (Data?) -> ()) {
+                        completionHandler: @escaping (HTTPRequestResult) -> ()) {
         guard let url = url else { return }
         
         var request = URLRequest(url: url)
@@ -52,19 +69,16 @@ extension URLSession {
         
         let task = URLSession.shared.dataTask(with: request) { data, response, 
             error in
-            var success = false
-            
-            if let response = response as? HTTPURLResponse {
-                if case HTTPResponseStatusCode.OK.rawValue = response.statusCode {
-                    success = true
-                }
+            guard   let data = data,
+                    let response = response as? HTTPURLResponse,
+                    let status = HTTPResponseStatusCode(rawValue: response.statusCode),
+                    case .OK(_) = status
+            else {
+                DispatchQueue.main.async { completionHandler(.failure(error)) }
+                return
             }
             
-            if let error = error {
-                print(error)
-            } else {
-                DispatchQueue.main.async { completionHandler(data) }
-            }
+            DispatchQueue.main.async { completionHandler(.success(data)) }
         }
         
         task.resume()
@@ -74,7 +88,7 @@ extension URLSession {
                         method: HTTPRequestMethod = .GET,
                         parameters: HTTPRequestParameters? = nil,
                         headers: HTTPRequestHeaders? = nil,
-                        completionHandler: @escaping (Data?) -> ()) {
+                        completionHandler: @escaping (HTTPRequestResult) -> ()) {
         if let url = URL(string: rawUrl) {
             request(url,
                     method: method,

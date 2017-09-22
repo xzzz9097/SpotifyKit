@@ -337,10 +337,9 @@ public class SwiftifyHelper {
                                                           playlistUserId: playlistUserId),
                                       method: .GET,
                                       headers: self.authorizationHeader(with: token))
-            { data in
-                guard let data = data else { return }
-                
-                if let result = try? JSONDecoder().decode(what,
+            { result in
+                if  case let .success(data) = result,
+                    let result = try? JSONDecoder().decode(what,
                                                           from: data) {
                     completionHandler(result)
                 }
@@ -363,10 +362,9 @@ public class SwiftifyHelper {
                                       method: .GET,
                                       parameters: self.searchParameters(for: what.type, keyword),
                                       headers: self.authorizationHeader(with: token))
-            { data in
-                guard let data = data else { return }
-
-                if let results = try? JSONDecoder().decode(SpotifyFindResponse<T>.self,
+            { result in
+                if  case let .success(data) = result,
+                    let results = try? JSONDecoder().decode(SpotifyFindResponse<T>.self,
                                                            from: data).results.items {
                     completionHandler(results)
                 }
@@ -508,10 +506,9 @@ public class SwiftifyHelper {
             URLSession.shared.request(SpotifyQuery.libraryUrlFor(what),
                                       method: .GET,
                                       headers: self.authorizationHeader(with: token))
-            { data in
-                guard let data = data else { return }
-
-                if let results = try? JSONDecoder().decode(SpotifyLibraryResponse<T>.self,
+            { result in
+                if  case let .success(data) = result,
+                    let results = try? JSONDecoder().decode(SpotifyLibraryResponse<T>.self,
                                                            from: data).items {
                     completionHandler(results)
                 }
@@ -594,11 +591,10 @@ public class SwiftifyHelper {
                                       method: .GET,
                                       parameters: self.trackIdsParameters(for: trackId),
                                       headers: self.authorizationHeader(with: token))
-            { data in
-                guard let data = data else { return }
-                
+            { result in
                 // Sends the 'isSaved' value back to the completion handler
-                if  let results = try? JSONDecoder().decode([Bool].self, from: data),
+                if  case let .success(data) = result,
+                    let results = try? JSONDecoder().decode([Bool].self, from: data),
                     let saved = results.first {
                     completionHandler(saved)
                 }
