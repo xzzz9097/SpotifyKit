@@ -397,15 +397,9 @@ public class SwiftifyHelper {
      and insert it to get the actual token
      */
     public func authorize() {
-        guard let application = application else { return }
-        
-        Alamofire.request(SpotifyQuery.authorize.url!,
-                          method: .get,
-                          parameters: authorizationParameters(for: application))
-            .response { response in
-                if let request = response.request, let url = request.url {
-                    NSWorkspace.shared.open(url)
-                }
+        if  let application = application,
+            let url = SpotifyQuery.authorize.url?.with(parameters: authorizationParameters(for: application)) {
+            NSWorkspace.shared.open(url)
         }
     }
     
