@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum HTTPRequestMethod: String {
+enum HTTPRequestMethod: String {
     
     case GET, POST, PUT, DELETE
 }
@@ -17,10 +17,10 @@ fileprivate enum HTTPResponseStatusCode: Int {
     case OK = 200
 }
 
-public typealias HTTPRequestParameters = [String: Any]
-public typealias HTTPRequestHeaders    = [String: String]
+typealias HTTPRequestParameters = [String: Any]
+typealias HTTPRequestHeaders    = [String: String]
 
-public extension Dictionary where Key == String {
+extension Dictionary where Key == String {
     
     var httpCompatible: String {
         return String(
@@ -31,9 +31,9 @@ public extension Dictionary where Key == String {
     }
 }
 
-public extension URLSession {
+extension URLSession {
     
-    public func request(_ url: URL?,
+    func request(_ url: URL?,
                         method: HTTPRequestMethod = .GET,
                         parameters: HTTPRequestParameters? = nil,
                         headers: HTTPRequestHeaders? = nil,
@@ -70,7 +70,7 @@ public extension URLSession {
         task.resume()
     }
     
-    public func request(_ rawUrl: String,
+    func request(_ rawUrl: String,
                         method: HTTPRequestMethod = .GET,
                         parameters: HTTPRequestParameters? = nil,
                         headers: HTTPRequestHeaders? = nil,
