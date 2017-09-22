@@ -521,13 +521,16 @@ public class SwiftifyHelper {
     public func save(trackId: String,
                      completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self)!,
-                              method: .put,
-                              parameters: self.trackIdsParameters(for: trackId),
-                              encoding: URLEncoding(destination: .queryString),
-                              headers: self.authorizationHeader(with: token))
-                .validate().responseData { response in
-                    completionHandler(response.result.isSuccess)
+            URLSession.shared.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self),
+                                      method: .PUT,
+                                      parameters: self.trackIdsParameters(for: trackId),
+                                      headers: self.authorizationHeader(with: token))
+            { result in
+                if case .success(_) = result {
+                    completionHandler(true)
+                } else {
+                    completionHandler(false)
+                }
             }
         }
     }
@@ -552,14 +555,18 @@ public class SwiftifyHelper {
     public func delete(trackId: String,
                        completionHandler: @escaping (Bool) -> Void) {
         tokenQuery { token in
-            Alamofire.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self)!,
-                              method: .delete,
-                              parameters: self.trackIdsParameters(for: trackId),
-                              encoding: URLEncoding(destination: .queryString),
-                              headers: self.authorizationHeader(with: token))
-                .validate().responseData { response in
-                    completionHandler(response.result.isSuccess)
+            URLSession.shared.request(SpotifyQuery.libraryUrlFor(SpotifyTrack.self),
+                                      method: .DELETE,
+                                      parameters: self.trackIdsParameters(for: trackId),
+                                      headers: self.authorizationHeader(with: token))
+            { result in
+                if case .success(_) = result {
+                    completionHandler(true)
+                } else {
+                    completionHandler(false)
+                }
             }
+                
         }
     }
     
