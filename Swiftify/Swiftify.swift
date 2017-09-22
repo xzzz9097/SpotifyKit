@@ -416,24 +416,24 @@ public class SwiftifyHelper {
     public func saveToken(from authorizationCode: String) {
         guard let application = application else { return }
         
-        Alamofire.request(SpotifyQuery.token.url!,
-                          method: .post,
-                          parameters: tokenParameters(for: application,
-                                                      from: authorizationCode))
-            .validate().responseJSON { response in
-                if response.result.isSuccess {
-                    self.token = self.generateToken(from: response)
+        URLSession.shared.request(SpotifyQuery.token,
+                                  method: .POST,
+                                  parameters: tokenParameters(for: application,
+                                                              from: authorizationCode))
+        { result in
+            if case let .success(data) = result {
+                self.token = self.generateToken(from: data)
+                
+                // Prints the token for debug
+                if let token = self.token {
+                    debugPrint(token.details)
                     
-                    // Prints the token for debug
-                    if let token = self.token {
-                        debugPrint(token.details)
-                        
-                        switch self.tokenSavingMethod {
-                        case .preference:
-                            token.writeToKeychain()
-                        }
+                    switch self.tokenSavingMethod {
+                    case .preference:
+                        token.writeToKeychain()
                     }
                 }
+            }
         }
         
         
@@ -472,24 +472,24 @@ public class SwiftifyHelper {
     public func refreshToken(completionHandler: @escaping (Bool) -> Void) {
         guard let application = application, let token = self.token else { return }
         
-        Alamofire.request(SpotifyQuery.token.url!,
-                          method: .post,
-                          parameters: refreshTokenParameters(from: token),
-                          headers: refreshTokenHeaders(for: application))
-            .validate().responseJSON { response in
-                completionHandler(response.result.isSuccess)
+        URLSession.shared.request(SpotifyQuery.token,
+                                  method: .POST,
+                                  parameters: refreshTokenParameters(from: token),
+                                  headers: refreshTokenHeaders(for: application))
+        { result in
+            if case let .success(data) = result {
+                completionHandler(true)
                 
-                if response.result.isSuccess {
-                    guard let data = response.data else { return }
-                    
-                    // Refresh current token
-                    // Only 'accessToken' needs to be changed
-                    // guard is not really needed here because we checked before
-                    self.token?.refresh(from: data)
-                    
-                    // Prints the token for debug
-                    if let token = self.token { debugPrint(token.details) }
-                }
+                // Refresh current token
+                // Only 'accessToken' needs to be changed
+                // guard is not really needed here because we checked before
+                self.token?.refresh(from: data)
+                
+                // Prints the token for debug
+                if let token = self.token { debugPrint(token.details) }
+            } else {
+                completionHandler(false)
+            }
         }
     }
     
@@ -690,9 +690,7 @@ public class SwiftifyHelper {
      Generates a 'SpotifyToken' from a JSON response
      - return: the 'SpotifyToken' object
      */
-    private func generateToken(from response: DataResponse<Any>) -> SpotifyToken? {
-        guard let data = response.data else { return nil }
-        
+    private func generateToken(from data: Data) -> SpotifyToken? {
         return try? JSONDecoder().decode(SpotifyToken.self, from: data)
     }
     
