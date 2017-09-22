@@ -49,7 +49,7 @@ public extension URLSession {
             if let error = error {
                 print(error)
             } else {
-                completionHandler(data)
+                DispatchQueue.main.async { completionHandler(data) }
             }
         }
         
