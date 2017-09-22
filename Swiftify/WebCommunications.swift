@@ -7,13 +7,18 @@
 
 import Foundation
 
-public enum RequestMethod: String {
+public enum HTTPRequestMethod: String {
     
     case GET, POST, PUT, DELETE
 }
 
-public typealias RequestParameters = [String: Any]
-public typealias RequestHeaders    = [String: String]
+fileprivate enum HTTPResponseStatusCode: Int {
+    
+    case OK = 200
+}
+
+public typealias HTTPRequestParameters = [String: Any]
+public typealias HTTPRequestHeaders    = [String: String]
 
 public extension Dictionary where Key == String {
     
@@ -29,9 +34,9 @@ public extension Dictionary where Key == String {
 public extension URLSession {
     
     public func request(_ url: URL?,
-                        method: RequestMethod = .GET,
-                        parameters: RequestParameters? = nil,
-                        headers: RequestHeaders? = nil,
+                        method: HTTPRequestMethod = .GET,
+                        parameters: HTTPRequestParameters? = nil,
+                        headers: HTTPRequestHeaders? = nil,
                         completionHandler: @escaping (Data?) -> ()) {
         guard let url = url else { return }
         
@@ -45,7 +50,16 @@ public extension URLSession {
             request.url = URL(string: "\(url.absoluteString)?\(parameters.httpCompatible)")
         }
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) { data, response, 
+            error in
+            var success = false
+            
+            if let response = response as? HTTPURLResponse {
+                if case HTTPResponseStatusCode.OK.rawValue = response.statusCode {
+                    success = true
+                }
+            }
+            
             if let error = error {
                 print(error)
             } else {
@@ -57,9 +71,9 @@ public extension URLSession {
     }
     
     public func request(_ rawUrl: String,
-                        method: RequestMethod = .GET,
-                        parameters: RequestParameters? = nil,
-                        headers: RequestHeaders? = nil,
+                        method: HTTPRequestMethod = .GET,
+                        parameters: HTTPRequestParameters? = nil,
+                        headers: HTTPRequestHeaders? = nil,
                         completionHandler: @escaping (Data?) -> ()) {
         if let url = URL(string: rawUrl) {
             request(url,
