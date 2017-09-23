@@ -393,7 +393,11 @@ public class SwiftifyHelper {
     public func authorize() {
         if  let application = application,
             let url = SpotifyQuery.authorize.url?.with(parameters: authorizationParameters(for: application)) {
-            NSWorkspace.shared.open(url)
+            #if os(OSX)
+                NSWorkspace.shared.open(url)
+            #else
+                UIApplication.shared.open(url)
+            #endif
         }
     }
     
