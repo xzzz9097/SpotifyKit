@@ -6,7 +6,11 @@
 //
 //
 
-import Foundation
+#if !os(OSX)
+    import UIKit
+#else
+    import AppKit
+#endif
 
 // MARK: Token saving options
 
