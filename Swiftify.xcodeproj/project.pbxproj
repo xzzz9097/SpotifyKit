@@ -20,7 +20,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		0C2CF31C1E3E7FEF00E10765 /* Swiftify.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Swiftify.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C2CF31C1E3E7FEF00E10765 /* SwiftifyMac.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftifyMac.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Swiftify.h; sourceTree = "<group>"; };
 		0C2CF3201E3E7FEF00E10765 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0C41BABD1F6D680900A895F7 /* SpotifyItems.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyItems.swift; sourceTree = "<group>"; };
@@ -89,7 +89,7 @@
 		0C2CF31D1E3E7FEF00E10765 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0C2CF31C1E3E7FEF00E10765 /* Swiftify.framework */,
+				0C2CF31C1E3E7FEF00E10765 /* SwiftifyMac.framework */,
 				0C41BADB1F6D72A400A895F7 /* Mac Demo.app */,
 			);
 			name = Products;
@@ -152,9 +152,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		0C2CF31B1E3E7FEF00E10765 /* Swiftify */ = {
+		0C2CF31B1E3E7FEF00E10765 /* SwiftifyMac */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0C2CF3241E3E7FEF00E10765 /* Build configuration list for PBXNativeTarget "Swiftify" */;
+			buildConfigurationList = 0C2CF3241E3E7FEF00E10765 /* Build configuration list for PBXNativeTarget "SwiftifyMac" */;
 			buildPhases = (
 				A1E969A4C7742F66E61C9F02 /* [CP] Check Pods Manifest.lock */,
 				0C2CF3171E3E7FEF00E10765 /* Sources */,
@@ -167,9 +167,9 @@
 			);
 			dependencies = (
 			);
-			name = Swiftify;
+			name = SwiftifyMac;
 			productName = Swiftify;
-			productReference = 0C2CF31C1E3E7FEF00E10765 /* Swiftify.framework */;
+			productReference = 0C2CF31C1E3E7FEF00E10765 /* SwiftifyMac.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		0C41BADA1F6D72A400A895F7 /* Mac Demo */ = {
@@ -225,7 +225,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0C2CF31B1E3E7FEF00E10765 /* Swiftify */,
+				0C2CF31B1E3E7FEF00E10765 /* SwiftifyMac */,
 				0C41BADA1F6D72A400A895F7 /* Mac Demo */,
 			);
 		};
@@ -653,7 +653,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0C2CF3241E3E7FEF00E10765 /* Build configuration list for PBXNativeTarget "Swiftify" */ = {
+		0C2CF3241E3E7FEF00E10765 /* Build configuration list for PBXNativeTarget "SwiftifyMac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0C2CF3221E3E7FEF00E10765 /* Debug */,
