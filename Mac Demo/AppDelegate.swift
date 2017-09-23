@@ -7,7 +7,6 @@
 
 import Cocoa
 import Swiftify
-import Alamofire
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -30,8 +29,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             self.find(SpotifyTrack.self, "concrete heartbeat")
             self.library(SpotifyPlaylist.self)
-            self.get(SpotifyPlaylist.self, id: "4IKyYu9zNndBVpi8FoekaS")
+            self.get(SpotifyAlbum.self, id: "4IKyYu9zNndBVpi8FoekaS")
             self.isSaved("5FTCKvxzqy72ceS4Ujux4N")
+            //self.save("5FTCKvxzqy72ceS4Ujux4N")
         }
     }
     
@@ -104,6 +104,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func isSaved(_ trackId: String) {
         swiftify.isSaved(trackId: trackId) { saved in
             print("Track \(trackId) saved: \(saved)")
+        }
+    }
+    
+    func save(_ trackId: String) {
+        swiftify.save(trackId: trackId) { saved in
+            print("Track \(trackId) saved: \(saved)")
+        }
+    }
+    
+    func delete(_ trackId: String) {
+        swiftify.delete(trackId: trackId) { saved in
+            print("Track \(trackId) deleted: \(saved)")
         }
     }
 }

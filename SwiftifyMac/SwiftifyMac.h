@@ -1,5 +1,5 @@
 //
-//  Swiftify.h
+//  SwiftifyMac.h
 //  Swiftify
 //
 //  Created by Marco Albera on 29/01/17.
