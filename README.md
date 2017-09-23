@@ -44,7 +44,7 @@ NSAppleEventManager.shared().setEventHandler(self,
  */
 func handleURLEvent(event: NSAppleEventDescriptor,
                     replyEvent: NSAppleEventDescriptor) {
-	if  let urlDescriptor = event.paramDescriptor(forKeyword: keyDirectObject),
+	if	let urlDescriptor = event.paramDescriptor(forKeyword: keyDirectObject),
 		let urlString     = urlDescriptor.stringValue,
 		let urlComponents = URLComponents(string: urlString),
 		let queryItems    = urlComponents.queryItems {
@@ -75,7 +75,7 @@ public func find<T>(_ what: T.Type,
 // Example
 swiftify.find(SpotifyTrack.self, "track_title") { tracks in
 	// Tracks is a [SpotifyTrack] array
-    for track in results {
+	for track in tracks {
         print("URI:    \(track.uri), "         +
               "Name:   \(track.name), "        +
               "Artist: \(track.artist.name), " +
