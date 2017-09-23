@@ -1,48 +1,35 @@
 ## Swiftify
 A Swift client for Spotify's Web API.
 
-## Setup
-### JSON data
-You must setup two JSON files in your project: one for app authentication, to be filled with your developer data, and one for token saving, that will automatically be compiled.
-```json
-{
-	"client_id": "",
-	"client_secret": "",
-	"redirect_uri": ""
-}
-```
-
-```json
-{
-  "refresh_token" : "",
-  "token_type" : "",
-  "access_token" : "",
-  "expires_in" : 3600
-}
-```
-Once you've added the files to your project, load them like this:
-```swift
-let applicationJsonURL = Bundle.main.url(forResource: "application", withExtension: "json")
-
-let tokenJsonURL = Bundle.main.url(forResource: "token", withExtension: "json")
-```
-
 ### Initialization
+You can easily create a Swiftify helper object by providing your Spotify application data.
 ```swift
-let swiftify = SwiftifyHelper(with: applicationJsonURL, tokenJsonURL)
+let swiftify = SwiftifyHelper(with:
+    SwiftifyHelper.SpotifyDeveloperApplication(
+        clientId:     "client_id",
+        clientSecret: "client_secret",
+        redirectUri:  "redirect_uri"
+    )
+)
 ```
-Swiftify can also be initialized without token files (it won't write your token for permanent saving) or even with no application file, allowing only generic queries and no account-related operations.
+The token data gathered at authentication moment is automatically saved in a secure preference with Keychain.
 
 ### Authentication
-This is arguably the trickiest step. The command:
+This is arguably the trickiest step. Personally, at app launch, I use a load function like this:
 ```swift
-swiftify.authorize()
+func loadSwiftify() {
+    if !swiftify.hasToken {
+        // Try to authenticate if there's no token
+        swiftify.authorize()
+    } else {
+        // Refresh the token if present
+        swiftify.refreshToken { refreshed in }
+    }
+}
 ```
-sends a request of authorization for the user's account, that will result in a HTTP response with the specified URL prefix and the authorization code as parameter. Then, you can manually copy and paste the code:
-```swift
-swiftify.saveToken(from: authorizationCode)
-```
- or, if you're in a proper app project, setup a URL scheme and catch the code like this:
+authorize() sends a request of authorization for the user's account, that will result in a HTTP response with the specified URL prefix and the authorization code as parameter.
+
+You must setup a URL scheme (in Info.plist file of your app) and catch the code like this:
 ```swift
 /**
  Registers the URL watcher
@@ -53,33 +40,42 @@ NSAppleEventManager.shared().setEventHandler(self,
     andEventID: AEEventID(kAEGetURL))
 
 /**
- Catches URLs with specific prefix ("muse://")
+ Catches URLs with specific prefix ("your_spotify_redirect_uri://")
  */
 func handleURLEvent(event: NSAppleEventDescriptor,
                     replyEvent: NSAppleEventDescriptor) {
-    if  let urlDescriptor = event.paramDescriptor(forKeyword: keyDirectObject),
-        let urlString     = urlDescriptor.stringValue,
-        let urlComponents = URLComponents(string: urlString),
-        let queryItems    = (urlComponents.queryItems as [NSURLQueryItem]?) {
-            // Get "code=" parameter from URL
-            // https://gist.github.com/gillesdemey/509bb8a1a8c576ea215a
-            let code = queryItems.filter({ (item) in item.name == "code" }).first?.value!
+	if  let urlDescriptor = event.paramDescriptor(forKeyword: keyDirectObject),
+		let urlString     = urlDescriptor.stringValue,
+		let urlComponents = URLComponents(string: urlString),
+		let queryItems    = urlComponents.queryItems {
 
-            // Send it to Swiftify
-            swiftify.saveToken(from: code)
-        }
+		// Get "code=" parameter from URL
+		// https://gist.github.com/gillesdemey/509bb8a1a8c576ea215a
+		let code = queryItems.filter { item in item.name == "code" } .first?.value!
+
+		// Send code to Swiftify
+		if let authorizationCode = code {
+			swiftify.saveToken(from: authorizationCode)
+		}
+	}
 }
 ```
+Now Swiftify is fully authenticated with your user account and you can use all the methods it provides.
 
 ## Usage
-All methods send HTTP request through Alamofire API and report the results with simple callbacks
-### Search
-Finds tracks (as in this example), albums or artists in Spotify database, without requiring user authorization:
+All methods send HTTP request through URLSession API and report the results with simple callbacks
+### Find
+Finds tracks (as in this example), albums or artists in Spotify database:
 ```swift
-swiftify.find(.track, "track_title") { results in
-    guard let tracks = results as? [SpotifyTrack] else { return }
+// Signature
+public func find<T>(_ what: T.Type,
+                    _ keyword: String,
+                    completionHandler: @escaping ([T]) -> Void) where T: SpotifySearchItem
 
-    for track in tracks {
+// Example
+swiftify.find(SpotifyTrack.self, "track_title") { tracks in
+	// Tracks is a [SpotifyTrack] array
+    for track in results {
         print("URI:    \(track.uri), "         +
               "Name:   \(track.name), "        +
               "Artist: \(track.artist.name), " +
@@ -87,6 +83,7 @@ swiftify.find(.track, "track_title") { results in
     }
 }
 ```
+get() and library() functions are also available for retrieving a specific item or fetching your library's tracks, albums or playlists.
 
 ### User library interaction
 Save, delete and check saved status for tracks in "Your Music" playlist
