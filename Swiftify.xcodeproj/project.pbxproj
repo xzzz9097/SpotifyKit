@@ -98,12 +98,8 @@
 		0C2CF31E1E3E7FEF00E10765 /* Swiftify */ = {
 			isa = PBXGroup;
 			children = (
-				0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */,
-				0C6BB59F1E3F793E004E3FBD /* Swiftify.swift */,
-				0C4A98451F7414970067CB60 /* WebCommunications.swift */,
-				0C41BABD1F6D680900A895F7 /* SpotifyItems.swift */,
-				0C4881101F719D740018C18F /* Keychain.swift */,
 				0C2CF3201E3E7FEF00E10765 /* Info.plist */,
+				0C50ADBF1F766F1000975644 /* Sources */,
 			);
 			path = Swiftify;
 			sourceTree = "<group>";
@@ -118,6 +114,18 @@
 				0C41BAE51F6D72A400A895F7 /* Mac_Demo.entitlements */,
 			);
 			path = "Mac Demo";
+			sourceTree = "<group>";
+		};
+		0C50ADBF1F766F1000975644 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				0C2CF31F1E3E7FEF00E10765 /* Swiftify.h */,
+				0C6BB59F1E3F793E004E3FBD /* Swiftify.swift */,
+				0C4A98451F7414970067CB60 /* WebCommunications.swift */,
+				0C41BABD1F6D680900A895F7 /* SpotifyItems.swift */,
+				0C4881101F719D740018C18F /* Keychain.swift */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 		8B5717CB1BDA573B2BFF62D9 /* Frameworks */ = {
