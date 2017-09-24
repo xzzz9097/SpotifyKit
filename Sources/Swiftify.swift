@@ -394,6 +394,9 @@ public class SwiftifyHelper {
      and insert it to get the actual token
      */
     public func authorize() {
+        // Only proceed with authorization if we have no token
+        guard !hasToken else { return }
+        
         if  let application = application,
             let url = SpotifyQuery.authorize.url?.with(parameters: authorizationParameters(for: application)) {
             #if os(OSX)
