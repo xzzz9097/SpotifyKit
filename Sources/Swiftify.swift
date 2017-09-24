@@ -285,21 +285,11 @@ public class SwiftifyHelper {
     
     private init() { }
     
-    public init(with application: SpotifyDeveloperApplication, autoLogin: Bool = false) {
+    public init(with application: SpotifyDeveloperApplication) {
         self.application = application
         
         if let token = SpotifyToken.loadFromKeychain() {
             self.token = token
-            
-            if autoLogin {
-                if !self.hasToken {
-                    // Try to authenticate if there's no token
-                    self.authorize()
-                } else {
-                    // Refresh the token if present
-                    self.refreshToken { _ in }
-                }
-            }
         }
     }
     
