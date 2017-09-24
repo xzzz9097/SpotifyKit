@@ -7,10 +7,10 @@
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string></string>
+				<string>swiftifyios</string>
 			</array>
 			<key>CFBundleURLName</key>
-			<string>swiftifyios</string>
+			<string></string>
 		</dict>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>

@@ -21,11 +21,13 @@ class ViewController: UIViewController {
     )
     
     // The Swiftify helper object that will allow you to perform the queries
-    let swiftify = SwiftifyHelper(with: application, autoLogin: true)
+    let swiftify = SwiftifyHelper(with: application)
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Authorize our app for the Spotify account if there is no token
+        // This opens a browser window from which the user can authenticate into his account
         swiftify.authorize()
     }
 
