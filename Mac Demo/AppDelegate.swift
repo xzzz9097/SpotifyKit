@@ -18,13 +18,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             clientId:     "64961bd35af24dd4862ae29e0a8f5caa",
             clientSecret: "8d6ec5ba180b4114b4212bcd618bf6ad",
             redirectUri:  "swiftifymac://callback"
-        )
+        ), autoLogin: true
     )
     
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         initEventManager()
-        
-        loadSwiftify()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             self.find(SpotifyTrack.self, "concrete heartbeat")
