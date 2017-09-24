@@ -290,6 +290,9 @@ public class SwiftifyHelper {
         
         if let token = SpotifyToken.loadFromKeychain() {
             self.token = token
+            
+            // Refresh the token if present
+            self.refreshToken { _ in }
         }
     }
     
