@@ -1,3 +1,4 @@
 language: objective-c
-xcode_workspace: Swiftify.xcworkspace 
-xcode_scheme: SwiftifyiOS
+osx_image: xcode9
+script:
+        - xcodebuild clean build -workspace Swiftify.xcworkspace -scheme SwiftifyMac
