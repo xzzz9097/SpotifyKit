@@ -19,6 +19,7 @@
 		0C41BADE1F6D72A400A895F7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C41BADD1F6D72A400A895F7 /* AppDelegate.swift */; };
 		0C41BAE01F6D72A400A895F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C41BADF1F6D72A400A895F7 /* Assets.xcassets */; };
 		0C41BAE31F6D72A400A895F7 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0C41BAE11F6D72A400A895F7 /* MainMenu.xib */; };
+		0C424E931F793EEE009864E6 /* Swiftify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C2CF31C1E3E7FEF00E10765 /* Swiftify.framework */; };
 		0C4881111F719D740018C18F /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4881101F719D740018C18F /* Keychain.swift */; };
 		0C4A98461F7414970067CB60 /* WebCommunications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4A98451F7414970067CB60 /* WebCommunications.swift */; };
 		0C50ADC91F76742800975644 /* SwiftifyiOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C50ADC71F76742800975644 /* SwiftifyiOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -27,7 +28,6 @@
 		0C50ADCF1F76773F00975644 /* SpotifyItems.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C41BABD1F6D680900A895F7 /* SpotifyItems.swift */; };
 		0C50ADD01F76774100975644 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4881101F719D740018C18F /* Keychain.swift */; };
 		0C6BB5A01E3F793E004E3FBD /* Swiftify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6BB59F1E3F793E004E3FBD /* Swiftify.swift */; };
-		27BC85E9B7D9034F91795E91 /* Pods_Swiftify.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B14A03FAEFC7E82AED7C9E4 /* Pods_Swiftify.framework */; };
 		ABA8B84954CA1D39692487E1 /* Pods_SwiftifyMac.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E208D4B245170D2AD96BB0A9 /* Pods_SwiftifyMac.framework */; };
 		C6187C6B72A975828FDE6C59 /* Pods_SwiftifyiOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C152E90443C83C2A5ACE15B2 /* Pods_SwiftifyiOS.framework */; };
 /* End PBXBuildFile section */
@@ -77,7 +77,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				27BC85E9B7D9034F91795E91 /* Pods_Swiftify.framework in Frameworks */,
 				ABA8B84954CA1D39692487E1 /* Pods_SwiftifyMac.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C424E931F793EEE009864E6 /* Swiftify.framework in Frameworks */,
 				09D7F24D415A335A5087BFAD /* Pods_Mac_Demo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
