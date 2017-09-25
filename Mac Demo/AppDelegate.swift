@@ -6,15 +6,15 @@
 //
 
 import Cocoa
-import Swiftify
+import SpotifyKit
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBOutlet weak var window: NSWindow!
     
-    let swiftify = SwiftifyHelper(with:
-        SwiftifyHelper.SpotifyDeveloperApplication(
+    let spotifyManager = SpotifyManager(with:
+        SpotifyManager.SpotifyDeveloperApplication(
             clientId:     "64961bd35af24dd4862ae29e0a8f5caa",
             clientSecret: "8d6ec5ba180b4114b4212bcd618bf6ad",
             redirectUri:  "swiftifymac://callback"
@@ -24,7 +24,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         initEventManager()
         
-        loadSwiftify()
+        spotifyManager.authorize()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             self.find(SpotifyTrack.self, "concrete heartbeat")
@@ -36,16 +36,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationWillTerminate(_ aNotification: Notification) { }
-    
-    func loadSwiftify() {
-        if !swiftify.hasToken {
-            // Try to authenticate if there's no token
-            swiftify.authorize()
-        } else {
-            // Refresh the token if present
-            swiftify.refreshToken { refreshed in }
-        }
-    }
     
     // MARK: URL handling
     
@@ -64,14 +54,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if  let descriptor = event.paramDescriptor(forKeyword: keyDirectObject),
             let urlString  = descriptor.stringValue,
             let url        = URL(string: urlString) {
-            swiftify.saveToken(from: url)
+            spotifyManager.saveToken(from: url)
         }
     }
     
     // MARK: Swiftify features implementation
     
     func get<T>(_ type: T.Type, id: String, playlistUserId: String? = nil) where T: SpotifySearchItem {
-        swiftify.get(type, id: id) { result in
+        spotifyManager.get(type, id: id) { result in
             print("Got: \(result)")
             
             if let collection = result as? SpotifyTrackCollection {
@@ -81,31 +71,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func find<T>(_ type: T.Type, _ keyword: String) where T: SpotifySearchItem {
-        swiftify.find(type, keyword) { result in
+        spotifyManager.find(type, keyword) { result in
             print(result)
         }
     }
     
     func library<T>(_ type: T.Type) where T: SpotifyLibraryItem {
-        swiftify.library(type) { result in
+        spotifyManager.library(type) { result in
             print(result)
         }
     }
     
     func isSaved(_ trackId: String) {
-        swiftify.isSaved(trackId: trackId) { saved in
+        spotifyManager.isSaved(trackId: trackId) { saved in
             print("Track \(trackId) saved: \(saved)")
         }
     }
     
     func save(_ trackId: String) {
-        swiftify.save(trackId: trackId) { saved in
+        spotifyManager.save(trackId: trackId) { saved in
             print("Track \(trackId) saved: \(saved)")
         }
     }
     
     func delete(_ trackId: String) {
-        swiftify.delete(trackId: trackId) { saved in
+        spotifyManager.delete(trackId: trackId) { saved in
             print("Track \(trackId) deleted: \(saved)")
         }
     }

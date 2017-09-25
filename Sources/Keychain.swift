@@ -1,6 +1,6 @@
 //
 //  Keychain.swift
-//  Swiftify
+//  SpotifyKit
 //
 //  Created by Marco Albera on 19/09/2017.
 //

@@ -1,6 +1,6 @@
 //
 //  SpotifyItems.swift
-//  Swiftify
+//  SpotifyKit
 //
 //  Created by Marco Albera on 16/09/2017.
 //

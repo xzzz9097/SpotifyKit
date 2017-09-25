@@ -7,21 +7,21 @@
 
 import UIKit
 
-// Import Swiftify iOS library
-import Swiftify
+// Import SpotifyKit iOS library
+import SpotifyKit
 
-// MARK: Swiftify initialization
+// MARK: SpotifyKit initialization
 
 // The Spotify developer application object
 // Fill this with the data from the app you've set up on Spotify developer page
-fileprivate let application = SwiftifyHelper.SpotifyDeveloperApplication(
+fileprivate let application = SpotifyManager.SpotifyDeveloperApplication(
     clientId:     "3c13957ca82a45158ad7854aef9778e4",
     clientSecret: "77f7e2109e0340a384d5745df2043d66",
     redirectUri:  "swiftifyios://callback"
 )
 
-// The Swiftify helper object that will allow you to perform the queries
-let swiftify = SwiftifyHelper(with: application)
+// The SpotifyKit helper object that will allow you to perform the queries
+let spotifyManager = SpotifyManager(with: application)
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      to Swifify, which will generate the code and save it in Keychain for persistency
      */
     func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-        swiftify.saveToken(from: url)
+        spotifyManager.saveToken(from: url)
         
         return true
     }

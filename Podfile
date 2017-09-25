@@ -8,11 +8,11 @@ use_frameworks!
 def pods
 end
 
-target 'SwiftifyiOS' do
+target 'SpotifyKitiOS' do
   pods
 end
 
-target 'SwiftifyMac' do
+target 'SpotifyKitMac' do
   pods
 end
 

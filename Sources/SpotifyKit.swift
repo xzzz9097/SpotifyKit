@@ -1,6 +1,6 @@
 //
-//  Swiftify.swift
-//  Swiftify
+//  SpotifyKit.swift
+//  SpotifyKit
 //
 //  Created by Marco Albera on 30/01/17.
 //
@@ -141,7 +141,7 @@ fileprivate enum SpotifyTokenGrantType: String {
 
 // MARK: Helper class
 
-public class SwiftifyHelper {
+public class SpotifyManager {
     
     public struct SpotifyDeveloperApplication {
         var clientId:     String
@@ -157,7 +157,7 @@ public class SwiftifyHelper {
         }
     }
     
-    @objc(Swiftify)private class SpotifyToken: NSObject, Decodable, NSCoding {
+    @objc(SpotifyKit)private class SpotifyToken: NSObject, Decodable, NSCoding {
         var accessToken:  String
         var expiresIn:    Int
         var refreshToken: String
@@ -281,7 +281,7 @@ public class SwiftifyHelper {
     
     // MARK: Constructors
     
-    public static let shared = SwiftifyHelper()
+    public static let shared = SpotifyManager()
     
     private init() { }
     
@@ -419,7 +419,7 @@ public class SwiftifyHelper {
             // Get "code=" parameter from URL
             let code = queryItems.filter { item in item.name == "code" } .first?.value!
             
-            // Send code to Swiftify
+            // Send code to SpotifyKit
             if let authorizationCode = code {
                 saveToken(from: authorizationCode)
             }

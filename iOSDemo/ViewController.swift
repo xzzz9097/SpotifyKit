@@ -7,9 +7,6 @@
 
 import UIKit
 
-// Import Swiftify iOS library
-import Swiftify
-
 class ViewController: UIViewController {
 
     override func viewDidLoad() {
@@ -17,7 +14,7 @@ class ViewController: UIViewController {
         
         // Authorize our app for the Spotify account if there is no token
         // This opens a browser window from which the user can authenticate into his account
-        swiftify.authorize()
+        spotifyManager.authorize()
     }
 
     override func didReceiveMemoryWarning() {

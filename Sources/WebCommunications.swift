@@ -1,6 +1,6 @@
 //
 //  WebCommunications.swift
-//  Swiftify
+//  SpotifyKit
 //
 //  Created by Marco Albera on 21/09/2017.
 //
