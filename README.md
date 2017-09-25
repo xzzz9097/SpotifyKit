@@ -1,7 +1,7 @@
-## Swiftify
+# Swiftify
 A Swift client for Spotify's Web API.
 
-### Initialization
+## Initialization
 You can easily create a Swiftify helper object by providing your Spotify application data.
 ```swift
 let swiftify = SwiftifyHelper(with:
@@ -14,17 +14,18 @@ let swiftify = SwiftifyHelper(with:
 ```
 The token data gathered at authentication moment is automatically saved in a secure preference with Keychain.
 
-### Authentication
+## Authentication
 This is arguably the trickiest step. At your app launch, you should call authorization method like this:
 ```swift
-swftify.authorize()
+swiftify.authorize()
 ```
 It sends a request of authorization for the user's account, that will result in a HTTP response with the specified URL prefix and the authorization code as parameter.
 The method automatically skips the process if a saved token is found.
 
 Then, in order to complete authentication and obtain the token, you must setup a URL scheme (in Info.plist file of your app) and catch the code like this:
+### iOS
 ```swift
-// MARK: iOS - in your AppDelegate.swift file
+// MARK: in your AppDelegate.swift file
 
 /**
  Catches URLs with specific prefix ("your_spotify_redirect_uri://")
@@ -35,10 +36,8 @@ func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
     return true
 }
 ```
-
+### MacOS
 ```swift
-// MARK: macOS
-
 /**
  Registers the URL watcher
  */
