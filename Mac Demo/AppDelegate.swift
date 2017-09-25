@@ -61,19 +61,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
      */
     @objc func handleURLEvent(event: NSAppleEventDescriptor,
                               replyEvent: NSAppleEventDescriptor) {
-        if  let urlDescriptor = event.paramDescriptor(forKeyword: keyDirectObject),
-            let urlString     = urlDescriptor.stringValue,
-            let urlComponents = URLComponents(string: urlString),
-            let queryItems    = urlComponents.queryItems {
-            
-            // Get "code=" parameter from URL
-            // https://gist.github.com/gillesdemey/509bb8a1a8c576ea215a
-            let code = queryItems.filter { item in item.name == "code" } .first?.value!
-                        
-            // Send code to Swiftify
-            if let authorizationCode = code {
-                swiftify.saveToken(from: authorizationCode)
-            }
+        if  let descriptor = event.paramDescriptor(forKeyword: keyDirectObject),
+            let urlString  = descriptor.stringValue,
+            let url        = URL(string: urlString) {
+            swiftify.saveToken(from: url)
         }
     }
     
