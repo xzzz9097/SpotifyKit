@@ -11,10 +11,10 @@ import Foundation
  Item type for Spotify search query
  */
 public enum SpotifyItemType: String, CodingKey {
-    case track, album, artist, playlist
+    case track, album, artist, playlist, user
     
     enum SearchKey: String, CodingKey {
-        case tracks, albums, artists, playlists
+        case tracks, albums, artists, playlists, users
     }
     
     var searchKey: SearchKey {
@@ -27,18 +27,41 @@ public enum SpotifyItemType: String, CodingKey {
             return .artists
         case .playlist:
             return .playlists
+        case .user:
+            return .users
         }
     }
+}
+
+struct SpotifyImage: Decodable {
+    var url: String
 }
 
 // MARK: Items data types
 
 public protocol SpotifyItem: Decodable {
-    var id:   String { set get }
-    var uri:  String { set get }
-    var name: String { set get }
+    var id:   String { get }
+    var uri:  String { get }
+    var name: String { get }
     
     static var type: SpotifyItemType { get }
+}
+
+public struct SpotifyUser: SpotifyItem {
+    public var id:   String
+    public var uri:  String
+    public var name: String { return display_name }
+    
+    public static let type: SpotifyItemType = .user
+    
+    public var email: String
+    
+    var display_name: String
+    var images:       [SpotifyImage]
+    
+    var artUri: String {
+        return images.first?.url ?? ""
+    }
 }
 
 public protocol SpotifyTrackCollection {
