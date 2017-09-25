@@ -165,7 +165,7 @@ public class SpotifyManager {
         
         var saveTime: TimeInterval
         
-        static let preferenceKey = "spotifyToken"
+        static let preferenceKey = "spotifyKitToken"
         
         // MARK: Decodable
         
