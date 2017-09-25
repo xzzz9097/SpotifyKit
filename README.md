@@ -1,11 +1,11 @@
-# Swiftify
+# SpotifyKit
 A Swift client for Spotify's Web API.
 
 ## Initialization
-You can easily create a Swiftify helper object by providing your Spotify application data.
+You can easily create a SpotifyKit helper object by providing your Spotify application data.
 ```swift
-let swiftify = SwiftifyHelper(with:
-    SwiftifyHelper.SpotifyDeveloperApplication(
+let spotifyManager = SpotifyManager(with:
+    SpotifyManager.SpotifyDeveloperApplication(
         clientId:     "client_id",
         clientSecret: "client_secret",
         redirectUri:  "redirect_uri"
@@ -17,7 +17,7 @@ The token data gathered at authentication moment is automatically saved in a sec
 ## Authentication
 This is arguably the trickiest step. At your app launch, you should call authorization method like this:
 ```swift
-swiftify.authorize()
+spotifyManager.authorize()
 ```
 It sends a request of authorization for the user's account, that will result in a HTTP response with the specified URL prefix and the authorization code as parameter.
 The method automatically skips the process if a saved token is found.
@@ -31,7 +31,7 @@ Then, in order to complete authentication and obtain the token, you must setup a
  Catches URLs with specific prefix ("your_spotify_redirect_uri://")
  */
 func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-    swiftify.saveToken(from: url)
+    spotifyManager.saveToken(from: url)
 
     return true
 }
@@ -54,11 +54,11 @@ func handleURLEvent(event: NSAppleEventDescriptor,
 	if	let descriptor = event.paramDescriptor(forKeyword: keyDirectObject),
 		let urlString  = descriptor.stringValue,
 		let url        = URL(string: urlString) {
-		swiftify.saveToken(from: url)
+		spotifyManager.saveToken(from: url)
 	}
 }
 ```
-Now Swiftify is fully authenticated with your user account and you can use all the methods it provides.
+Now SpotifyKit is fully authenticated with your user account and you can use all the methods it provides.
 
 ## Usage
 All methods send HTTP request through URLSession API and report the results with simple callbacks
@@ -71,7 +71,7 @@ public func find<T>(_ what: T.Type,
                     completionHandler: @escaping ([T]) -> Void) where T: SpotifySearchItem
 
 // Example
-swiftify.find(SpotifyTrack.self, "track_title") { tracks in
+spotifyManager.find(SpotifyTrack.self, "track_title") { tracks in
 	// Tracks is a [SpotifyTrack] array
 	for track in tracks {
         print("URI:    \(track.uri), "         +
@@ -87,21 +87,21 @@ get() and library() functions are also available for retrieving a specific item 
 Save, delete and check saved status for tracks in "Your Music" playlist
 ```swift
 // Save the track
-swiftify.save(trackId: "track_id") { saved in
+spotifyManager.save(trackId: "track_id") { saved in
     print("Saved: \(saved)")
 }
 
 // Check if the track is saved
-swiftify.isSaved(trackId: "track_id") { isSaved in
+spotifyManager.isSaved(trackId: "track_id") { isSaved in
     print("Is saved: \(isSaved)")
 }
 
 // Delete the track
-swiftify.delete(trackId: "track_id") { deleted in
+spotifyManager.delete(trackId: "track_id") { deleted in
     print("Deleted: \(deleted)")
 }
 ```
 
 ## Examples
-- [Playground](https://github.com/xzzz9097/Swiftify/blob/master/Swiftify/Swiftify.playground/Contents.swift)
+- iOS and macOS sample projects are available in this repository
 - [Muse](https://github.com/xzzz9097/Muse)
