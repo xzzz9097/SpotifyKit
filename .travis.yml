@@ -1,5 +1,5 @@
 language: objective-c
 osx_image: xcode9
 script:
-        - xcodebuild clean build -workspace Swiftify.xcworkspace -scheme SwiftifyMac
-        - xcodebuild clean build -workspace Swiftify.xcworkspace -scheme SwiftifyiOS
+        - xcodebuild clean build -workspace SpotifyKit.xcworkspace -scheme SpotifyKitMac
+        - xcodebuild clean build -workspace SpotifyKit.xcworkspace -scheme SpotifyKitiOS
