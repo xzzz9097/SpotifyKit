@@ -35,22 +35,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
      our application receives an URL starting with the "redirect uri" we've set up
      in Spotify Developer page and added to our app's Info.plist under "URL types" -> "URL schemes".
      This URI contains the token access code which grants the privileges needed for performing Spotify queries.
-     Here we catche the URI as it is passed to our app, retrieve the token code and send it
+     Here we catch the URI as it is passed to our app, retrieve the token code and send it
      to Swifify, which will generate the code and save it in Keychain for persistency
      */
     func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
-        if  let urlComponents = URLComponents(string: url.absoluteString),
-            let queryItems    = urlComponents.queryItems {
-            
-            // Get "code=" parameter from URL
-            // https://gist.github.com/gillesdemey/509bb8a1a8c576ea215a
-            let code = queryItems.filter { item in item.name == "code" } .first?.value!
-            
-            // Send code to Swiftify
-            if let authorizationCode = code {
-                swiftify.saveToken(from: authorizationCode)
-            }
-        }
+        swiftify.saveToken(from: url)
         
         return true
     }

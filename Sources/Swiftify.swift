@@ -408,6 +408,25 @@ public class SwiftifyHelper {
     }
     
     /**
+     Retrieves the authorization code after the authentication process has succeded
+     and completes token saving.
+     - parameter url: the URL with code sent by Spotify after authentication success
+     */
+    public func saveToken(from url: URL) {
+        if  let urlComponents = URLComponents(string: url.absoluteString),
+            let queryItems    = urlComponents.queryItems {
+            
+            // Get "code=" parameter from URL
+            let code = queryItems.filter { item in item.name == "code" } .first?.value!
+            
+            // Send code to Swiftify
+            if let authorizationCode = code {
+                saveToken(from: authorizationCode)
+            }
+        }
+    }
+    
+    /**
      Retrieves the token from the authorization code and saves it locally
      - parameter authorizationCode: the code received from Spotify redirected uri
      */
