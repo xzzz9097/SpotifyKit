@@ -282,11 +282,7 @@ public class SpotifyManager {
     private var tokenJsonURL: URL?
     
     // MARK: Constructors
-    
-    public static let shared = SpotifyManager()
-    
-    private init() { }
-    
+        
     public init(with application: SpotifyDeveloperApplication) {
         self.application = application
         
