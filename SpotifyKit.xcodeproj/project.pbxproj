@@ -70,7 +70,6 @@
 		0C50ADC51F76742800975644 /* SpotifyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SpotifyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C50ADC71F76742800975644 /* SpotifyKitiOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpotifyKitiOS.h; sourceTree = "<group>"; };
 		0C50ADC81F76742800975644 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0C6BB59D1E3E9DC7004E3FBD /* Swiftify.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Swiftify.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		0C6BB59F1E3F793E004E3FBD /* SpotifyKit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpotifyKit.swift; sourceTree = "<group>"; };
 		0CFA8E111F7A7A3500D1AE83 /* SpotifyKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpotifyKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0CFA8E131F7A7A3500D1AE83 /* SpotifyKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotifyKitTests.swift; sourceTree = "<group>"; };
@@ -163,7 +162,6 @@
 			isa = PBXGroup;
 			children = (
 				0C50ADBF1F766F1000975644 /* Sources */,
-				0C6BB59D1E3E9DC7004E3FBD /* Swiftify.playground */,
 				0C2CF31E1E3E7FEF00E10765 /* SpotifyKitMac */,
 				0C41BADC1F6D72A400A895F7 /* Mac Demo */,
 				0C50ADC61F76742800975644 /* SpotifyKitiOS */,
