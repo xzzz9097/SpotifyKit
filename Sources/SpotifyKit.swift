@@ -387,6 +387,25 @@ public class SpotifyManager {
         }
     }
     
+    /**
+     Gets the curernt Spotify user's profile
+     - parameter completionHandler: the handler that is executed with the user as parameter
+     */
+    public func myProfile(completionHandler: @escaping (SpotifyUser) -> Void) {
+        tokenQuery { token in
+            URLSession.shared.request(SpotifyQuery.me,
+                                      method: .GET,
+                                      headers: self.authorizationHeader(with: token))
+            { result in
+                if  case let .success(data) = result,
+                    let result = try? JSONDecoder().decode(SpotifyUser.self,
+                                                           from: data) {
+                    completionHandler(result)
+                }
+            }
+        }
+    }
+    
     // MARK: Authorization
     
     /**
