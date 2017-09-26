@@ -54,7 +54,7 @@ public struct SpotifyUser: SpotifyItem {
     
     public static let type: SpotifyItemType = .user
     
-    public var email: String
+    public var email: String?
     
     var display_name: String
     var images:       [SpotifyImage]
