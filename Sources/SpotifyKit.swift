@@ -417,7 +417,11 @@ public class SpotifyManager {
         if  let application = application,
             let url = SpotifyQuery.authorize.url?.with(parameters: authorizationParameters(for: application)) {
             #if os(OSX)
-                NSWorkspace.shared.open(url)
+                #if swift(>=4.0)
+                    NSWorkspace.shared.open(url)
+                #else
+                    NSWorkspace.shared().open(url)
+                #endif
             #else
                 UIApplication.shared.open(url)
             #endif
