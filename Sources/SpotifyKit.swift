@@ -97,9 +97,9 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
             return URL(string: master.rawValue + what.type.searchKey.rawValue + "/\(id)")
         case .playlist:
             guard let userId = playlistUserId else { return nil }
-            return URL(string: users.rawValue + "/\(userId)/playlists/\(id)")!
+            return URL(string: master.rawValue + users.rawValue + "/\(userId)/playlists/\(id)")!
         case .user:
-            return URL(string: users.rawValue + "/\(id)/")!
+            return URL(string: master.rawValue + users.rawValue + "/\(id)")!
         }
     }
 }

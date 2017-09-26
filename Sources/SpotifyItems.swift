@@ -47,7 +47,15 @@ public protocol SpotifyItem: Decodable {
     static var type: SpotifyItemType { get }
 }
 
-public struct SpotifyUser: SpotifyItem {
+public protocol SpotifyTrackCollection {
+    var collectionTracks: [SpotifyTrack]? { get }
+}
+
+public protocol SpotifySearchItem: SpotifyItem { }
+
+public protocol SpotifyLibraryItem: SpotifyItem { }
+
+public struct SpotifyUser: SpotifySearchItem {
     public var id:   String
     public var uri:  String
     public var name: String { return display_name ?? id }
@@ -63,14 +71,6 @@ public struct SpotifyUser: SpotifyItem {
         return images.first?.url ?? ""
     }
 }
-
-public protocol SpotifyTrackCollection {
-    var collectionTracks: [SpotifyTrack]? { get }
-}
-
-public protocol SpotifySearchItem: SpotifyItem { }
-
-public protocol SpotifyLibraryItem: SpotifyItem { }
 
 public struct SpotifyTrack: SpotifySearchItem, SpotifyLibraryItem {
     public var id:    String
