@@ -50,13 +50,13 @@ public protocol SpotifyItem: Decodable {
 public struct SpotifyUser: SpotifyItem {
     public var id:   String
     public var uri:  String
-    public var name: String { return display_name }
+    public var name: String { return display_name ?? id }
     
     public static let type: SpotifyItemType = .user
     
     public var email: String?
     
-    var display_name: String
+    var display_name: String?
     var images:       [SpotifyImage]
     
     var artUri: String {
