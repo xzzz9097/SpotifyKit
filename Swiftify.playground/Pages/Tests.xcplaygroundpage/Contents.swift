@@ -1,7 +1,7 @@
 //: Playground - noun: a place where people can play
 
 import Cocoa
-import Swiftify
+import SpotifyKit
 
 let artist = try JSONDecoder().decode(SpotifyArtist.self, from: sampleResponses[.artist]!)
 
@@ -21,3 +21,4 @@ let tracks: [SpotifyTrack]? = parseFindResponse(data: sampleResponses[.findTrack
 
 let playlist = try JSONDecoder().decode(SpotifyPlaylist.self, from: sampleResponses[.playlist]!)
 
+let user = try JSONDecoder().decode(SpotifyUser.self, from: sampleResponses[.user]!)

@@ -1,7 +1,7 @@
 import Foundation
 
 public enum SampleResponseType {
-    case artist, album, track, playlist, findArtist, findTrack
+    case artist, album, track, playlist, findArtist, findTrack, user
 }
 
 public var sampleResponses: [SampleResponseType: Data] = [
@@ -1389,6 +1389,27 @@ public var sampleResponses: [SampleResponseType: Data] = [
 "previous" : null,
 "total" : 6
 }
+}
+""".data(using: .utf8)!,
+    .user: """
+{
+"display_name" : "Lilla Namo",
+"external_urls" : {
+"spotify" : "https://open.spotify.com/user/tuggareutangranser"
+},
+"followers" : {
+"href" : null,
+"total" : 4561
+},
+"href" : "https://api.spotify.com/v1/users/tuggareutangranser",
+"id" : "tuggareutangranser",
+"images" : [ {
+"height" : null,
+"url" : "http://profile-images.scdn.co/artists/default/d4f208d4d49c6f3e1363765597d10c4277f5b74f",
+"width" : null
+} ],
+"type" : "user",
+"uri" : "spotify:user:tuggareutangranser"
 }
 """.data(using: .utf8)!
 ]
