@@ -1,5 +1,5 @@
 language: objective-c
 osx_image: xcode9
 script:
-        - xcodebuild clean build -workspace SpotifyKit.xcworkspace -scheme SpotifyKitMac
-        - xcodebuild clean test -workspace SpotifyKit.xcworkspace -scheme SpotifyKitiOS -destination "platform=iOS Simulator,name=iPhone 8,OS=11.0"
+        - xcodebuild clean build -project SpotifyKit.xcodeproj -scheme SpotifyKitMac
+        - xcodebuild clean test -project SpotifyKit.xcodeproj -scheme SpotifyKitiOS -destination "platform=iOS Simulator,name=iPhone 8,OS=11.0"
