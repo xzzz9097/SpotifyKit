@@ -373,9 +373,9 @@ public class SpotifyManager {
      - parameter artist: the artist of the track
      - parameter completionHandler: the handler that is executed with the track as parameter
      */
-    func getTrack(title: String,
-                  artist: String,
-                  completionHandler: @escaping (SpotifyTrack) -> Void) {
+    public func getTrack(title: String,
+                         artist: String,
+                         completionHandler: @escaping (SpotifyTrack) -> Void) {
         find(SpotifyTrack.self, "\(title) \(artist)") { results in
             if let track = results.first {
                 completionHandler(track)
