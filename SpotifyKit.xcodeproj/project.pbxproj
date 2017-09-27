@@ -19,6 +19,7 @@
 		0C41BAE31F6D72A400A895F7 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0C41BAE11F6D72A400A895F7 /* MainMenu.xib */; };
 		0C4881111F719D740018C18F /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4881101F719D740018C18F /* Keychain.swift */; };
 		0C4A98461F7414970067CB60 /* WebCommunications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4A98451F7414970067CB60 /* WebCommunications.swift */; };
+		0C4AD2031F7BFB5D00BF8EF0 /* UIImageView+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4AD2021F7BFB5D00BF8EF0 /* UIImageView+Download.swift */; };
 		0C50ADC91F76742800975644 /* SpotifyKitiOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C50ADC71F76742800975644 /* SpotifyKitiOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0C50ADCD1F76773000975644 /* SpotifyKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C6BB59F1E3F793E004E3FBD /* SpotifyKit.swift */; };
 		0C50ADCE1F76773C00975644 /* WebCommunications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4A98451F7414970067CB60 /* WebCommunications.swift */; };
@@ -63,6 +64,7 @@
 		0C41BAEB1F6D730700A895F7 /* Alamofire.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Alamofire.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C4881101F719D740018C18F /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
 		0C4A98451F7414970067CB60 /* WebCommunications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCommunications.swift; sourceTree = "<group>"; };
+		0C4AD2021F7BFB5D00BF8EF0 /* UIImageView+Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Download.swift"; sourceTree = "<group>"; };
 		0C50ADC51F76742800975644 /* SpotifyKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SpotifyKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C50ADC71F76742800975644 /* SpotifyKitiOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SpotifyKitiOS.h; sourceTree = "<group>"; };
 		0C50ADC81F76742800975644 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 			children = (
 				0C4094771F77AB2E0048E39E /* AppDelegate.swift */,
 				0C4094791F77AB2E0048E39E /* ViewController.swift */,
+				0C4AD2021F7BFB5D00BF8EF0 /* UIImageView+Download.swift */,
 				0C40947B1F77AB2E0048E39E /* Main.storyboard */,
 				0C40947E1F77AB2E0048E39E /* Assets.xcassets */,
 				0C4094801F77AB2E0048E39E /* LaunchScreen.storyboard */,
@@ -436,6 +439,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C4AD2031F7BFB5D00BF8EF0 /* UIImageView+Download.swift in Sources */,
 				0C40947A1F77AB2E0048E39E /* ViewController.swift in Sources */,
 				0C4094781F77AB2E0048E39E /* AppDelegate.swift in Sources */,
 			);
