@@ -67,7 +67,7 @@ public struct SpotifyUser: SpotifySearchItem {
     var display_name: String?
     var images:       [SpotifyImage]
     
-    var artUri: String {
+    public var artUri: String {
         return images.first?.url ?? ""
     }
 }
