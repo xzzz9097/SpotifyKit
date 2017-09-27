@@ -122,9 +122,9 @@ The protocol which is inherited by all items, including common properties
 ```swift
 public protocol SpotifyItem: Decodable {
 
-    var id:   String { get }
-    var uri:  String { get }
-    var name: String { get }
+	var id:   String { get }
+	var uri:  String { get }
+	var name: String { get }
 }
 
 public protocol SpotifySearchItem: SpotifyItem {
@@ -139,18 +139,18 @@ public protocol SpotifyLibraryItem: SpotifyItem {
 ```swift
 public struct SpotifyUser: SpotifySearchItem {
 
-    public var email:  String?
+	public var email:  String?
 
 	// URI of the user profile picture
-    public var artUri: String
+	public var artUri: String
 }
 ```
 ### Track
 ```swift
 public struct SpotifyTrack: SpotifySearchItem, SpotifyLibraryItem {
 
-    public var album:  SpotifyAlbum?
-    public var artist: SpotifyArtist
+	public var album:  SpotifyAlbum?
+	public var artist: SpotifyArtist
 }
 ```
 ### Album
@@ -158,12 +158,12 @@ public struct SpotifyTrack: SpotifySearchItem, SpotifyLibraryItem {
 public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackCollection {
 
 	// The tracks contained in the album
-    public var collectionTracks: [SpotifyTrack]?
+	public var collectionTracks: [SpotifyTrack]?
 
-    public var artist: SpotifyArtist
+	public var artist: SpotifyArtist
 
 	// The album's cover image
-    public var artUri: String
+	public var artUri: String
 }
 ```
 ### Playlist
@@ -171,7 +171,7 @@ public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackC
 public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackCollection {
 
 	// The tracks contained in the playlist
-    public var collectionTracks: [SpotifyTrack]?
+	public var collectionTracks: [SpotifyTrack]?
 }
 ```
 ### Artist
