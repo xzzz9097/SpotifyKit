@@ -1,6 +1,11 @@
 # SpotifyKit
 A Swift client for Spotify's Web API.
 
+[![Build Status](https://travis-ci.org/xzzz9097/SpotifyKit.svg?branch=master)](https://travis-ci.org/xzzz9097/SpotifyKit)
+[![Version](https://img.shields.io/cocoapods/v/SpotifyKit.svg?style=flat)](http://cocoapods.org/pods/SpotifyKit)
+[![License](https://img.shields.io/cocoapods/l/SpotifyKit.svg?style=flat)](http://cocoapods.org/pods/SpotifyKit)
+[![Platform](https://img.shields.io/cocoapods/p/SpotifyKit.svg?style=flat)](http://cocoapods.org/pods/SpotifyKit)
+
 ## Initialization
 You can easily create a SpotifyKit helper object by providing your Spotify application data.
 ```swift
