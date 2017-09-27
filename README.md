@@ -115,6 +115,72 @@ spotifyManager.delete(trackId: "track_id") { deleted in
 }
 ```
 
+## Supported Spotify items
+The items are automatically decoded from JSON, by conforming to Swift 4 "Decodable" protocol.
+### Generic item
+The protocol which is inherited by all items, including common properties
+```swift
+public protocol SpotifyItem: Decodable {
+
+    var id:   String { get }
+    var uri:  String { get }
+    var name: String { get }
+}
+
+public protocol SpotifySearchItem: SpotifyItem {
+	// Items conforming to this protocol can be searched
+}
+
+public protocol SpotifyLibraryItem: SpotifyItem {
+	// Items conforming to this protocol can be contained in user's library
+}
+```
+### User
+```swift
+public struct SpotifyUser: SpotifySearchItem {
+
+    public var email:  String?
+
+	// URI of the user profile picture
+    public var artUri: String
+}
+```
+### Track
+```swift
+public struct SpotifyTrack: SpotifySearchItem, SpotifyLibraryItem {
+
+    public var album:  SpotifyAlbum?
+    public var artist: SpotifyArtist
+}
+```
+### Album
+```swift
+public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackCollection {
+
+	// The tracks contained in the album
+    public var collectionTracks: [SpotifyTrack]?
+
+    public var artist: SpotifyArtist
+
+	// The album's cover image
+    public var artUri: String
+}
+```
+### Playlist
+```swift
+public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackCollection {
+
+	// The tracks contained in the playlist
+    public var collectionTracks: [SpotifyTrack]?
+}
+```
+### Artist
+```swift
+public struct SpotifyArtist: SpotifySearchItem {
+	// Artist has no additional properties
+}
+```
+
 ## Examples
 - iOS and macOS sample projects are available in this repository
 - [Muse](https://github.com/xzzz9097/Muse)
