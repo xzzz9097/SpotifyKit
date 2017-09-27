@@ -6,6 +6,14 @@ A Swift client for Spotify's Web API.
 [![License](https://img.shields.io/cocoapods/l/SpotifyKit.svg?style=flat)](http://cocoapods.org/pods/SpotifyKit)
 [![Platform](https://img.shields.io/cocoapods/p/SpotifyKit.svg?style=flat)](http://cocoapods.org/pods/SpotifyKit)
 
+## Installation
+SpotifyKit is available through [CocoaPods](http://cocoapods.org). To install
+it, simply add the following line to your Podfile:
+
+```ruby
+pod "SpotifyKit"
+```
+
 ## Initialization
 You can easily create a SpotifyKit helper object by providing your Spotify application data.
 ```swift
