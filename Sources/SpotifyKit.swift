@@ -507,7 +507,7 @@ public class SpotifyManager {
     /**
      Refreshes the token when expired
      */
-    public func refreshToken(completionHandler: @escaping (Bool) -> Void) {
+    public func refreshToken(completionHandler: @escaping (Bool) -> ()) {
         guard let application = application, let token = self.token else { return }
         
         URLSession.shared.request(SpotifyQuery.token,
@@ -516,15 +516,19 @@ public class SpotifyManager {
                                   headers: refreshTokenHeaders(for: application))
         { result in
             if case let .success(data) = result {
-                completionHandler(true)
-                
                 // Refresh current token
                 // Only 'accessToken' needs to be changed
                 // guard is not really needed here because we checked before
                 self.token?.refresh(from: data)
                 
                 // Prints the token for debug
-                if let token = self.token { debugPrint(token.details) }
+                if let token = self.token {
+                    debugPrint(token.details)
+                    
+                    // Run completion handler
+                    // only after the token has been saved
+                    completionHandler(true)
+                }
             } else {
                 completionHandler(false)
             }
