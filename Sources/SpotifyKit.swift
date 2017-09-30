@@ -202,7 +202,7 @@ public class SpotifyManager {
                 expiresIn:    decoder.decodeInteger(forKey: Key.expires_in.rawValue),
                 refreshToken: decoder.decodeObject(forKey: Key.refresh_token.rawValue) as? String,
                 tokenType:    decoder.decodeObject(forKey: Key.token_type.rawValue) as? String,
-                saveTime:     decoder.decodeObject(forKey: Key.save_time.rawValue) as? TimeInterval
+                saveTime:     decoder.decodeDouble(forKey: Key.save_time.rawValue)
             )
         }
         
@@ -243,7 +243,7 @@ public class SpotifyManager {
                                                         from: data) else { return }
             
             accessToken = token.accessToken
-            saveTime     = Date.timeIntervalSinceReferenceDate
+            saveTime    = Date.timeIntervalSinceReferenceDate
         }
         
         /**
@@ -288,9 +288,6 @@ public class SpotifyManager {
         
         if let token = SpotifyToken.loadFromKeychain() {
             self.token = token
-            
-            // Refresh the token if present
-            self.refreshToken { _ in }
         }
     }
     
