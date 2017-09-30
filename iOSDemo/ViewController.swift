@@ -41,17 +41,15 @@ class ViewController: UIViewController {
     
     func loadUser() {
         spotifyManager.myProfile { [weak self] profile in
-            if let strongSelf = self {
-                // Set user name
-                strongSelf.userNameLabel.text = profile.name
-                
-                // Set mail
-                strongSelf.mailLabel.text = profile.email ?? ""
-                
-                // Set image
-                if let imageURL = URL(string: profile.artUri) {
-                    strongSelf.profilePictureView.download(from: imageURL)
-                }
+            // Set user name
+            self?.userNameLabel.text = profile.name
+            
+            // Set mail
+            self?.mailLabel.text = profile.email ?? ""
+            
+            // Set image
+            if let imageURL = URL(string: profile.artUri) {
+                self?.profilePictureView.download(from: imageURL)
             }
         }
     }
