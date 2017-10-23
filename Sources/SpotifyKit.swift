@@ -669,7 +669,7 @@ public class SpotifyManager {
      */
     private func searchParameters(for type: SpotifyItemType,
                                   _ keyword: String) -> HTTPRequestParameters {
-        return [SpotifyParameter.name: keyword,
+        return [SpotifyParameter.name: "\(keyword)*",
                 SpotifyParameter.type: type.rawValue]
     }
     
