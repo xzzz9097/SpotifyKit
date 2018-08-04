@@ -130,6 +130,9 @@ public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem, SpotifyTra
             var track: SpotifyTrack
         }
         
+        var total: Int
+        
+        // Track list is contained only in full playlist objects
         var items: [Item]?
     }
     
