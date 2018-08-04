@@ -30,7 +30,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             //self.find(SpotifyTrack.self, "concrete heartbeat")
-            self.library(SimplifiedSpotifyPlaylist.self)
+            self.library(SpotifyPlaylist.self)
             //self.get(SpotifyAlbum.self, id: "4IKyYu9zNndBVpi8FoekaS")
             //self.isSaved("5FTCKvxzqy72ceS4Ujux4N")
             //self.save("5FTCKvxzqy72ceS4Ujux4N")
