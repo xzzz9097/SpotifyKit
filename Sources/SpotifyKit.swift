@@ -74,8 +74,8 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
     case account = "https://accounts.spotify.com/"
     
     // Search
-    case search = "search"
-    case users  = "users"
+    case search    = "search"
+    case users     = "users"
     
     // Authentication
     case authorize = "authorize"
@@ -93,11 +93,8 @@ fileprivate enum SpotifyQuery: String, URLConvertible {
                           id: String,
                           playlistUserId: String? = nil) -> URL? where T: SpotifySearchItem {
         switch what.type {
-        case .track, .album, .artist:
+        case .track, .album, .artist, .playlist:
             return URL(string: master.rawValue + what.type.searchKey.rawValue + "/\(id)")
-        case .playlist:
-            guard let userId = playlistUserId else { return nil }
-            return URL(string: master.rawValue + users.rawValue + "/\(userId)/playlists/\(id)")!
         case .user:
             return URL(string: master.rawValue + users.rawValue + "/\(id)")!
         }
@@ -328,12 +325,10 @@ public class SpotifyManager {
      */
     public func get<T>(_ what: T.Type,
                        id: String,
-                       playlistUserId: String? = nil,
                        completionHandler: @escaping ((T) -> Void)) where T: SpotifySearchItem {
         tokenQuery { token in
             URLSession.shared.request(SpotifyQuery.urlFor(what,
-                                                          id: id,
-                                                          playlistUserId: playlistUserId),
+                                                          id: id),
                                       method: .GET,
                                       headers: self.authorizationHeader(with: token))
             { result in
