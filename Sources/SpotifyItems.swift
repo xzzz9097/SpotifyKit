@@ -124,21 +124,7 @@ public struct SpotifyAlbum: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackC
     }
 }
 
-public struct SimplifiedSpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem {
-    struct Tracks: Decodable {
-        var total: Int
-    }
-    
-    public var id:   String
-    public var uri:  String
-    public var name: String
-    
-    var tracks: Tracks
-    
-    public static let type: SpotifyItemType = .playlist
-}
-
-public struct SpotifyPlaylist: SpotifySearchItem, SpotifyTrackCollection {
+public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem, SpotifyTrackCollection {
     struct Tracks: Decodable {
         struct Item: Decodable {
             var track: SpotifyTrack
