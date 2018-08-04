@@ -235,6 +235,13 @@ public class SpotifyManager {
         }
         
         /**
+         Deletes the token object from a preference
+         */
+        static func deleteFromKeychain() {
+            Keychain.standard.delete(objectWithKey: SpotifyToken.preferenceKey)
+        }
+        
+        /**
          Updates a token from a JSON, for instance after calling 'refreshToken',
          when only a new 'accessToken' is provided
          */
@@ -423,6 +430,13 @@ public class SpotifyManager {
                 UIApplication.shared.open(url)
             #endif
         }
+    }
+    
+    /**
+     Removes the saved authorization token from the keychain
+     */
+    public func resetAuthorization() {
+        SpotifyToken.deleteFromKeychain()
     }
     
     /**

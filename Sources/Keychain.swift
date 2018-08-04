@@ -57,6 +57,10 @@ struct Keychain {
         setData(data, forKey: key)
     }
     
+    func delete(objectWithKey: String) {
+        SecItemDelete(query(forKey: objectWithKey) as CFDictionary)
+    }
+    
     func query(forKey key: String) -> KeychainItem {
         var query = KeychainItem()
         
