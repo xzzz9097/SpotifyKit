@@ -430,8 +430,14 @@ public class SpotifyManager {
     /**
      Removes the saved authorization token from the keychain
      */
-    public func resetAuthorization() {
+    public func deauthorize() {
+        // Only proceed with deauthorization if we have a token
+        guard hasToken else { return }
+        
         SpotifyToken.deleteFromKeychain()
+        
+        // Reset the token
+        token = nil
     }
     
     /**
