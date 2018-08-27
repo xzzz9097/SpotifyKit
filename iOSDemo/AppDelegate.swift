@@ -27,8 +27,6 @@ let spotifyManager = SpotifyManager(with: application)
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
-    @IBOutlet weak var toggleAuthorizationButton: NSButton!
     
     // MARK: URL event handling
     
