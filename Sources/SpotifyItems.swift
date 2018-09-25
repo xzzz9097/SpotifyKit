@@ -176,7 +176,7 @@ public struct SpotifyLibraryResponse<T> where T: SpotifyLibraryItem {
     
     public var items: [T] {
         if let wrap = wrappedItems {
-            return wrap.flatMap { $0.item }
+            return wrap.compactMap { $0.item }
         }
         
         if let items = unwrappedItems {
