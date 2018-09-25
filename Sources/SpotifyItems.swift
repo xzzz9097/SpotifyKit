@@ -146,6 +146,10 @@ public struct SpotifyPlaylist: SpotifySearchItem, SpotifyLibraryItem, SpotifyTra
         return tracks.items?.map { $0.track }
     }
     
+    public var count: Int {
+        return tracks.total
+    }
+    
     public static let type: SpotifyItemType = .playlist
 }
 
