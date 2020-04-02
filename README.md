@@ -55,7 +55,7 @@ func application(_ application: UIApplication, handleOpen url: URL) -> Bool {
  Registers the URL watcher
  */
 NSAppleEventManager.shared().setEventHandler(self,
-    andSelector: #selector(handleURLEvent),
+    andSelector: #selector(handleURLEvent(event:replyEvent:)),
     forEventClass: AEEventClass(kInternetEventClass),
     andEventID: AEEventID(kAEGetURL))
 
